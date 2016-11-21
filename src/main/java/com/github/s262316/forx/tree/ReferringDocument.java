@@ -1,6 +1,5 @@
 package com.github.s262316.forx.tree;
 
-import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
 
