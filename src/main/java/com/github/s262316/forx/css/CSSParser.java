@@ -111,6 +111,8 @@ public class CSSParser
 					}
 			}
 
+			logger.debug("stylesheet created {}", ss.toString());
+			
 			return ss;
 	}
     

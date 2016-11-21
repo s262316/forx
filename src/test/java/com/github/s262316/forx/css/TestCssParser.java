@@ -1,6 +1,7 @@
 package com.github.s262316.forx.css;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.net.URL;
@@ -15,15 +16,16 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.util.ResourceUtils;
 
 import com.github.s262316.forx.tree.style.Declaration;
 import com.github.s262316.forx.tree.style.Identifier;
 import com.github.s262316.forx.tree.style.ImportRule;
 import com.github.s262316.forx.tree.style.MediaType;
 import com.github.s262316.forx.tree.style.StyleRule;
+import com.github.s262316.forx.tree.style.Stylesheet;
 import com.github.s262316.forx.tree.style.selectors.SelectorAttr;
 import com.github.s262316.forx.tree.style.selectors.SelectorElement;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 
@@ -249,5 +251,15 @@ public class TestCssParser
 		fail();
 	}
 	
+	@Test
+	public void testShiftJISInSelector() throws Exception
+	{
+		URL url=ResourceUtils.getURL("classpath:com/github/s262316/forx/css/at-charset-053.css");
+		CSSParser parser=new CSSParser(url.toString(), new TestReferringDocument(), new CssLoader());
+		Stylesheet ss=parser.parse_stylesheet();
+		
+		assertTrue(!ss.getRuleset().isEmpty());
+	}
 
 }
+
