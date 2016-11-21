@@ -62,6 +62,7 @@ public class CssLoader implements ResourceLoader
 		{
 			// 2. BOM and/or @charset
 			charset=cssCharset.sniffCharset(new BufferedInputStream(new ByteArrayInputStream(buffer)));
+			return charset;
 		}
 		catch(BadCharsetException e)
 		{} // fallback to the next 

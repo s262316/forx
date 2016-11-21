@@ -1,24 +1,26 @@
 package com.github.s262316.forx.css;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static org.junit.Assert.assertEquals;
+
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Rule;
 import org.junit.Test;
+import org.springframework.util.ResourceUtils;
+
 import com.github.s262316.forx.net.Resource;
-
 import com.github.s262316.forx.tree.ReferringDocument;
-
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.google.common.base.Optional;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static org.junit.Assert.assertEquals;
 
 class TestReferringDocument implements ReferringDocument
 {
@@ -82,5 +84,21 @@ public class TestCssLoader
 
 	}
 
+	@Test
+	public void testCharsetFromCharsetRule() throws Exception
+	{
+		File cssFile=ResourceUtils.getFile("classpath:com/github/s262316/forx/css/at-charset-053.css");
+		byte body[]=FileUtils.readFileToByteArray(cssFile);
+		String testResource="@charset \"Shift-JIS\";";
+		server.stubFor(WireMock.get(urlEqualTo("/")).willReturn(aResponse().withBody(testResource)));
+
+		TestReferringDocument referringDoc=new TestReferringDocument();
+		CssLoader cssLoader=new CssLoader();
+		CssCharset cssCharset=new CssCharset();
+
+		Resource resource=cssLoader.load("http://localhost:8081/", referringDoc, () -> Optional.of(StandardCharsets.UTF_8));
+
+		assertEquals(Charset.forName("Shift_JIS"), resource.getCharset());
+	}
 }
 
