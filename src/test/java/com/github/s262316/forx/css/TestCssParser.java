@@ -252,7 +252,7 @@ public class TestCssParser
 	}
 	
 	@Test
-	public void testShiftJISInSelector() throws Exception
+	public void testRulesAfterAtCharsetAreProcessed() throws Exception
 	{
 		URL url=ResourceUtils.getURL("classpath:com/github/s262316/forx/css/at-charset-053.css");
 		CSSParser parser=new CSSParser(url.toString(), new TestReferringDocument(), new CssLoader());
@@ -260,6 +260,5 @@ public class TestCssParser
 		
 		assertTrue(!ss.getRuleset().isEmpty());
 	}
-
 }
 

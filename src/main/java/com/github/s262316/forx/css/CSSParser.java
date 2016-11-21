@@ -777,7 +777,9 @@ public class CSSParser
 				tok.advance();
 	
 				if(tok.curr.syntax.equals("charset"))
-				{}
+				{
+					tok.advancePast(TokenType.CR_PUNCT, ";");
+				}
 				else if(tok.curr.syntax.equals("import"))
 				{
 					ImportRule ir;
