@@ -1,0 +1,21 @@
+package com.github.s262316.forx.css;
+
+enum TokenType
+{
+	CR_IDENT,
+	CR_PUNCT,
+	CR_STRING,
+	CR_NUMBER,
+	CR_CD,
+	CR_COMMENT,
+	CR_INCLUDES,
+	CR_DASHMATCH,
+	CR_WHITESPACE,
+	CR_DIMENSION,
+	CR_PERCENT,
+	CR_HASH,
+	CR_FUNCTION,
+	CR_PRI,
+	CR_URI,
+	CR_END
+}
