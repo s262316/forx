@@ -252,13 +252,18 @@ public class TestCssParser
 	}
 	
 	@Test
-	public void testRulesAfterAtCharsetAreProcessed() throws Exception
+	public void cssParserIgnoresCharsetAndAdvancesPast() throws Exception
 	{
-		URL url=ResourceUtils.getURL("classpath:com/github/s262316/forx/css/at-charset-053.css");
-		CSSParser parser=new CSSParser(url.toString(), new TestReferringDocument(), new CssLoader());
-		Stylesheet ss=parser.parse_stylesheet();
+		TestReferringDocument referrer=new TestReferringDocument();
+		CSSParser parser=new CSSParser("@charset \"something\"; div ", referrer);
+
+		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
+		tokenizer.advance();
 		
-		assertTrue(!ss.getRuleset().isEmpty());
+		parser.parse_statement(null);
+		
+		assertEquals(TokenType.CR_IDENT, tokenizer.curr.type);
+		assertEquals("div", tokenizer.curr.syntax);
 	}
 }
 
