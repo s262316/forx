@@ -25,15 +25,22 @@ public class TestCssCharset
 		Charset charset=cssCharset.sniffCharset(new BufferedInputStream(IOUtils.toInputStream("@charset \"test\";")));
 		fail();
 	}
+	
+	@Test(expected=BadCharsetException.class)
+	public void charsetInCapsIsNotACharset() throws Exception
+	{
+		CssCharset cssCharset=new CssCharset();
+		Charset charset=cssCharset.sniffCharset(new BufferedInputStream(IOUtils.toInputStream("@CHARSET \"test\";")));
+		fail();
+	}	
 
-	@Test
-	public void testNoCharset() throws Exception
+	@Test(expected=BadCharsetException.class)
+	public void firstCharsInCssAreNotACharset() throws Exception
 	{
 		BufferedInputStream bis=new BufferedInputStream(IOUtils.toInputStream(css2, "UTF-8"));
 		CssCharset cssCharset=new CssCharset();
-		Charset charset=cssCharset.sniffCharset(bis);
-		assertEquals(null, charset);
-		assertEquals('p', bis.read());
+		cssCharset.sniffCharset(bis);
+		fail();
 	}
 	
 	@Test

@@ -197,7 +197,7 @@ public class CssCharset
 				return StandardCharsets.UTF_16LE;
 			}
 			
-			data.reset();			
+			data.reset();
 		}
 		catch(UnsupportedCharsetException | IllegalCharsetNameException | IOException e)
 		{
@@ -205,7 +205,6 @@ public class CssCharset
 			throw new BadCharsetException(e);
 		}
 
-		
-		return null;
+		throw new BadCharsetException("First characters do not match any charset "+new String(charsetRule, StandardCharsets.UTF_8));
 	}
 }
