@@ -92,5 +92,56 @@ public class TestTokenizer
 
         assertEquals(TokenType.CR_END, tokenizer.curr.type);
     }
+
+    @Test
+    public void testSimpleUrl()
+    {
+        Tokenizer tokenizer = new Tokenizer("url('test.html')");
+        tokenizer.advance();
+
+        assertEquals(TokenType.CR_URI, tokenizer.curr.type);
+        assertEquals("test.html", tokenizer.curr.syntax);
+    }
+
+    @Test
+    public void testUrlWhitespace1()
+    {
+        Tokenizer tokenizer = new Tokenizer("url( 'test.html')");
+        tokenizer.advance();
+
+        assertEquals(TokenType.CR_URI, tokenizer.curr.type);
+        assertEquals("test.html", tokenizer.curr.syntax);
+    }
+
+    @Test
+    public void testUrlWhitespace2()
+    {
+        Tokenizer tokenizer = new Tokenizer("url( 'test.html' )");
+        tokenizer.advance();
+
+        assertEquals(TokenType.CR_URI, tokenizer.curr.type);
+        assertEquals("test.html", tokenizer.curr.syntax);
+    }
+
+    // TODO Tokenizer doesn't see the space between url and (
+    @Test
+    public void testMalformedUrl1()
+    {
+        Tokenizer tokenizer = new Tokenizer("url ('test.html')");
+        tokenizer.advance();
+
+        assertEquals(TokenType.CR_ERROR, tokenizer.curr.type);
+        assertEquals("test.html", tokenizer.curr.syntax);
+    }
+
+    @Test
+    public void testMalformedUrl2()
+    {
+        Tokenizer tokenizer = new Tokenizer("url('test.html' ");
+        tokenizer.advance();
+
+        assertEquals(TokenType.CR_ERROR, tokenizer.curr.type);
+        assertEquals("", tokenizer.curr.syntax);
+    }
 }
 

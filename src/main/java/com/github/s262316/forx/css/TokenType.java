@@ -17,5 +17,6 @@ enum TokenType
 	CR_FUNCTION,
 	CR_PRI,
 	CR_URI,
-	CR_END
+	CR_END,
+	CR_ERROR
 }

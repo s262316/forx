@@ -106,7 +106,7 @@ public class Tokenizer
 		{
 			String url="";
 
-			nextToken(); // (
+			t=nextToken(); // (
 			t=nextToken();
 			if(t.type==TokenType.CR_WHITESPACE)
 				t=nextToken();
@@ -115,8 +115,15 @@ public class Tokenizer
 			{
 				url=t.syntax;
 
-				while(!t.syntax.equals(")"))
+				t=nextToken();
+				if(t.type==TokenType.CR_WHITESPACE)
 					t=nextToken();
+
+				if(!(t.type==TokenType.CR_PUNCT && t.syntax.equals(")")))
+				{
+					curr = new Token(TokenType.CR_ERROR, "");
+					return;
+				}
 			}
 			else
 			{
