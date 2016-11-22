@@ -762,7 +762,6 @@ public class CSSParser
 			return srs;
 	}
 
-
 	//statement   : ruleset | at-rule;
 	List<StyleRule> parse_statement(Stylesheet stylesheet) throws CSSParserException, MalformedURLException, IOException
 	{
@@ -775,10 +774,11 @@ public class CSSParser
 			if(tok.curr.syntax.equals("@"))
 			{
 				tok.advance();
-	
+				
+				// up to and including end of next block or semicolon
 				if(tok.curr.syntax.equals("charset"))
 				{
-					tok.advancePast(TokenType.CR_PUNCT, ";");
+					tok.advanceUntil(new SkipPastSemicolonOrBlock());
 				}
 				else if(tok.curr.syntax.equals("import"))
 				{

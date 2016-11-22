@@ -1,5 +1,8 @@
 package com.github.s262316.forx.css;
 
+import java.util.LinkedList;
+import java.util.function.Predicate;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +14,8 @@ public class Tokenizer
 	private CharSequence source;
 	private boolean skipping_enabled;
 	private int begin;
-
+	private SyntaxPairs syntaxPairs=new SyntaxPairs();
+	
 	public Token curr;
 
 	public Tokenizer(CharSequence source)
@@ -29,6 +33,17 @@ public class Tokenizer
 	public void advancePast(TokenType type, String syntax)
 	{
 		while(!(curr.type==type && curr.syntax.equals(syntax)) &&  curr.type!=TokenType.CR_END)
+		{
+			advance();
+		}
+		
+		if(curr.type!=TokenType.CR_END)
+			advance();
+	}
+	
+	public void advanceUntil(Predicate<Tokenizer> untilTrue)
+	{
+		while(!(untilTrue.test(this)) && curr.type!=TokenType.CR_END)
 		{
 			advance();
 		}

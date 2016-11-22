@@ -59,5 +59,38 @@ public class TestTokenizer
         assertEquals("{",
                 tokenizer.replaceEscapes(new StringBuilder("\\{")));
     }
+    
+    @Test
+    public void testAdvanceUntilNoTokensToAdvance()
+    {
+        Tokenizer tokenizer = new Tokenizer("div");
+        tokenizer.advance();
+        tokenizer.advanceUntil(v -> false);
+        
+        assertEquals(TokenType.CR_END, tokenizer.curr.type);
+    }
+    
+    @Test
+    public void testAdvanceUntil1TokenToAdvance()
+    {
+        Tokenizer tokenizer = new Tokenizer("a b");
+        tokenizer.advance();
+        
+        tokenizer.advanceUntil(v -> v.curr.syntax.equals("b")?true:false);
+        
+        assertEquals(TokenType.CR_END, tokenizer.curr.type);
+    }
+ 
+    @Test
+    public void testAdvanceUntil2TokensToAdvance()
+    {
+        Tokenizer tokenizer = new Tokenizer("a b c");
+        tokenizer.advance();
+
+        tokenizer.advanceUntil(v -> v.curr.syntax.equals("b")?false:
+        							v.curr.syntax.equals("c")?true:false);
+
+        assertEquals(TokenType.CR_END, tokenizer.curr.type);
+    }
 }
 
