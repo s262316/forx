@@ -53,54 +53,45 @@ public class Tokenizer
 	public void advance()
 	{
 		Token t=nextToken();
+
 		if(skipping_enabled || t.type==TokenType.CR_COMMENT)
 		{
 			while((skipping_enabled && t.type==TokenType.CR_WHITESPACE) || t.type==TokenType.CR_COMMENT)
-				t=nextToken();
+			{
+				t = nextToken();
+				t.precedingWhitespaceSkipped=true;
+			}
 		}
 
 		Token next=peekToken();
 
-		if(t.type==TokenType.CR_NUMBER && next.type==TokenType.CR_IDENT)
+		if(t.type==TokenType.CR_NUMBER && next.type==TokenType.CR_IDENT && next.precedingWhitespaceSkipped==false)
 		{
-			curr=new Token(TokenType.CR_DIMENSION, t.syntax+next.syntax);
+			curr=new Token(TokenType.CR_DIMENSION, t.syntax+next.syntax, t.precedingWhitespaceSkipped);
 			nextToken();
 		}
-		else if(t.type==TokenType.CR_NUMBER && next.syntax.equals("%"))
+		else if(t.type==TokenType.CR_NUMBER && next.syntax.equals("%") && next.precedingWhitespaceSkipped==false)
 		{
-			curr=new Token(TokenType.CR_PERCENT, t.syntax);
+			curr=new Token(TokenType.CR_PERCENT, t.syntax, t.precedingWhitespaceSkipped);
 			nextToken();
 		}
 		else if(t.syntax.equals("#"))
 		{
 			String hash_value="";
 
-			skipping(false);
-
 			t=peekToken();
-			while(t.type==TokenType.CR_IDENT || t.type==TokenType.CR_NUMBER)
+			while ((t.type == TokenType.CR_IDENT || t.type == TokenType.CR_NUMBER) &&
+					t.precedingWhitespaceSkipped==false)
 			{
 				nextToken();
 
-				hash_value+=t.syntax;
-				t=peekToken();
+				hash_value += t.syntax;
+				t = peekToken();
 			}
 
-			skipping(true);
-
 			curr=new Token(TokenType.CR_HASH, hash_value);
-	   }
-	//else if(t.syntax.equals("#" && next.type==TokenType.CR_IDENT)
-	//{
-	// curr=Token(TokenType.CR_HASH, next.syntax);
-	// nextToken();
-	//}
-	//else if(t.syntax.equals("#" && next.type==TokenType.CR_NUMBER)
-	//{
-	// curr=Token(TokenType.CR_HASH, next.syntax);
-	// nextToken();
-	//}
-		else if(t.syntax.equals("url") && next.syntax.equals("("))
+	    }
+		else if(t.syntax.equals("url") && next.syntax.equals("(") && next.precedingWhitespaceSkipped==false)
 		{
 			String url="";
 
@@ -119,10 +110,8 @@ public class Tokenizer
 
 				if(!(t.type==TokenType.CR_PUNCT && t.syntax.equals(")")))
 				{
-					if(t.type==TokenType.CR_WHITESPACE)
-						t=nextToken();					
-					
-					throw new BadValueException("url() missing rparen");
+					curr=new Token(TokenType.CR_ERROR, "");
+					return;
 				}
 			}
 			else
@@ -137,7 +126,7 @@ public class Tokenizer
 
 			curr=new Token(TokenType.CR_URI, url);
 		}
-		else if(t.type==TokenType.CR_IDENT && next.syntax.equals("("))
+		else if(t.type==TokenType.CR_IDENT && next.syntax.equals("(") && next.precedingWhitespaceSkipped==false)
 		{
 			curr=new Token(TokenType.CR_FUNCTION, t.syntax);
 			nextToken();
@@ -163,7 +152,10 @@ public class Tokenizer
 		if(skipping_enabled || peek.type==TokenType.CR_COMMENT)
 		{
 			while((skipping_enabled && peek.type==TokenType.CR_WHITESPACE) || peek.type==TokenType.CR_COMMENT)
-				peek=peekToken();
+			{
+				peek = peekToken();
+				peek.precedingWhitespaceSkipped=true;
+			}
 		}
 
 		begin=mark;
@@ -178,8 +170,6 @@ public class Tokenizer
 
 		char input=source.charAt(begin);
 		int start=begin;
-
-//		System.out.println("start : "+start+" @"+source.charAt(begin)+"@");
 
 		if(Character.isWhitespace(input))
 		{
@@ -423,27 +413,32 @@ public class Tokenizer
 	boolean tok_num()
 	{
 		char input=source.charAt(begin);
+		boolean isDigit=true;
 
 		if(input=='-' || input=='+')
 			++begin;
 
 		// before dot
-		while(Character.isDigit(input))
+		while(isDigit && begin<source.length())
 		{
-			++begin;
 			input=source.charAt(begin);
+			isDigit=Character.isDigit(input);
+			if(isDigit)
+				++begin;
 		}
 
 		// after dot
 		if(input=='.')
 		{
-			++begin;
-			input=source.charAt(begin);
+			input=source.charAt(++begin);
+			isDigit=true;
 
-			while(Character.isDigit(input))
+			while(isDigit && begin<source.length())
 			{
-				++begin;
 				input=source.charAt(begin);
+				isDigit=Character.isDigit(input);
+				if(isDigit)
+					++begin;
 			}
 		}
 

@@ -124,23 +124,182 @@ public class TestTokenizer
         assertEquals("test.html", tokenizer.curr.syntax);
     }
 
-    // TODO Tokenizer doesn't see the space between url and (
     @Test
-    @Ignore
     public void testMalformedUrl1()
     {
         Tokenizer tokenizer = new Tokenizer("url ('test.html')");
         tokenizer.advance();
 
-        assertEquals(TokenType.CR_ERROR, tokenizer.curr.type);
+        assertEquals(TokenType.CR_IDENT, tokenizer.curr.type);
+        assertEquals("url", tokenizer.curr.syntax);
+
+        tokenizer.advance();
+        assertEquals(TokenType.CR_PUNCT, tokenizer.curr.type);
+        assertEquals("(", tokenizer.curr.syntax);
+
+        tokenizer.advance();
+        assertEquals(TokenType.CR_STRING, tokenizer.curr.type);
         assertEquals("test.html", tokenizer.curr.syntax);
+
+        tokenizer.advance();
+        assertEquals(TokenType.CR_PUNCT, tokenizer.curr.type);
+        assertEquals(")", tokenizer.curr.syntax);
     }
 
-    @Test(expected=BadValueException.class)
+    @Test
     public void testMalformedUrl2()
     {
         Tokenizer tokenizer = new Tokenizer("url('test.html' ");
         tokenizer.advance();
+        assertEquals(TokenType.CR_ERROR, tokenizer.curr.type);
+    }
+
+    @Test
+    public void numberIdentSpaceSeparatedIs2Tokens()
+    {
+        Tokenizer tokenizer = new Tokenizer("1 em");
+
+        tokenizer.advance();
+        assertEquals(TokenType.CR_NUMBER, tokenizer.curr.type);
+        assertEquals("1", tokenizer.curr.syntax);
+
+        tokenizer.advance();
+        assertEquals(TokenType.CR_IDENT, tokenizer.curr.type);
+        assertEquals("em", tokenizer.curr.syntax);
+    }
+
+    @Test
+    public void numberPercentSpaceSeparatedIs2Tokens()
+    {
+        Tokenizer tokenizer = new Tokenizer("1 %");
+
+        tokenizer.advance();
+        assertEquals(TokenType.CR_NUMBER, tokenizer.curr.type);
+        assertEquals("1", tokenizer.curr.syntax);
+
+        tokenizer.advance();
+        assertEquals(TokenType.CR_PUNCT, tokenizer.curr.type);
+        assertEquals("%", tokenizer.curr.syntax);
+    }
+
+    @Test
+    public void tokenizeNumber1()
+    {
+        Tokenizer tokenizer = new Tokenizer("1");
+
+        tokenizer.advance();
+        assertEquals(TokenType.CR_NUMBER, tokenizer.curr.type);
+        assertEquals("1", tokenizer.curr.syntax);
+    }
+
+    @Test
+    public void tokenizeNumber2()
+    {
+        Tokenizer tokenizer = new Tokenizer("12");
+
+        tokenizer.advance();
+        assertEquals(TokenType.CR_NUMBER, tokenizer.curr.type);
+        assertEquals("12", tokenizer.curr.syntax);
+    }
+
+    @Test
+    public void tokenizeNumber3()
+    {
+        Tokenizer tokenizer = new Tokenizer("12.3");
+
+        tokenizer.advance();
+        assertEquals(TokenType.CR_NUMBER, tokenizer.curr.type);
+        assertEquals("12.3", tokenizer.curr.syntax);
+    }
+
+    @Test
+    public void tokenizeNumber4()
+    {
+        Tokenizer tokenizer = new Tokenizer("12.34");
+
+        tokenizer.advance();
+        assertEquals(TokenType.CR_NUMBER, tokenizer.curr.type);
+        assertEquals("12.34", tokenizer.curr.syntax);
+    }
+
+    @Test
+    public void tokenizeDimension()
+    {
+        Tokenizer tokenizer = new Tokenizer("1em");
+
+        tokenizer.advance();
+        assertEquals(TokenType.CR_DIMENSION, tokenizer.curr.type);
+        assertEquals("1em", tokenizer.curr.syntax);
+    }
+
+    @Test
+    public void tokenizePercent()
+    {
+        Tokenizer tokenizer = new Tokenizer("1%");
+
+        tokenizer.advance();
+        assertEquals(TokenType.CR_PERCENT, tokenizer.curr.type);
+        assertEquals("1", tokenizer.curr.syntax);
+    }
+
+    @Test
+    public void whitespaceIsSkipped()
+    {
+        Tokenizer tokenizer = new Tokenizer("1 2 3");
+
+        tokenizer.advance();
+        assertEquals("1", tokenizer.curr.syntax);
+        tokenizer.advance();
+        assertEquals("2", tokenizer.curr.syntax);
+        tokenizer.advance();
+        assertEquals("3", tokenizer.curr.syntax);
+    }
+
+    @Test
+    public void skippedWhitespaceIsRecorded()
+    {
+        Tokenizer tokenizer = new Tokenizer("1 2 3");
+
+        tokenizer.advance();
+        assertEquals(false, tokenizer.curr.precedingWhitespaceSkipped);
+        tokenizer.advance();
+        assertEquals(true, tokenizer.curr.precedingWhitespaceSkipped);
+        tokenizer.advance();
+        assertEquals(true, tokenizer.curr.precedingWhitespaceSkipped);
+    }
+
+    @Test
+    public void testHashNumeric()
+    {
+        Tokenizer tokenizer = new Tokenizer("#1");
+
+        tokenizer.advance();
+        assertEquals(TokenType.CR_HASH, tokenizer.curr.type);
+        assertEquals("1", tokenizer.curr.syntax);
+    }
+
+    @Test
+    public void testHashAlpha()
+    {
+        Tokenizer tokenizer = new Tokenizer("#a");
+
+        tokenizer.advance();
+        assertEquals(TokenType.CR_HASH, tokenizer.curr.type);
+        assertEquals("a", tokenizer.curr.syntax);
+    }
+
+    @Test
+    public void testNotHash()
+    {
+        Tokenizer tokenizer = new Tokenizer("# a");
+
+        tokenizer.advance();
+        assertEquals(TokenType.CR_HASH, tokenizer.curr.type);
+        assertEquals("", tokenizer.curr.syntax);
+
+        tokenizer.advance();
+        assertEquals(TokenType.CR_IDENT, tokenizer.curr.type);
+        assertEquals("a", tokenizer.curr.syntax);
     }
 }
 

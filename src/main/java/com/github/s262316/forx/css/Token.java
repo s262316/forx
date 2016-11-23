@@ -11,6 +11,14 @@ class Token
 		syntax=s;
 	}
 
+	Token(TokenType t, String s, boolean precedingWhitespaceSkipped)
+	{
+		type=t;
+		syntax=s;
+		this.precedingWhitespaceSkipped=precedingWhitespaceSkipped;
+	}
+
 	TokenType type;
 	String syntax;
+	boolean precedingWhitespaceSkipped=false;
 }
