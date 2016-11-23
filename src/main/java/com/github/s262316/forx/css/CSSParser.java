@@ -1,7 +1,6 @@
 package com.github.s262316.forx.css;
 
-import java.io.*;
-import java.math.BigDecimal;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -13,7 +12,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.google.common.base.Optional;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.slf4j.Logger;
@@ -24,20 +22,13 @@ import com.github.s262316.forx.net.Resource;
 import com.github.s262316.forx.net.ResourceLoader;
 import com.github.s262316.forx.tree.ReferringDocument;
 import com.github.s262316.forx.tree.style.Declaration;
-import com.github.s262316.forx.tree.style.FunctionValue;
-import com.github.s262316.forx.tree.style.HashValue;
-import com.github.s262316.forx.tree.style.Identifier;
 import com.github.s262316.forx.tree.style.ImportRule;
 import com.github.s262316.forx.tree.style.MediaType;
-import com.github.s262316.forx.tree.style.NumericValue;
 import com.github.s262316.forx.tree.style.PageRule;
 import com.github.s262316.forx.tree.style.PseudoPageType;
 import com.github.s262316.forx.tree.style.Shorthands;
-import com.github.s262316.forx.tree.style.StringValue;
 import com.github.s262316.forx.tree.style.StyleRule;
 import com.github.s262316.forx.tree.style.Stylesheet;
-import com.github.s262316.forx.tree.style.UrlValue;
-import com.github.s262316.forx.tree.style.Value;
 import com.github.s262316.forx.tree.style.ValueList;
 import com.github.s262316.forx.tree.style.selectors.Operator;
 import com.github.s262316.forx.tree.style.selectors.PseudoClass;
@@ -48,9 +39,8 @@ import com.github.s262316.forx.tree.style.selectors.SelectorAttr;
 import com.github.s262316.forx.tree.style.selectors.SelectorElement;
 import com.github.s262316.forx.tree.style.selectors.SelectorPart;
 import com.github.s262316.forx.tree.style.util.Selectors;
-
 import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -65,6 +55,7 @@ public class CSSParser
     private CSSPropertiesReference propertiesReference=new CSSPropertiesReference();
     private URL url;
     private Charset charset;
+    private ValueParser valueParser;
 
     public CSSParser(String cssUrl, ReferringDocument refereringDocument, ResourceLoader resourceLoader)
     {
@@ -75,6 +66,7 @@ public class CSSParser
             this.url=resource.getUrl();
             this.charset=resource.getCharset();
             tok = new Tokenizer(data);
+            valueParser=new ValueParser(tok);
         }
         catch(IOException ioe)
         {
@@ -115,98 +107,9 @@ public class CSSParser
 			
 			return ss;
 	}
-    
-    //term
-    //: unary_operator?
-    //	[ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* | ANGLE S* |
-    //	TIME S* | FREQ S* ]
-    //| STRING S* | IDENT S* | URI S* | hexcolor | function
-    public Value parse_term() throws MalformedURLException, IOException
-    {
-            Value v=null, any;
-            Number n;
-
-            switch(tok.curr.type)
-            {
-                    case CR_IDENT:
-                            v=new Identifier(tok.curr.syntax);
-                            break;
-                    case CR_NUMBER:
-                            v=new NumericValue(extractDouble(tok.curr.syntax), "px");
-                            break;
-                    case CR_PERCENT:
-                            v=extractPercentage(tok.curr.syntax);
-                            break;
-                    case CR_DIMENSION:
-                            v=extractDimension(tok.curr.syntax);
-                            break;
-                    case CR_STRING:
-                            v=new StringValue(tok.curr.syntax);
-                            break;
-                    case CR_URI:
-                            v=new UrlValue(new URL(tok.curr.syntax));
-                            break;
-                    case CR_HASH:
-                            v=new HashValue(tok.curr.syntax);
-                            break;
-                    case CR_FUNCTION:
-                    {
-                            // urls come out of the tokenizer as TokenType.CR_URIs not TokenType.CR_FUNCTION
-                            // (function S* >> (any ((comma | slash) S* any)* >> rparen)(TokenType.CR_ANY)),
-                            FunctionValue fv;
-
-                            fv=new FunctionValue();
-                            fv.name=tok.curr.syntax;
-                            fv.values=new ValueList();
-
-                            tok.advance();
-                            while(!tok.curr.syntax.equals(")"))
-                            {
-                                    any=parse_term();
-                                    fv.values.members.add(any);
-
-                                    tok.advance();
-                                    if(tok.curr.syntax.equals(",") || tok.curr.syntax.equals("/"))
-                                            tok.advance();
-                            }
-
-                            v=fv;
-
-                            break;
-                    }
-            }
-            return v;
-    }
-
-    //operator  : '/' S* | COMMA S* | /* empty */
-    //expr  : term [ operator term ]*
-    public Value parse_value() throws CSSParserException, MalformedURLException, IOException
-    {
-            ValueList value=new ValueList();
-            Value v1;
-
-            v1=parse_term();
-            tok.advance();
-            while(v1!=null)
-            {
-                    value.members.add(v1);
-
-                    if(tok.curr.syntax.equals("/") || tok.curr.syntax.equals(","))
-                            tok.advance();
-
-                    v1=parse_term();
-                    if(v1!=null)
-                    {
-                            tok.advance();
-
-                    }
-            }
-
-            return value;
-    }
 
     //declaration  : property ':' S* expr prio? | /* empty */
-    private List<Declaration> parse_declaration() throws CSSParserException, MalformedURLException, IOException
+    List<Declaration> parse_declaration() throws CSSParserException, MalformedURLException, IOException
     {
         Declaration dec=null;
         String name;
@@ -216,39 +119,51 @@ public class CSSParser
 
         logger.debug("parse_declaration()");
         
-        if(tok.curr.type!=TokenType.CR_IDENT)
-        	throw new CSSParserException(CSSParserException.Type.DECLARATION_BAD_SYNTAX, tok.curr.syntax);
-
-        name=tok.curr.syntax;
-
-        tok.advance();
-        if(!tok.curr.syntax.equals(":"))
-                throw new CSSParserException(CSSParserException.Type.DECLARATION_BAD_SYNTAX, tok.curr.syntax);
-
-        tok.advance();
-        vl=(ValueList)parse_value();
-
-        if(tok.curr.syntax.equals("!important"))
+        try
         {
-                imp=true;
+	        if(tok.curr.type!=TokenType.CR_IDENT)
+	        	throw new CSSParserException(CSSParserException.Type.DECLARATION_BAD_SYNTAX, tok.curr.syntax);
+	
+	        name=tok.curr.syntax;
+	
+	        tok.advance();
+	        if(!tok.curr.syntax.equals(":"))
+	                throw new CSSParserException(CSSParserException.Type.DECLARATION_BAD_SYNTAX, tok.curr.syntax);
+	
+	        tok.advance();
+	        vl=valueParser.parse();
+	
+	        if(tok.curr.syntax.equals("!important"))
+	        {
+	                imp=true;
+	                tok.advance();
+	        }
+	
+	        if(vl.members.size()==1)
+	                dec=new Declaration(name, vl.members.get(0), imp);
+	        else
+	                dec=new Declaration(name, vl, imp);
+	
+	        if(propertiesReference.isShorthand(name))
+	        {
+	        	decs=Shorthands.expandShorthandProperty(dec);
+	        	if(decs.isEmpty())
+	        		decs=propertiesReference.expandShorthand(dec);
+	        }
+	        else
+	        {
+	        	if(propertiesReference.validate(dec));
+	        		decs=Lists.newArrayList(dec);
+	        }
+        }
+        catch(BadValueException badValue)
+        {
+        	logger.debug("ignoring declaration, invalid value {}", badValue.getMessage());
+        	
+	        if(tok.curr.syntax.equals("!important"))
                 tok.advance();
-        }
 
-        if(vl.members.size()==1)
-                dec=new Declaration(name, vl.members.get(0), imp);
-        else
-                dec=new Declaration(name, vl, imp);
-
-        if(propertiesReference.isShorthand(name))
-        {
-        	decs=Shorthands.expandShorthandProperty(dec);
-        	if(decs.isEmpty())
-        		decs=propertiesReference.expandShorthand(dec);
-        }
-        else
-        {
-        	if(propertiesReference.validate(dec));
-        		decs=Lists.newArrayList(dec);
+        	decs=Collections.emptyList();
         }
         
         return decs;
@@ -848,89 +763,5 @@ public class CSSParser
 
 			return allDecs;
 	}
-
-	// num  [0-9]+|[0-9]*\.[0-9]+
-	double extractDouble(String syntax) throws IOException
-	{
-		StreamTokenizer st=new StreamTokenizer(new StringReader(syntax));
-		Number n=null;
-		BigDecimal bd;
-
-		st.nextToken();
-		if(st.ttype==StreamTokenizer.TT_NUMBER)
-		{
-			return st.nval;
-		}
-
-		return 0;
-	}
-
-	
-    //if 96dpi
-    //1px = 1/96 inch = 0.26mm
-    //1 inch = 2.54cm
-    //in: inches - 1 inch is equal to 2.54 centimeters.
-    //cm: centimeters
-    //mm: millimeters
-    //pt: points - the points used by CSS 2.1 are equal to 1/72th of an inch.
-    //pc: picas - 1 pica is equal to 12 points.
-	
-	//DIMENSION  {num}{ident}
-	Value extractDimension(String syntax) throws IOException
-	{
-		StreamTokenizer st=new StreamTokenizer(new StringReader(syntax));
-		double amount;
-		String unit;
-
-		st.nextToken();
-		if(st.ttype==StreamTokenizer.TT_NUMBER)
-		{
-			amount=st.nval;
-			
-			st.nextToken();
-			if(st.ttype==StreamTokenizer.TT_WORD)
-				unit=st.sval;
-			
-			switch(st.sval)
-			{
-			case "px":
-				return new NumericValue(amount, "px");
-			case "cm":
-				return new NumericValue(amount, "cm");
-			case "em":
-				return new NumericValue(amount, "em");
-			case "mm":
-				return new NumericValue(amount, "mm");
-			case "pt":
-				return new NumericValue(amount, "pt");
-			case "ex":
-				return new NumericValue(amount, "ex");
-			case "pc":
-				return new NumericValue(amount, "pc");
-			default:
-				return new NumericValue(amount, "px");
-			}
-		}
-		
-		Preconditions.checkState(false);
-		return null;
-	}
-
-	// PERCENTAGE  {num}%
-	NumericValue extractPercentage(String syntax) throws IOException
-	{
-			StreamTokenizer st=new StreamTokenizer(new StringReader(syntax));
-			NumericValue pv=null;
-			BigDecimal bd;
-
-			st.nextToken();
-			if(st.ttype==StreamTokenizer.TT_NUMBER)
-			{
-				pv=new NumericValue(st.nval, "%");
-			}
-
-			return pv;
-	}
-
 }
 

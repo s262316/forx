@@ -41,15 +41,13 @@ public class Tokenizer
 			advance();
 	}
 	
+	// finishes on untilTrue=true
 	public void advanceUntil(Predicate<Tokenizer> untilTrue)
 	{
 		while(!(untilTrue.test(this)) && curr.type!=TokenType.CR_END)
 		{
 			advance();
 		}
-		
-		if(curr.type!=TokenType.CR_END)
-			advance();
 	}
 	
 	public void advance()
@@ -121,8 +119,10 @@ public class Tokenizer
 
 				if(!(t.type==TokenType.CR_PUNCT && t.syntax.equals(")")))
 				{
-					curr = new Token(TokenType.CR_ERROR, "");
-					return;
+					if(t.type==TokenType.CR_WHITESPACE)
+						t=nextToken();					
+					
+					throw new BadValueException("url() missing rparen");
 				}
 			}
 			else

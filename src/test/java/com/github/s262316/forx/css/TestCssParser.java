@@ -2,6 +2,7 @@ package com.github.s262316.forx.css;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.net.URL;
@@ -12,9 +13,11 @@ import java.util.Set;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.resource.Resource;
+import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.ResourceUtils;
 
@@ -265,5 +268,41 @@ public class TestCssParser
 		assertEquals(TokenType.CR_IDENT, tokenizer.curr.type);
 		assertEquals("div", tokenizer.curr.syntax);
 	}
+	
+	@Test
+	public void errorInValueResultsInNoDeclaration() throws Exception
+	{
+		ValueParser valueParser=Mockito.mock(ValueParser.class);
+		Mockito.when(valueParser.parse()).thenThrow(BadValueException.class);
+		
+		TestReferringDocument referrer=new TestReferringDocument();
+		CSSParser parser=new CSSParser("color : redddd !important", referrer);
+		ReflectionTestUtils.setField(parser, "valueParser", valueParser);
+	
+		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
+		tokenizer.advance();
+				
+		List<Declaration> decs=parser.parse_declaration();
+		assertThat(decs, Matchers.hasSize(0));
+	}
+	
+	@Test
+	public void errorInValueResultsInNoDeclarationSkipImportant() throws Exception
+	{
+		ValueParser valueParser=Mockito.mock(ValueParser.class);
+		Mockito.when(valueParser.parse()).thenThrow(BadValueException.class);
+		
+		TestReferringDocument referrer=new TestReferringDocument();
+		CSSParser parser=new CSSParser("color : !important nexttoken", referrer);
+		ReflectionTestUtils.setField(parser, "valueParser", valueParser);
+	
+		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
+		tokenizer.advance();
+				
+		List<Declaration> decs=parser.parse_declaration();
+		
+		assertEquals("nexttoken", tokenizer.curr.syntax);
+	}
+	
 }
 
