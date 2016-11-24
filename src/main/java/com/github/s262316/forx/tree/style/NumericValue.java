@@ -1,8 +1,10 @@
 package com.github.s262316.forx.tree.style;
 
-import com.github.s262316.forx.box.properties.PropertyAdaptor;
+import java.util.Objects;
 
-import com.google.common.base.Objects;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+
+import com.github.s262316.forx.box.properties.PropertyAdaptor;
 import com.google.common.base.Preconditions;
 
 public class NumericValue extends Value
@@ -40,5 +42,28 @@ public class NumericValue extends Value
 			return 0; // never reached			
 		}
     }
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(amount, unit);
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj == null) { return false; }
+		if (obj == this) { return true; }
+		if (obj.getClass() != getClass())
+		{
+			return false;
+		}		
+		
+		NumericValue rhs = (NumericValue) obj;
+		return new EqualsBuilder()
+                 .append(amount, rhs.amount)
+                 .append(unit, rhs.unit)
+                 .isEquals();
+	}
 }
 

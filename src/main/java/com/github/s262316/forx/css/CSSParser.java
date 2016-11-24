@@ -79,6 +79,7 @@ public class CSSParser
         this.url=referringDocument.getLocation();
         this.charset=referringDocument.getCharset().get();
         tok = new Tokenizer(inlineCss);
+        valueParser=new ValueParser(tok);        
     }
 
 	// [ CDO | CDC | S | statement ]*;
@@ -111,16 +112,16 @@ public class CSSParser
     //declaration  : property ':' S* expr prio? | /* empty */
     List<Declaration> parse_declaration() throws CSSParserException, MalformedURLException, IOException
     {
-        Declaration dec=null;
-        String name;
-        ValueList vl=null;
-        boolean imp=false;
-        List<Declaration> decs;
-
-        logger.debug("parse_declaration()");
-        
-        try
-        {
+    	try
+    	{
+	        Declaration dec=null;
+	        String name;
+	        ValueList vl=null;
+	        boolean imp=false;
+	        List<Declaration> decs;
+	
+	        logger.debug("parse_declaration()");
+	        
 	        if(tok.curr.type!=TokenType.CR_IDENT)
 	        	throw new CSSParserException(CSSParserException.Type.DECLARATION_BAD_SYNTAX, tok.curr.syntax);
 	
@@ -140,9 +141,9 @@ public class CSSParser
 	        }
 	
 	        if(vl.members.size()==1)
-	                dec=new Declaration(name, vl.members.get(0), imp);
+	        	dec=new Declaration(name, vl.members.get(0), imp);
 	        else
-	                dec=new Declaration(name, vl, imp);
+	        	dec=new Declaration(name, vl, imp);
 	
 	        if(propertiesReference.isShorthand(name))
 	        {
@@ -155,23 +156,18 @@ public class CSSParser
 	        	if(propertiesReference.validate(dec));
 	        		decs=Lists.newArrayList(dec);
 	        }
-        }
-        catch(BadValueException badValue)
-        {
-        	logger.debug("ignoring declaration, invalid value {}", badValue.getMessage());
-        	
-	        if(tok.curr.syntax.equals("!important"))
-                tok.advance();
-
-        	decs=Collections.emptyList();
-        }
-        
-        return decs;
+	        
+	        return decs;
+    	}
+    	catch(BadValueException bve)
+    	{
+    		throw new BadDeclarationException(bve);
+    	}
     }
 
     //attrib
     //  '[' S* IDENT S* [ [ '=' | INCLUDES | DASHMATCH ] S* [ IDENT | STRING ] S* ]? ']'
-    private SelectorAttr parse_attrib() throws CSSParserException, BadSelectorException
+    SelectorAttr parse_attrib() throws CSSParserException, BadSelectorException
     {
     	String attrName, op="", value="";
     	
@@ -441,7 +437,7 @@ public class CSSParser
 		    if(!tok.curr.syntax.equals("{"))
 		    	throw new BadSelectorException();
 		    else
-		    	tok.advance();		    
+		    	tok.advance();
 		}
 		catch(BadSelectorException bse)
 		{
@@ -455,11 +451,19 @@ public class CSSParser
 		
 		while(!tok.curr.syntax.equals("}"))
 		{
-			while(tok.curr.syntax.equals(";"))
-				tok.advance();
-			
-			if(!tok.curr.syntax.equals("}"))
-				decs.addAll(parse_declaration());
+			try
+			{
+				while(tok.curr.syntax.equals(";"))
+					tok.advance();
+				
+				if(!tok.curr.syntax.equals("}"))
+					decs.addAll(parse_declaration());
+			}
+			catch(BadDeclarationException bde)
+			{
+				// advance to next ";"
+				tok.advanceTo(TokenType.CR_PUNCT, ";");				
+			}
 		}
 		
 		tok.advance();

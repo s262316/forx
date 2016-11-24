@@ -92,35 +92,33 @@ class ValueParser
     //expr  : term [ operator term ]*
     public ValueList parse() throws CSSParserException, MalformedURLException, IOException, BadValueException
     {
-        ValueList value=new ValueList();
-        Value v1;
-
-        try
-        {
+    	try
+    	{
+	        ValueList value=new ValueList();
+	        Value v1;
+	
 	        v1=parseTerm();
 	        tok.advance();
 	        while(v1!=null)
 	        {
-                value.members.add(v1);
-
-                if(tok.curr.syntax.equals("/") || tok.curr.syntax.equals(",") || tok.curr.type==TokenType.CR_WHITESPACE)
-                	tok.advance();
-
-                v1=parseTerm();
-                if(v1!=null)
-                {
-                    tok.advance();
-                }
+	            value.members.add(v1);
+	
+	            if(tok.curr.syntax.equals("/") || tok.curr.syntax.equals(",") || tok.curr.type==TokenType.CR_WHITESPACE)
+	            	tok.advance();
+	
+	            v1=parseTerm();
+	            if(v1!=null)
+	            {
+	                tok.advance();
+	            }
 	        }
 	
 	        return value;
-        }
-        catch(BadValueException badValue)
-        {
-        	// ?????
-
-        	throw badValue;
-        }
+    	}
+    	catch(TokenizationException te)
+    	{
+    		throw new BadValueException(te);
+    	}
     }
 
 	// num  [0-9]+|[0-9]*\.[0-9]+

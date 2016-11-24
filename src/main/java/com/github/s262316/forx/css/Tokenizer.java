@@ -1,6 +1,5 @@
 package com.github.s262316.forx.css;
 
-import java.util.LinkedList;
 import java.util.function.Predicate;
 
 import org.apache.commons.lang3.StringUtils;
@@ -32,13 +31,21 @@ public class Tokenizer
 
 	public void advancePast(TokenType type, String syntax)
 	{
-		while(!(curr.type==type && curr.syntax.equals(syntax)) &&  curr.type!=TokenType.CR_END)
+		while(!(curr.type==type && curr.syntax.equals(syntax)) && curr.type!=TokenType.CR_END)
 		{
 			advance();
 		}
 		
 		if(curr.type!=TokenType.CR_END)
 			advance();
+	}
+	
+	public void advanceTo(TokenType type, String syntax)
+	{
+		while(!(curr.type==type && curr.syntax.equals(syntax)) && curr.type!=TokenType.CR_END)
+		{
+			advance();
+		}
 	}
 	
 	// finishes on untilTrue=true
@@ -110,8 +117,7 @@ public class Tokenizer
 
 				if(!(t.type==TokenType.CR_PUNCT && t.syntax.equals(")")))
 				{
-					curr=new Token(TokenType.CR_ERROR, "");
-					return;
+					throw new TokenizationException("expected rparen in url value");
 				}
 			}
 			else

@@ -146,12 +146,11 @@ public class TestTokenizer
         assertEquals(")", tokenizer.curr.syntax);
     }
 
-    @Test
+    @Test(expected=TokenizationException.class)
     public void testMalformedUrl2()
     {
         Tokenizer tokenizer = new Tokenizer("url('test.html' ");
         tokenizer.advance();
-        assertEquals(TokenType.CR_ERROR, tokenizer.curr.type);
     }
 
     @Test
@@ -301,5 +300,49 @@ public class TestTokenizer
         assertEquals(TokenType.CR_IDENT, tokenizer.curr.type);
         assertEquals("a", tokenizer.curr.syntax);
     }
-}
+    
+    @Test
+    public void advanceToLaterToken()
+    {
+        Tokenizer tokenizer = new Tokenizer("div { color : red ; font-size : 3px }");
+        
+        tokenizer.advance();
+        tokenizer.advanceTo(TokenType.CR_PUNCT, ";");
+        
+        assertEquals(";", tokenizer.curr.syntax);
+    }
 
+    @Test
+    public void advanceToTokenAlreadyOn()
+    {
+        Tokenizer tokenizer = new Tokenizer("; font-size : 3px }");
+        
+        tokenizer.advance();
+        tokenizer.advanceTo(TokenType.CR_PUNCT, ";");
+    	
+        assertEquals(";", tokenizer.curr.syntax);        
+    }
+    
+    @Test
+    public void advancePastLaterToken()
+    {
+        Tokenizer tokenizer = new Tokenizer("div { color : red ; font-size : 3px }");
+        
+        tokenizer.advance();
+        tokenizer.advancePast(TokenType.CR_PUNCT, ";");
+        
+        assertEquals("font-size", tokenizer.curr.syntax);
+    }
+
+    @Test
+    public void advancePastTokenAlreadyOn()
+    {
+        Tokenizer tokenizer = new Tokenizer("; font-size : 3px }");
+        
+        tokenizer.advance();
+        tokenizer.advancePast(TokenType.CR_PUNCT, ";");
+    	
+        assertEquals("font-size", tokenizer.curr.syntax);        
+    }    
+    
+}
