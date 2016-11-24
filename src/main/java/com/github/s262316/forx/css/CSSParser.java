@@ -6,6 +6,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -123,21 +124,24 @@ public class CSSParser
 	        logger.debug("parse_declaration()");
 	        
 	        if(tok.curr.type!=TokenType.CR_IDENT)
-	        	throw new CSSParserException(CSSParserException.Type.DECLARATION_BAD_SYNTAX, tok.curr.syntax);
-	
+	        	throw new BadDeclarationException("expected identifier, found "+tok.curr.syntax);
+	        
 	        name=tok.curr.syntax;
 	
 	        tok.advance();
 	        if(!tok.curr.syntax.equals(":"))
-	                throw new CSSParserException(CSSParserException.Type.DECLARATION_BAD_SYNTAX, tok.curr.syntax);
+	        	throw new BadDeclarationException("expected ':', found "+tok.curr.syntax);
 	
 	        tok.advance();
 	        vl=valueParser.parse();
 	
+	        if(vl.size()==0)
+	        	throw new BadDeclarationException("expected property value, found "+tok.curr.syntax);
+
 	        if(tok.curr.syntax.equals("!important"))
 	        {
-	                imp=true;
-	                tok.advance();
+                imp=true;
+                tok.advance();
 	        }
 	
 	        if(vl.members.size()==1)
@@ -462,7 +466,7 @@ public class CSSParser
 			catch(BadDeclarationException bde)
 			{
 				// advance to next ";"
-				tok.advanceTo(TokenType.CR_PUNCT, ";");				
+				tok.advanceUntil(v -> Arrays.asList(";", "}").contains(v.curr.syntax));
 			}
 		}
 		

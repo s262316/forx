@@ -25,8 +25,11 @@ public class SkipPastSemicolonOrBlock implements Predicate<Tokenizer>
 			}
 			else if(pairs.closedPairs().contains(tokenizer.curr.syntax))
 			{
-				if(openMatchingPairs.peekFirst().equals(pairs.oppositeOf(tokenizer.curr.syntax)))
+				if(!openMatchingPairs.isEmpty() &&
+						openMatchingPairs.peekFirst().equals(pairs.oppositeOf(tokenizer.curr.syntax)))
+				{
 					openMatchingPairs.pop();
+				}
 				
 				if(openMatchingPairs.isEmpty())
 					done=true;

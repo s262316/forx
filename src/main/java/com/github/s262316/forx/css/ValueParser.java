@@ -98,19 +98,16 @@ class ValueParser
 	        Value v1;
 	
 	        v1=parseTerm();
-	        tok.advance();
 	        while(v1!=null)
 	        {
+	        	tok.advance();
+	        	
 	            value.members.add(v1);
 	
 	            if(tok.curr.syntax.equals("/") || tok.curr.syntax.equals(",") || tok.curr.type==TokenType.CR_WHITESPACE)
 	            	tok.advance();
 	
 	            v1=parseTerm();
-	            if(v1!=null)
-	            {
-	                tok.advance();
-	            }
 	        }
 	
 	        return value;
