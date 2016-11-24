@@ -168,7 +168,7 @@ public class TestCssParser
 		CSSParser parser=new CSSParser("div { color: red; color : blue}", referrer);
 
 		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
-		tokenizer.advance();				
+		tokenizer.advance();
 		
 		List<StyleRule> sr=parser.parse_ruleset(EnumSet.of(MediaType.MT_ALL));
 		assertEquals(new Identifier("blue"), sr.get(0).declarations.get("color").getValue());

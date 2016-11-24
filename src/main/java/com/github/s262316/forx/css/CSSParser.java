@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,7 +43,6 @@ import com.github.s262316.forx.tree.style.selectors.SelectorElement;
 import com.github.s262316.forx.tree.style.selectors.SelectorPart;
 import com.github.s262316.forx.tree.style.util.Selectors;
 import com.google.common.base.Objects;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -62,7 +63,7 @@ public class CSSParser
     {
         try
         {
-            Resource resource=resourceLoader.load(cssUrl, refereringDocument, () -> Optional.of(StandardCharsets.UTF_8));
+            Resource resource=resourceLoader.load(cssUrl, refereringDocument, () -> com.google.common.base.Optional.of(StandardCharsets.UTF_8));
             String data=IOUtils.toString(resource.getReader());
             this.url=resource.getUrl();
             this.charset=resource.getCharset();
@@ -474,9 +475,12 @@ public class CSSParser
 		
 		if(skipRule)
 			return Collections.<StyleRule>emptyList();
-		
-		ImmutableMap<String, Declaration> decsMap=Maps.uniqueIndex(decs, new DeclarationName());
-		
+
+		// always choose the 2nd from a duplicate
+		Map<String, Declaration> decsMap=decs.stream().collect(Collectors.toMap(Declaration::getProperty,
+                                      v -> v,
+                                      (d1, d2) -> d2));
+
 		for(Selector s : selectors)
 		{
 		    ++order;

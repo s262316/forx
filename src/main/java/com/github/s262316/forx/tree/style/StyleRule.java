@@ -11,11 +11,11 @@ import com.google.common.collect.ImmutableMap;
 public class StyleRule
 {
     private Selector selector;
-    public ImmutableMap<String, Declaration> declarations;
+    public Map<String, Declaration> declarations;
     private EnumSet<MediaType> media;
     private int order;
 
-    public StyleRule(Selector selector, ImmutableMap<String, Declaration> declarations, EnumSet<MediaType> media, int order)
+    public StyleRule(Selector selector, Map<String, Declaration> declarations, EnumSet<MediaType> media, int order)
 	{
 		this.selector = selector;
 		this.declarations = declarations;
