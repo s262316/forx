@@ -1,0 +1,19 @@
+img {
+    display : inline-block ;
+    vertical-align : top ;
+}
+.result {
+    color : white ;
+}
+.testname .pass {
+    background-color : green ;
+}
+.testname .fail {
+    background-color : red ;
+}
+.testname .nottested {
+    background-color : blue ;
+}
+div.active {
+    background-color : lightskyblue;
+}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="${thisFolder}"></title>
+        <link rel="stylesheet" type="text/css" href="/test_results.css"/>
+        <script src="/jquery-1.11.1.min.js"/>
+        <script src="/test_results.js"/>
+    </head>
+    <body>
+
+        <h1 th:text="${thisFolder}"></h1>
+
+        <div th:each="runResult : ${runFolderResults}">
+            <a th:text="${runResult}" th:href="@{/viewResults(folder=${runResult})}"></a>
+        </div>
+
+        <div th:unless="${!#lists.isEmpty(runFolderResults)}">No folders</div>
+
+        <hr/>
+
+        <form th:action="@{/submitResults}" th:object="${testcaseResultsModel}" method="post">
+
+            <div th:each="testcaseResult : ${testcaseResults}" th:id="${#ids.seq('testResultArea_')}" th:classappend="${testcaseResultStat.first}? 'active'">
+                <div class="testname">
+                    <span th:text="${testcaseResult.testcaseName}"></span>
+                    <span class="result" th:classappend="${testcaseResult.result}">____________</span>
+                </div>
+
+                <div class="testDetail">
+                    <img th:src="@{${testcaseResult.expectedScreenshotUrl}}"></img>
+                    <img th:src="@{${testcaseResult.actualScreenshotUrl}}"></img>
+
+                    <input type="button" th:onclick="'setStatus(\''+${#ids.prev('testResultArea_')}+'\', \'pass\');'" value="pass"/>
+                    <input type="button" th:onclick="'setStatus(\''+${#ids.prev('testResultArea_')}+'\', \'fail\');'" value="fail"/>
+                    <input type="button" th:onclick="'setStatus(\''+${#ids.prev('testResultArea_')}+'\', \'nottested\');'" value="nottested"/>
+
+                    <input type="hidden" th:field="*{value[__${testcaseResultStat.index}__].result}"/>
+                    <input type="hidden" th:field="*{value[__${testcaseResultStat.index}__].testcaseName}"/>
+                </div>
+            </div>
+
+            <input type="hidden" name="folderName" th:value="${thisFolder}"/>
+            <input type="submit"/>
+        </form>
+
+        <div th:unless="${!#lists.isEmpty(testcaseResults)}">No testcases</div>
+
+
+    </body>
+</html>
