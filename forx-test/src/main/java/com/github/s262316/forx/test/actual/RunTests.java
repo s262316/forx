@@ -94,17 +94,24 @@ public class RunTests implements CommandLineRunner
 
 		try
 		{
+			// create a url
+			String relativePath=cssTestSuiteFolder.relativize(htmlInputFile).toString();
+
+			String url="http://localhost:8080/testcases/"+
+					StringUtils.replace(relativePath, "\\", "/");
+
+			logger.info("testing {}", url);
+
 	    	WebView webView = applicationContext.getBean(WebView.class);
-	    	webView.tempLocationMoveMe=htmlInputFile.toString();
-			JFrame frame=new JFrame(htmlInputFile.toString());
+	    	webView.tempLocationMoveMe=url;
+			JFrame frame=new JFrame(url);
 
 			frame.getContentPane().add(webView);
 			frame.setSize(400, 400);
 			frame.setVisible(true);
 			frame.setAlwaysOnTop(true);
 
-			logger.info("testing {}", htmlInputFile);
-			webView.load(htmlInputFile.toString());
+			webView.load(url);
 			
 			Thread.sleep(1000);
 			
