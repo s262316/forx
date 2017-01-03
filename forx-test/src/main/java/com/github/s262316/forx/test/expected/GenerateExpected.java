@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.annotation.Order;
 import org.springframework.util.AntPathMatcher;
 
 import javax.annotation.PostConstruct;
@@ -28,6 +30,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @SpringBootApplication
+@Order(1)
+@ConditionalOnProperty(name="generated-expected")
 public class GenerateExpected implements CommandLineRunner
 {
     private static Logger logger= LoggerFactory.getLogger(GenerateExpected.class);
