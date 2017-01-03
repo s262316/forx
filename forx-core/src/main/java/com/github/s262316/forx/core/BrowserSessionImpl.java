@@ -1,10 +1,7 @@
 package com.github.s262316.forx.core;
 
 import java.awt.Graphics2D;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.net.URL;
 import java.util.List;
 
@@ -82,14 +79,14 @@ public class BrowserSessionImpl implements WebpageHolder
 //    		System.out.print(ch);
 //    		ch=(char)is.read();
 //
-			logger.debug("open("+location+")");
+		logger.debug("open("+location+")");
+		URL locationUrl=new URL(location);
+		InputStream inputStream=locationUrl.openStream();
 
-		FileInputStream fis=new FileInputStream(location);
 		GraphicsContext graphicsContext=applicationContext.getBean(GraphicsContext.class);
 
-        Reader in=new InputStreamReader(fis);
         XmlVDocumentBuilder docBuilder=new XmlVDocumentBuilder(graphicsContext, eventDispatcher, screenTranslator);
-        StaxBinding binding=new StaxBinding(eventDispatcher, docBuilder, new URL("file:"+location));
+        StaxBinding binding=new StaxBinding(eventDispatcher, docBuilder, locationUrl);
         
         SAXParserFactory spf=SAXParserFactory.newInstance();
         spf.setNamespaceAware(true);
@@ -97,7 +94,7 @@ public class BrowserSessionImpl implements WebpageHolder
         SAXParser sp=spf.newSAXParser();
 
 
-        binding.parse(fis);
+        binding.parse(inputStream);
         
         //Html33Binding binding=new Html33Binding(eventDispatcher, docBuilder);
         //new ParserDelegator().parse(in, binding, false);
@@ -105,7 +102,7 @@ public class BrowserSessionImpl implements WebpageHolder
         
         
 		doc=docBuilder.getDoc();
-		fis.close();
+		inputStream.close();
 		
 		
     	}
