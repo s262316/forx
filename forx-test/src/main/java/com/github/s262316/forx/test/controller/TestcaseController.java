@@ -22,6 +22,7 @@ import org.springframework.web.servlet.HandlerMapping;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -53,9 +54,9 @@ public class TestcaseController
         HttpHeaders defaultHeaders=new HttpHeaders();
 
         if(path.endsWith(".xht"))
-            defaultHeaders.setContentType(MediaType.APPLICATION_XHTML_XML);
+            defaultHeaders.setContentType(new MediaType("application", "xhtml+xml", StandardCharsets.UTF_8));
         else if(path.endsWith(".css"))
-            defaultHeaders.setContentType(MediaType.parseMediaType("text/css"));
+            defaultHeaders.setContentType(new MediaType("text", "css", StandardCharsets.UTF_8));
         else
             logger.error("unexpected file extension");
 
