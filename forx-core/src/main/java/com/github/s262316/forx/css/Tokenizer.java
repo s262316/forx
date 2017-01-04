@@ -185,6 +185,7 @@ public class Tokenizer
 
 			return new Token(TokenType.CR_WHITESPACE, source.subSequence(start, begin).toString());
 		}
+		// nmstart
 		else if(Character.isLetter(input))
 		{
 			// ident
@@ -233,7 +234,7 @@ public class Tokenizer
 
 			return new Token(TokenType.CR_IDENT, ident.toString());
 		}
-		else if(input>='\200' && input<='\377')
+		else if(!(input>='\0' && input<='\237'))
 		{
 			// ident (nonascii)
 			++begin;
@@ -561,7 +562,7 @@ public class Tokenizer
 		return result;
 	}
 
-	boolean tok_ident()
+	void tok_ident()
 	{
 		char input;
 		boolean collect=true;
@@ -576,7 +577,7 @@ public class Tokenizer
 				++begin;
 			else if(input=='-')
 				++begin;
-			else if(input>='\200' && input<='\377')
+			else if(!(input>='\0' && input<='\237'))
 				++begin;
 			else if(input=='\\')
 			{
@@ -587,8 +588,6 @@ public class Tokenizer
 			else
 				collect=false;
 		}
-
-		return true;
 	}
 
 	/*

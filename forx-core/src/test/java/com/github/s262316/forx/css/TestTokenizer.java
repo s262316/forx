@@ -344,5 +344,93 @@ public class TestTokenizer
     	
         assertEquals("font-size", tokenizer.curr.syntax);        
     }    
-    
+
+    @Test
+    public void testTokenizeIdentifier1()
+    {
+        Tokenizer tokenizer = new Tokenizer("abc ");
+        Token token=tokenizer.nextToken();
+        assertEquals("abc", token.syntax);
+    }
+
+    @Test
+    public void testTokenizeIdentifier2()
+    {
+        Tokenizer tokenizer = new Tokenizer("a_bc ");
+        Token token=tokenizer.nextToken();
+        assertEquals("a_bc", token.syntax);
+    }
+
+    @Test
+    public void testTokenizeIdentifier3()
+    {
+        Tokenizer tokenizer = new Tokenizer("a_bc ");
+        Token token=tokenizer.nextToken();
+        assertEquals("a_bc", token.syntax);
+    }
+
+    @Test
+    public void testTokenizeIdentifier4()
+    {
+        Tokenizer tokenizer = new Tokenizer("-abc ");
+        Token token=tokenizer.nextToken();
+        assertEquals("-abc", token.syntax);
+    }
+
+    @Test
+    public void testTokenizeIdentifier5()
+    {
+        Tokenizer tokenizer = new Tokenizer("a•bc ");
+        Token token=tokenizer.nextToken();
+        assertEquals("a•bc", token.syntax);
+    }
+
+    @Test
+    public void testTokenizeIdentifier6()
+    {
+        Tokenizer tokenizer = new Tokenizer("•abc ");
+        Token token=tokenizer.nextToken();
+        assertEquals("•abc", token.syntax);
+    }
+
+    @Test
+    public void testTokenizeIdentifier7()
+    {
+        Tokenizer tokenizer = new Tokenizer("a1bc ");
+        Token token=tokenizer.nextToken();
+        assertEquals("a1bc", token.syntax);
+    }
+
+    @Test
+    public void testTokenizeIdentifier8()
+    {
+        Tokenizer tokenizer = new Tokenizer("a-bc ");
+        Token token=tokenizer.nextToken();
+        assertEquals("a-bc", token.syntax);
+    }
+
+    @Test
+    public void testTokenizeIdentifier9()
+    {
+        Tokenizer tokenizer = new Tokenizer("a\\23bc ");
+        Token token=tokenizer.nextToken();
+        assertEquals("a\\23bc ", token.syntax);
+    }
+
+    @Test
+    public void testTokenizeIdentifier10()
+    {
+        Tokenizer tokenizer = new Tokenizer("\\23bc ");
+        Token token=tokenizer.nextToken();
+        assertEquals("\\23bc ", token.syntax);
+    }
+
+    @Test
+    public void testTokenizeIdentifier11()
+    {
+        Tokenizer tokenizer = new Tokenizer("_abc ");
+        Token token=tokenizer.nextToken();
+        assertEquals("_abc", token.syntax);
+    }
+
 }
