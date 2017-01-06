@@ -6,7 +6,7 @@ public class XmlText extends XmlNode implements XText
 {
     private String text;
 
-    public XmlText(String t, XDocument doc, int id)
+    public XmlText(String t, XmlDocument doc, int id)
     {
         super(doc, id);
         text=t;

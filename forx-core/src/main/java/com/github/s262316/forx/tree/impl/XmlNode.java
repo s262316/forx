@@ -18,13 +18,13 @@ public abstract class XmlNode implements XNode
 {
 	final static Logger log=LoggerFactory.getLogger(XmlNode.class);
 	
-	private XDocument doc;
+	private XmlDocument doc;
 	protected int id;
 	private XNode prev, next, parent;
 	private Map<String, Object> properties;
     public String language;
 
-	public XmlNode(XDocument d, int id)
+	public XmlNode(XmlDocument d, int id)
 	{
 		log.debug("creating "+id);
 
@@ -37,12 +37,12 @@ public abstract class XmlNode implements XNode
 	}
 
     @Override
-	public XDocument getDocument()
+	public XmlDocument getDocument()
 	{
 		return doc;
 	}
 
-	public void setDocument(XDocument d)
+	public void setDocument(XmlDocument d)
 	{
 		doc=d;
 	}

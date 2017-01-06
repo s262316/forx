@@ -32,7 +32,7 @@ public class XmlElement extends XmlNode implements XElement
 	public Map<String, XAttribute> attrs=new HashMap<String, XAttribute>();
 	private EventDispatcher eventDispatcher;
 	
-	public XmlElement(String name, XDocument doc, int id, EventDispatcher eventDispatcher)
+	public XmlElement(String name, XmlDocument doc, int id, EventDispatcher eventDispatcher)
 	{
 		super(doc, id);
 

@@ -8,7 +8,7 @@ public class XmlAttribute extends XmlNode implements XAttribute
 {
     private String name, value;
 
-    public XmlAttribute(String n, String v, XDocument doc, int id)
+    public XmlAttribute(String n, String v, XmlDocument doc, int id)
     {
         super(doc, id);
         name=n;

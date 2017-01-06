@@ -851,6 +851,4 @@ public class XmlVElement extends XmlElement implements Visual, VElement
     {
 		return computedValues.get(property);
 	}
-
-
 }

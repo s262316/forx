@@ -85,7 +85,7 @@ public class XmlDocument extends XmlNode implements XDocument, ReferringDocument
 
         setDocument(this);
 
-        cssLoader=new CssLoader();
+        cssLoader=new CssLoader(() -> com.google.common.base.Optional.absent());
 
         try
         {

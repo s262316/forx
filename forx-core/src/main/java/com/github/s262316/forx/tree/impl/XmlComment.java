@@ -8,7 +8,7 @@ public class XmlComment extends XmlNode implements XComment
 {
     private String text;
 
-    public XmlComment(String t, XDocument doc, int id)
+    public XmlComment(String t, XmlDocument doc, int id)
     {
         super(doc, id);
         text=t;
