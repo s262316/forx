@@ -3,8 +3,10 @@ package com.github.s262316.forx.tree;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.github.s262316.forx.tree.impl.XmlElement;
 import com.github.s262316.forx.tree.impl.XmlNode;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 public class XNodes
@@ -54,6 +56,16 @@ public class XNodes
 		}
 
 		return str;
-	}	
+	}
+
+	public static String getAttributeValue(XmlElement element, String attrName, String defaultValue)
+	{
+		return Optional.fromNullable(element.getAttr(attrName)).transform(XAttribute::getValue).or(defaultValue);
+	}
+
+	public static Optional<String> getAttributeValue(XmlElement element, String attrName)
+	{
+		return Optional.fromNullable(element.getAttr(attrName)).transform(XAttribute::getValue);
+	}
 }
 

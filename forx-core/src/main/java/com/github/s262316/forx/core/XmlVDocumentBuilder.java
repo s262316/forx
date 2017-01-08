@@ -2,6 +2,7 @@ package com.github.s262316.forx.core;
 
 import java.util.Map;
 
+import com.github.s262316.forx.tree.visual.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,15 +20,6 @@ import com.github.s262316.forx.tree.impl.XmlComment;
 import com.github.s262316.forx.tree.impl.XmlDocument;
 import com.github.s262316.forx.tree.impl.XmlElement;
 import com.github.s262316.forx.tree.impl.XmlText;
-import com.github.s262316.forx.tree.visual.BoxBuilder;
-import com.github.s262316.forx.tree.visual.MetaTagHandler;
-import com.github.s262316.forx.tree.visual.StyleAttributeHandler;
-import com.github.s262316.forx.tree.visual.StyleElementHandler;
-import com.github.s262316.forx.tree.visual.TextBuilder;
-import com.github.s262316.forx.tree.visual.VisualConstants;
-import com.github.s262316.forx.tree.visual.VisualState;
-import com.github.s262316.forx.tree.visual.XmlVElement;
-import com.github.s262316.forx.tree.visual.XmlVText;
 
 
 public class XmlVDocumentBuilder implements XmlDocumentBuilder
@@ -80,13 +72,14 @@ public class XmlVDocumentBuilder implements XmlDocumentBuilder
 
 		if(key.name.equals("style"))
 			e.addMutationListener(new StyleElementHandler(e));
+        else if(key.name.equals("link"))
+            e.addMutationListener(new LinkElementHandler(e));
+
 		e.addMutationListener(new StyleAttributeHandler(e));
 		e.addMutationListener(new BoxBuilder(e, this.boxRealMapping));
 		e.addMutationListener(new MetaTagHandler(e));
 		
 		e.setProperty(VisualConstants.VISUAL_STATE, new VisualState());
-		
-		this.
 		
 		logger.debug("created ("+key.name+") "+e);
 
