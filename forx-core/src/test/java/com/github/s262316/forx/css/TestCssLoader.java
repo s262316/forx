@@ -55,10 +55,10 @@ public class TestCssLoader
 		server.stubFor(WireMock.get(urlEqualTo("/")).willReturn(aResponse().withBody("Test1")));
 
 		TestReferringDocument referringDoc=new TestReferringDocument();
-		CssLoader cssLoader=new CssLoader();
+		CssLoader cssLoader=new CssLoader(() -> Optional.of(StandardCharsets.UTF_8));
 		CssCharset cssCharset=new CssCharset();
 
-		Resource resource=cssLoader.load("http://localhost:8081/", referringDoc, () -> Optional.of(StandardCharsets.UTF_8));
+		Resource resource=cssLoader.load("http://localhost:8081/", referringDoc);
 
 		assertEquals(StandardCharsets.UTF_8, resource.getCharset());
 		assertEquals(new URL("http://localhost:8081/"), resource.getUrl());
@@ -73,10 +73,10 @@ public class TestCssLoader
 		server.stubFor(WireMock.get(urlEqualTo("/")).willReturn(aResponse().withBody(testResource)));
 
 		TestReferringDocument referringDoc=new TestReferringDocument();
-		CssLoader cssLoader=new CssLoader();
+		CssLoader cssLoader=new CssLoader(() -> Optional.of(StandardCharsets.UTF_8));
 		CssCharset cssCharset=new CssCharset();
 
-		Resource resource=cssLoader.load("http://localhost:8081/", referringDoc, () -> Optional.of(StandardCharsets.UTF_8));
+		Resource resource=cssLoader.load("http://localhost:8081/", referringDoc);
 
 		assertEquals(StandardCharsets.UTF_8, resource.getCharset());
 		assertEquals(new URL("http://localhost:8081/"), resource.getUrl());
@@ -93,10 +93,10 @@ public class TestCssLoader
 		server.stubFor(WireMock.get(urlEqualTo("/")).willReturn(aResponse().withBody(testResource)));
 
 		TestReferringDocument referringDoc=new TestReferringDocument();
-		CssLoader cssLoader=new CssLoader();
+		CssLoader cssLoader=new CssLoader(() -> Optional.of(StandardCharsets.UTF_8));
 		CssCharset cssCharset=new CssCharset();
 
-		Resource resource=cssLoader.load("http://localhost:8081/", referringDoc, () -> Optional.of(StandardCharsets.UTF_8));
+		Resource resource=cssLoader.load("http://localhost:8081/", referringDoc);
 
 		assertEquals(Charset.forName("Shift_JIS"), resource.getCharset());
 	}

@@ -7,5 +7,5 @@ import java.io.IOException;
 
 public interface ResourceLoader
 {
-	public Resource load(String url, ReferringDocument referrer, LinkingMechanism link) throws IOException;
+	public Resource load(String url, ReferringDocument referrer) throws IOException;
 }

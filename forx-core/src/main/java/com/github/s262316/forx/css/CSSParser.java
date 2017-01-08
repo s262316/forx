@@ -63,7 +63,7 @@ public class CSSParser
     {
         try
         {
-            Resource resource=resourceLoader.load(cssUrl, refereringDocument, () -> com.google.common.base.Optional.of(StandardCharsets.UTF_8));
+            Resource resource=resourceLoader.load(cssUrl, refereringDocument);
             String data=IOUtils.toString(resource.getReader());
             this.url=resource.getUrl();
             this.charset=resource.getCharset();
@@ -541,7 +541,7 @@ public class CSSParser
                     .map(v -> Enum.valueOf(MediaType.class, v))
                     .collect(Collectors.toSet());
 
-            ir = new ImportRule(location, mediaTypes, new CssLoader(), stylesheet);
+            ir = new ImportRule(location, mediaTypes, new CssLoader(() -> com.google.common.base.Optional.absent()), stylesheet);
 
             return ir;
         }

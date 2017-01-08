@@ -14,13 +14,20 @@ import com.github.s262316.forx.net.Resource;
 import com.github.s262316.forx.net.ResourceLoader;
 import com.github.s262316.forx.tree.LinkingMechanism;
 import com.github.s262316.forx.tree.ReferringDocument;
+import org.springframework.util.ResourceUtils;
 
 public class CssLoader implements ResourceLoader
 {
 	private CssCharset cssCharset=new CssCharset();
+	private LinkingMechanism linkingMechanism;
+
+	public CssLoader(LinkingMechanism linkingMechanism)
+	{
+		this.linkingMechanism=linkingMechanism;
+	}
 
 	@Override
-	public Resource load(String url, ReferringDocument referrer, LinkingMechanism link) throws IOException
+	public Resource load(String url, ReferringDocument referrer) throws IOException
 	{
 		Charset charset;
 
@@ -31,7 +38,7 @@ public class CssLoader implements ResourceLoader
 		bufferedStream.mark(160); // think 144 is the longest
 		byte charsetBuffer[]=new byte[160];
 		int bytesRead=bufferedStream.read(charsetBuffer);
-		charset=calculateCharset(connection, ArrayUtils.subarray(charsetBuffer, 0, bytesRead), link, referrer);
+		charset=calculateCharset(connection, ArrayUtils.subarray(charsetBuffer, 0, bytesRead), linkingMechanism, referrer);
 		bufferedStream.reset();
 
 		return new Resource(charset,
