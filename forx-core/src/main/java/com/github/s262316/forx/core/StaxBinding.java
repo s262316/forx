@@ -12,6 +12,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 
+import org.codehaus.stax2.XMLInputFactory2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,10 +49,10 @@ public class StaxBinding
     
     public void parse(InputStream in) throws XMLStreamException
 	{
-		XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+		XMLInputFactory2 xmlInputFactory = (XMLInputFactory2)XMLInputFactory.newInstance();
 		xmlInputFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
 		xmlInputFactory.setXMLResolver(new XHTMLResourceResolver());
-		
+
 		XMLEventReader xmlEventReader = xmlInputFactory.createXMLEventReader(in);
 
 		while(xmlEventReader.hasNext())

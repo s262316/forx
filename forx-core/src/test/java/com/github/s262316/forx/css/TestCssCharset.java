@@ -14,9 +14,9 @@ import org.junit.Test;
 
 public class TestCssCharset
 {
-	
 	String css1="@charset \"US-ASCII\";p{color : red }";
 	String css2="p{color : red }";
+	String utf16leCss="@charset \"UTF-16LE\";p{color : red }";
 	
 	@Test(expected=BadCharsetException.class)
 	public void testUnknownCharset() throws Exception
@@ -109,20 +109,17 @@ public class TestCssCharset
 	@Test
 	public void testUtf16LeBom() throws Exception
 	{
-		byte b[]=ArrayUtils.addAll(CssCharset.UTF16LE_BOM, css1.getBytes(StandardCharsets.UTF_16LE));
-		BufferedInputStream bis=new BufferedInputStream(new ByteArrayInputStream(b));
+		BufferedInputStream bis=new BufferedInputStream(new ByteArrayInputStream(
+				ArrayUtils.addAll(CssCharset.UTF16LE_BOM, utf16leCss.getBytes(StandardCharsets.UTF_16LE))));
 		CssCharset cssCharset=new CssCharset();
 		Charset charset=cssCharset.sniffCharset(bis);
-		assertEquals(StandardCharsets.US_ASCII, charset);
-		
+		assertEquals(StandardCharsets.UTF_16LE, charset);
+		assertEquals('p', bis.read());
+
 		for(int i=0; i<30; i++)
 			System.out.print(bis.read()+" ");
 		
-//		assertEquals('p', bis.read());
-//		assertEquals(0, bis.read());
-		
-		
-		bis.close();		
+		bis.close();
 	}	
 	
 	@Test

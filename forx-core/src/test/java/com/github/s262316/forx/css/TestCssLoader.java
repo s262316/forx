@@ -2,6 +2,7 @@ package com.github.s262316.forx.css;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
@@ -12,6 +13,8 @@ import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.util.ResourceUtils;
@@ -100,5 +103,24 @@ public class TestCssLoader
 
 		assertEquals(Charset.forName("Shift_JIS"), resource.getCharset());
 	}
+
+	@Test
+	public void bomIsNotInTheStream() throws Exception
+	{
+		File cssFile=ResourceUtils.getFile("classpath:com/github/s262316/forx/css/utf16lebom.css");
+		byte body[]=FileUtils.readFileToByteArray(cssFile);
+		server.stubFor(WireMock.get(urlEqualTo("/")).willReturn(aResponse().withBody(body)));
+
+		TestReferringDocument referringDoc=new TestReferringDocument();
+		CssLoader cssLoader=new CssLoader(() -> Optional.of(StandardCharsets.UTF_8));
+
+		Resource resource=cssLoader.load("http://localhost:8081/", referringDoc);
+
+		String decodedCss=IOUtils.toString(resource.getReader());
+		assertThat(decodedCss, Matchers.startsWith("@"));
+	}
 }
+
+
+
 

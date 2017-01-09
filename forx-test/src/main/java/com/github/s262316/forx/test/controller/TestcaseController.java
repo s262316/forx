@@ -54,9 +54,9 @@ public class TestcaseController
         HttpHeaders defaultHeaders=new HttpHeaders();
 
         if(path.endsWith(".xht"))
-            defaultHeaders.setContentType(new MediaType("application", "xhtml+xml", StandardCharsets.UTF_8));
+            defaultHeaders.setContentType(new MediaType("application", "xhtml+xml"));
         else if(path.endsWith(".css"))
-            defaultHeaders.setContentType(new MediaType("text", "css", StandardCharsets.UTF_8));
+            defaultHeaders.setContentType(new MediaType("text", "css"));
         else
             logger.error("unexpected file extension");
 

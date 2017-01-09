@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.charset.UnsupportedCharsetException;
 
 import com.google.common.net.MediaType;
+import org.apache.commons.io.ByteOrderMark;
 import org.apache.commons.io.input.BOMInputStream;
 import org.apache.commons.lang3.ArrayUtils;
 import com.github.s262316.forx.net.Resource;
@@ -42,7 +43,7 @@ public class CssLoader implements ResourceLoader
 		bufferedStream.reset();
 
 		return new Resource(charset,
-				new InputStreamReader(new BOMInputStream(bufferedStream), charset),
+				new InputStreamReader(new BOMInputStream(bufferedStream, ByteOrderMark.UTF_8, ByteOrderMark.UTF_16LE, ByteOrderMark.UTF_16BE, ByteOrderMark.UTF_32LE, ByteOrderMark.UTF_32BE), charset),
 				resourceToLoad);
 	}
 	
