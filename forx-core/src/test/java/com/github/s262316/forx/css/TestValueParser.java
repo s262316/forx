@@ -60,4 +60,15 @@ public class TestValueParser
 		tokenizer.advance();
 		parser.parse();
 	}
+
+	@Test(expected=BadValueException.class)
+	public void unexpectedEofInFunction() throws Exception
+	{
+		Tokenizer tokenizer=new Tokenizer("rgb(0, 1 , 128");
+		ValueParser parser=new ValueParser(tokenizer);
+
+		tokenizer.advance();
+		parser.parse();
+	}
+
 }

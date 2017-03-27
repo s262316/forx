@@ -32,7 +32,7 @@ class ValueParser
     //	[ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* | ANGLE S* |
     //	TIME S* | FREQ S* ]
     //| STRING S* | IDENT S* | URI S* | hexcolor | function
-    Value parseTerm() throws MalformedURLException, IOException
+    Value parseTerm() throws MalformedURLException, IOException, BadValueException
     {
         Value v=null, any;
 
@@ -70,7 +70,7 @@ class ValueParser
                         fv.values=new ValueList();
 
                         tok.advance();
-                        while(!tok.curr.syntax.equals(")"))
+                        while(!tok.curr.syntax.equals(")") && tok.curr.type!=TokenType.CR_END)
                         {
                                 any=parseTerm();
                                 fv.values.members.add(any);
@@ -79,6 +79,9 @@ class ValueParser
                                 if(tok.curr.syntax.equals(",") || tok.curr.syntax.equals("/"))
                                         tok.advance();
                         }
+
+						if (!tok.curr.syntax.equals(")"))
+							throw new BadValueException("found " + tok.curr.syntax + ", expected ')'");
 
                         v=fv;
 
