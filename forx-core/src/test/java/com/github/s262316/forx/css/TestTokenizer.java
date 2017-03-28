@@ -458,6 +458,17 @@ public class TestTokenizer
     }
 
     @Test
+    public void testTokenizeIndentifierWithEscapedNewline()
+    {
+        Tokenizer tokenizer = new Tokenizer("my\\\r\nid");
+        Token token;
+        token=tokenizer.nextToken();
+
+        assertEquals("my", token.syntax);
+        assertEquals(TokenType.CR_IDENT, token.type);
+    }
+
+    @Test
     public void testTokenizeIdentifierWithLessThan6Produces2Tokens()
     {
         Tokenizer tokenizer = new Tokenizer("a\\23bc abc");
@@ -521,5 +532,26 @@ public class TestTokenizer
         // next token should be div
         token = tokenizer.nextToken();
         assertEquals("\r\n ", token.syntax);
+    }
+
+    @Test
+    public void tokenizeStringWithEscapedNewline()
+    {
+        Tokenizer tokenizer = new Tokenizer("\"my\\\r\nid\"");
+        Token token;
+        token=tokenizer.nextToken();
+        assertEquals(TokenType.CR_STRING, token.type);
+        assertEquals("myid", token.syntax);
+    }
+
+    @Test
+    public void tokenizeEscapedNewlineInTheMiddleOfNowhere()
+    {
+        Tokenizer tokenizer = new Tokenizer("\\\r\nid");
+        Token token;
+        token=tokenizer.nextToken();
+
+        assertEquals(TokenType.CR_IDENT, token.type);
+        assertEquals("id", token.syntax);
     }
 }

@@ -3,6 +3,7 @@ package com.github.s262316.forx.css;
 import java.util.function.Predicate;
 
 import org.apache.commons.lang3.CharUtils;
+import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -192,12 +193,10 @@ public class Tokenizer
 		else if(Character.isLetter(input))
 		{
 			// ident
-			++begin;
-
 			String str2=source.subSequence(start,begin).toString();
-			tok_ident();
+			Range<Integer> identRange=tok_ident();
 
-			StringBuilder ident=new StringBuilder(source.subSequence(start, begin));
+			StringBuilder ident=new StringBuilder(source.subSequence(identRange.getMinimum(), identRange.getMaximum()));
 			String decodedIdent=replaceEscapes(ident);
 
 			return new Token(TokenType.CR_IDENT, decodedIdent);
@@ -218,6 +217,7 @@ public class Tokenizer
 			}
 			else
 			{
+			    --begin;
 				tok_ident();
 
 				StringBuilder ident=new StringBuilder(source.subSequence(start, begin));
@@ -229,7 +229,6 @@ public class Tokenizer
 		else if(input=='_')
 		{
 			//ident
-			++begin;
 			tok_ident();
 
 			StringBuilder ident=new StringBuilder(source.subSequence(start, begin));
@@ -240,7 +239,6 @@ public class Tokenizer
 		else if(!(input>='\0' && input<='\237'))
 		{
 			// ident (nonascii)
-			++begin;
 			tok_ident();
 
 			StringBuilder ident=new StringBuilder(source.subSequence(start, begin));
@@ -251,12 +249,11 @@ public class Tokenizer
 		else if(input=='\\')
 		{
 			// ident (escape)
-			tok_ident();
+            Range<Integer> charRange=tok_ident();
+            String ident=StringUtils.substring(source.toString(), charRange.getMinimum(), charRange.getMaximum()+1);
+            String decodedIdent=replaceEscapes(new StringBuilder(ident));
 
-			StringBuilder ident=new StringBuilder(source.subSequence(start, begin));
-            String decodedIdent=replaceEscapes(ident);
-
-			return new Token(TokenType.CR_IDENT, decodedIdent);
+            return new Token(TokenType.CR_IDENT, decodedIdent);
 		}
 		else if(input=='\'')
 		{
@@ -579,10 +576,12 @@ public class Tokenizer
 		return result;
 	}
 
-	void tok_ident()
+	Range<Integer> tok_ident()
 	{
 		char input;
 		boolean collect=true;
+		int start=begin;
+		int i=0;
 
 		while(collect && begin<source.length())
 		{
@@ -598,13 +597,36 @@ public class Tokenizer
 				++begin;
 			else if(input=='\\')
 			{
+                // could be a newline.
+                int beforeNlCheck=begin;
 				++begin;
-				tok_escape();
-				++begin;
+                if(tok_nl())
+                {
+                    if(i==0)
+                    {
+                        // if the beginning of the identifier then skip it
+                        start=begin;
+                    }
+                    else
+                    {
+                        // leave the newline for someone else (probably this same function on a subequent call)
+                        begin = beforeNlCheck;
+                        collect = false;
+                    }
+                }
+                else
+                {
+                    tok_escape();
+                    ++begin;
+                }
 			}
 			else
 				collect=false;
+
+			i++;
 		}
+
+		return Range.between(start, begin);
 	}
 
 	/*
