@@ -554,4 +554,19 @@ public class TestTokenizer
         assertEquals(TokenType.CR_IDENT, token.type);
         assertEquals("id", token.syntax);
     }
+
+    @Test
+    public void identOfAllEscapedHasNextToken()
+    {
+        Tokenizer tokenizer = new Tokenizer("\\64\\69\\76 { color : green } ");
+        Token token;
+
+        token=tokenizer.nextToken();
+        assertEquals("div", token.syntax);
+        assertEquals(TokenType.CR_IDENT, token.type);
+
+        token=tokenizer.nextToken();
+        assertEquals("{", token.syntax);
+        assertEquals(TokenType.CR_PUNCT, token.type);
+    }
 }

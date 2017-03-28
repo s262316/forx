@@ -193,11 +193,10 @@ public class Tokenizer
 		else if(Character.isLetter(input))
 		{
 			// ident
-			String str2=source.subSequence(start,begin).toString();
 			Range<Integer> identRange=tok_ident();
 
-			StringBuilder ident=new StringBuilder(source.subSequence(identRange.getMinimum(), identRange.getMaximum()));
-			String decodedIdent=replaceEscapes(ident);
+			String ident=StringUtils.substring(source.toString(), identRange.getMinimum(), identRange.getMaximum()+1);
+			String decodedIdent=replaceEscapes(new StringBuilder(ident));
 
 			return new Token(TokenType.CR_IDENT, decodedIdent);
 		}
@@ -218,10 +217,9 @@ public class Tokenizer
 			else
 			{
 			    --begin;
-				tok_ident();
-
-				StringBuilder ident=new StringBuilder(source.subSequence(start, begin));
-                String decodedIdent=replaceEscapes(ident);
+				Range<Integer> identRange=tok_ident();
+				String ident=StringUtils.substring(source.toString(), identRange.getMinimum(), identRange.getMaximum()+1);
+				String decodedIdent=replaceEscapes(new StringBuilder(ident));
 
 				return new Token(TokenType.CR_IDENT, decodedIdent);
 			}
@@ -229,10 +227,9 @@ public class Tokenizer
 		else if(input=='_')
 		{
 			//ident
-			tok_ident();
-
-			StringBuilder ident=new StringBuilder(source.subSequence(start, begin));
-            String decodedIdent=replaceEscapes(ident);
+			Range<Integer> identRange=tok_ident();
+			String ident=StringUtils.substring(source.toString(), identRange.getMinimum(), identRange.getMaximum()+1);
+            String decodedIdent=replaceEscapes(new StringBuilder(ident));
 
 			return new Token(TokenType.CR_IDENT, decodedIdent);
 		}
@@ -556,6 +553,8 @@ public class Tokenizer
 					if(input!='\n')
 						--begin;
 				}
+				else
+				    ++begin;
 			}
 			else
 			{
@@ -610,23 +609,27 @@ public class Tokenizer
                     else
                     {
                         // leave the newline for someone else (probably this same function on a subequent call)
-                        begin = beforeNlCheck;
+                        begin = beforeNlCheck-1;
                         collect = false;
                     }
                 }
                 else
                 {
                     tok_escape();
-                    ++begin;
                 }
 			}
 			else
-				collect=false;
+            {
+                collect = false;
+                --begin;
+            }
 
 			i++;
 		}
 
-		return Range.between(start, begin);
+		// this.begin should be 1 greater than the range
+		begin++;
+		return Range.between(start, begin-1);
 	}
 
 	/*
