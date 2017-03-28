@@ -1,6 +1,7 @@
 package com.github.s262316.forx.css;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -433,4 +434,60 @@ public class TestTokenizer
         assertEquals("_abc", token.syntax);
     }
 
+    @Test
+    public void testTokenizeStringDoubleQuotes()
+    {
+        Tokenizer tokenizer = new Tokenizer("\"hello\"");
+        Token token;
+
+        token = tokenizer.nextToken();
+        assertEquals("hello", token.syntax);
+        assertEquals(TokenType.CR_STRING, token.type);
+    }
+
+    @Test
+    public void testTokenizeStringSingleQuotes()
+    {
+        Tokenizer tokenizer = new Tokenizer("\'hello\'");
+        Token token;
+
+        token = tokenizer.nextToken();
+        assertEquals("hello", token.syntax);
+        assertEquals(TokenType.CR_STRING, token.type);
+    }
+
+    @Test
+    public void prematureEndOfStringResultsInInvalidToken()
+    {
+        Tokenizer tokenizer = new Tokenizer("\"hello\r\n div { next : one } ");
+        Token token;
+
+        try
+        {
+            token = tokenizer.nextToken();
+            fail();
+        }
+        catch(TokenizationException te)
+        {
+            assertEquals("invalid string", te.getMessage());
+        }
+    }
+
+    @Test
+    public void afterrematureEndOfStringCursorIsOnEol()
+    {
+        Tokenizer tokenizer = new Tokenizer("\"hello\r\n div { next : one } ");
+        Token token;
+
+        try
+        {
+            token = tokenizer.nextToken();
+        }
+        catch(TokenizationException te)
+        {}
+
+        // next token should be div
+        token = tokenizer.nextToken();
+        assertEquals("\r\n ", token.syntax);
+    }
 }

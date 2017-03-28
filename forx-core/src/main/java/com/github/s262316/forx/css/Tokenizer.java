@@ -2,6 +2,7 @@ package com.github.s262316.forx.css;
 
 import java.util.function.Predicate;
 
+import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -261,21 +262,26 @@ public class Tokenizer
 			StringBuilder sb;
 
 			++begin;
-			tok_str(input);
-			// str
+			if(tok_str(input))
+			{
+				if (source.charAt(begin - 1) == '\'')
+					str = source.subSequence(start + 1, begin - 1).toString();
+				else
+					str = source.subSequence(start + 1, begin).toString();
 
-			if(source.charAt(begin-1)=='\'')
-				str=source.subSequence(start+1, begin-1).toString();
+				// replace \\{nl}
+				str = str.replaceAll("\r\n|\r|\n|\f", "");
+				sb = new StringBuilder(str);
+
+				replaceEscapes(sb);
+
+				return new Token(TokenType.CR_STRING, sb.toString());
+			}
 			else
-				str=source.subSequence(start+1, begin).toString();
-
-			// replace \\{nl}
-			str=str.replaceAll("\r\n|\r|\n|\f", "");
-			sb=new StringBuilder(str);
-
-			replaceEscapes(sb);
-
-			return new Token(TokenType.CR_STRING, sb.toString());
+			{
+				// bad string
+				throw new TokenizationException("invalid string");
+			}
 		}
 		else if(input=='\"')
 		{
@@ -283,18 +289,23 @@ public class Tokenizer
 			StringBuilder sb;
 
 			++begin;
-			tok_str(input);
-			// str
+			if(tok_str(input))
+			{
+				str = source.subSequence(start + 1, begin - 1).toString();
 
-			str=source.subSequence(start+1, begin-1).toString();
+				// replace \\{nl}
+				str = str.replaceAll("\r\n|\r|\n|\f", "");
+				sb = new StringBuilder(str);
 
-			// replace \\{nl}
-			str=str.replaceAll("\r\n|\r|\n|\f", "");
-			sb=new StringBuilder(str);
+				replaceEscapes(sb);
 
-			replaceEscapes(sb);
-
-			return new Token(TokenType.CR_STRING, sb.toString());
+				return new Token(TokenType.CR_STRING, sb.toString());
+			}
+			else
+			{
+				// bad string
+				throw new TokenizationException("invalid string");
+			}
 		}
 		else if(Character.isDigit(input))
 		{
@@ -453,6 +464,8 @@ public class Tokenizer
 	}
 
 	// \"([^\n\r\f\\"]|\\{nl}|{escape})*\"
+	// must close strings upon reaching the end of a line
+	// but then drop the construct (declaration or rule) in which the string was found
 	boolean tok_str(char quote)
 	{
 		char input;
@@ -461,6 +474,8 @@ public class Tokenizer
 		while(collect && begin!=source.length())
 		{
 			input=source.charAt(begin);
+			if(input=='\r' || input=='\n')
+				return false;
 
 			if(input==quote)
 				collect=false;
