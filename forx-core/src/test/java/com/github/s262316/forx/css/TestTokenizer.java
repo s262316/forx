@@ -424,19 +424,19 @@ public class TestTokenizer
     }
 
     @Test
-    public void testTokenizeIdentifier9()
+    public void testTokenizeIdentifierWithEscapedChars()
     {
         Tokenizer tokenizer = new Tokenizer("a\\23bc ");
         Token token=tokenizer.nextToken();
-        assertEquals("a\\23bc ", token.syntax);
+        assertEquals("a\u23bc", token.syntax);
     }
 
     @Test
-    public void testTokenizeIdentifier10()
+    public void testTokenizeIdentifierWithEscapedCharAtStart()
     {
         Tokenizer tokenizer = new Tokenizer("\\23bc ");
         Token token=tokenizer.nextToken();
-        assertEquals("\\23bc ", token.syntax);
+        assertEquals("\u23bc", token.syntax);
     }
 
     @Test
@@ -445,6 +445,25 @@ public class TestTokenizer
         Tokenizer tokenizer = new Tokenizer("_abc ");
         Token token=tokenizer.nextToken();
         assertEquals("_abc", token.syntax);
+    }
+
+    @Test
+    public void testEscapedIdentifier()
+    {
+        Tokenizer tokenizer = new Tokenizer("\\63\\6F\\6C\\6F\\72");
+        // \63\6F\6C\6F\72
+        // 012345678901234
+        Token token=tokenizer.nextToken();
+        assertEquals("color", token.syntax);
+    }
+
+    @Test
+    public void testTokenizeIdentifierWithLessThan6Produces2Tokens()
+    {
+        Tokenizer tokenizer = new Tokenizer("a\\23bc abc");
+        Token token;
+        token=tokenizer.nextToken();
+        assertEquals("a\u23bcabc", token.syntax);
     }
 
     @Test

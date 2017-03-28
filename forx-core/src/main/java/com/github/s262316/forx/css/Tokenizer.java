@@ -198,9 +198,9 @@ public class Tokenizer
 			tok_ident();
 
 			StringBuilder ident=new StringBuilder(source.subSequence(start, begin));
-			replaceEscapes(ident);
+			String decodedIdent=replaceEscapes(ident);
 
-			return new Token(TokenType.CR_IDENT, ident.toString());
+			return new Token(TokenType.CR_IDENT, decodedIdent);
 		}
 		else if(input=='-')
 		{
@@ -221,9 +221,9 @@ public class Tokenizer
 				tok_ident();
 
 				StringBuilder ident=new StringBuilder(source.subSequence(start, begin));
-				replaceEscapes(ident);
+                String decodedIdent=replaceEscapes(ident);
 
-				return new Token(TokenType.CR_IDENT, ident.toString());
+				return new Token(TokenType.CR_IDENT, decodedIdent);
 			}
 		}
 		else if(input=='_')
@@ -233,9 +233,9 @@ public class Tokenizer
 			tok_ident();
 
 			StringBuilder ident=new StringBuilder(source.subSequence(start, begin));
-			replaceEscapes(ident);
+            String decodedIdent=replaceEscapes(ident);
 
-			return new Token(TokenType.CR_IDENT, ident.toString());
+			return new Token(TokenType.CR_IDENT, decodedIdent);
 		}
 		else if(!(input>='\0' && input<='\237'))
 		{
@@ -244,9 +244,9 @@ public class Tokenizer
 			tok_ident();
 
 			StringBuilder ident=new StringBuilder(source.subSequence(start, begin));
-			replaceEscapes(ident);
+            String decodedIdent=replaceEscapes(ident);
 
-			return new Token(TokenType.CR_IDENT, ident.toString());
+			return new Token(TokenType.CR_IDENT, decodedIdent);
 		}
 		else if(input=='\\')
 		{
@@ -254,9 +254,9 @@ public class Tokenizer
 			tok_ident();
 
 			StringBuilder ident=new StringBuilder(source.subSequence(start, begin));
-			replaceEscapes(ident);
+            String decodedIdent=replaceEscapes(ident);
 
-			return new Token(TokenType.CR_IDENT, ident.toString());
+			return new Token(TokenType.CR_IDENT, decodedIdent);
 		}
 		else if(input=='\'')
 		{
@@ -275,9 +275,9 @@ public class Tokenizer
 				str = str.replaceAll("\r\n|\r|\n|\f", "");
 				sb = new StringBuilder(str);
 
-				replaceEscapes(sb);
+				String decodedString=replaceEscapes(sb);
 
-				return new Token(TokenType.CR_STRING, sb.toString());
+				return new Token(TokenType.CR_STRING, decodedString);
 			}
 			else
 			{
@@ -299,9 +299,9 @@ public class Tokenizer
 				str = str.replaceAll("\r\n|\r|\n|\f", "");
 				sb = new StringBuilder(str);
 
-				replaceEscapes(sb);
+                String decodedString=replaceEscapes(sb);
 
-				return new Token(TokenType.CR_STRING, sb.toString());
+				return new Token(TokenType.CR_STRING, decodedString);
 			}
 			else
 			{
@@ -537,7 +537,7 @@ public class Tokenizer
 			++begin;
 			input=source.charAt(begin);
 
-			for(int i=2; i<=6 && cont && begin!=source.length(); ++i)
+			for(int i=2; i<=6 && cont && begin+1<source.length(); ++i)
 			{
 				if((input>='A' && input<='F') ||
 					(input>='a' && input<='f') ||
@@ -584,7 +584,7 @@ public class Tokenizer
 		char input;
 		boolean collect=true;
 
-		while(collect && begin!=source.length())
+		while(collect && begin<source.length())
 		{
 			input=source.charAt(begin);
 
