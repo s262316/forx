@@ -57,6 +57,8 @@ public class CSSPropertiesReference
 
 	public boolean validate(Declaration dec)
 	{
+		logger.debug("validate({})", dec);
+
 		// temporary workaround for properties without validation
 		if(propertyTable.containsKey(dec.getProperty()) && propertyTable.get(dec.getProperty()).getValidator()==null)
 		{
