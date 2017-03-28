@@ -147,11 +147,24 @@ public class TestTokenizer
         assertEquals(")", tokenizer.curr.syntax);
     }
 
-    @Test(expected=TokenizationException.class)
-    public void testMalformedUrl2()
+    @Test
+    public void testEofInUrlResultsInUrl()
     {
-        Tokenizer tokenizer = new Tokenizer("url('test.html' ");
+        Tokenizer tokenizer = new Tokenizer("url( 'test.html");
         tokenizer.advance();
+
+        assertEquals(TokenType.CR_URI, tokenizer.curr.type);
+        assertEquals("test.html", tokenizer.curr.syntax);
+    }
+
+    @Test
+    public void testIdentInUrl()
+    {
+        Tokenizer tokenizer = new Tokenizer("url( test.html)");
+        tokenizer.advance();
+
+        assertEquals(TokenType.CR_URI, tokenizer.curr.type);
+        assertEquals("test.html", tokenizer.curr.syntax);
     }
 
     @Test

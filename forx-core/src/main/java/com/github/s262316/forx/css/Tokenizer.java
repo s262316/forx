@@ -116,15 +116,17 @@ public class Tokenizer
 				if(t.type==TokenType.CR_WHITESPACE)
 					t=nextToken();
 
+				// should be a rparen here. but just accept it if missing
+
 				if(!(t.type==TokenType.CR_PUNCT && t.syntax.equals(")")))
 				{
-					throw new TokenizationException("expected rparen in url value");
+				    logger.warn("Missing rparen in url function");
 				}
 			}
 			else
 			{
 				// scoop up whatever's there
-				while(!t.syntax.equals(")"))
+				while(!t.syntax.equals(")") && t.type!=TokenType.CR_END)
 				{
 					url+=t.syntax;
 					t=nextToken();
