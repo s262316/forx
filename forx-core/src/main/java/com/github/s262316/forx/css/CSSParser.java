@@ -164,9 +164,9 @@ public class CSSParser
 	        
 	        return decs;
     	}
-    	catch(BadValueException bve)
+    	catch(TokenizationException | BadValueException e)
     	{
-    		throw new BadDeclarationException(bve);
+    		throw new BadDeclarationException(e);
     	}
     }
 
@@ -351,6 +351,8 @@ public class CSSParser
 					c.op=">";
 					tok.advance();
 			}
+			else
+				c=null;
 
 			if(tok.curr.type==TokenType.CR_WHITESPACE)
 					tok.advance();
@@ -454,7 +456,7 @@ public class CSSParser
 			skipRule=true;
 		}
 		
-		while(!tok.curr.syntax.equals("}"))
+		while(!tok.curr.syntax.equals("}") && tok.curr.type!=TokenType.CR_END)
 		{
 			try
 			{

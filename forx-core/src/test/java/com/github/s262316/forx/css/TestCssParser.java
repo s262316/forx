@@ -418,6 +418,18 @@ public class TestCssParser
 		
 		parser.parse_declaration();
 	}
+
+	@Test
+	public void prematureEndOfRuleset() throws Exception
+	{
+		TestReferringDocument referrer=new TestReferringDocument();
+		CSSParser parser=new CSSParser("selector", referrer);
+
+		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
+		tokenizer.advance();
+
+		parser.parse_ruleset(EnumSet.allOf(MediaType.class));
+	}
 }
 
 
