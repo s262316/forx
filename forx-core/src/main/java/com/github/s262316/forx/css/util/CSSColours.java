@@ -79,6 +79,8 @@ public class CSSColours
 		int r, g, b;
 		Color col;
 
+		Preconditions.checkArgument(fv.name.equals("rgb"));
+
 		//rgb(255,0,0)       integer range 0 - 255
 		//rgb(300,0,0)       clipped to rgb(255,0,0)
 		//rgb(255,-10,0)     clipped to rgb(255,0,0)
@@ -103,6 +105,9 @@ public class CSSColours
 		//rgb(300,0,0)       clipped to rgb(255,0,0)
 		//rgb(255,-10,0)     clipped to rgb(255,0,0)
 		//rgb(110%, 0%, 0%)  clipped to rgb(100%,0%,0%)
+
+		if(!fv.name.equals("rgb"))
+			return null;
 
 		r=workOutColourPart(fv.values.members.get(0));
 		g=workOutColourPart(fv.values.members.get(1));
