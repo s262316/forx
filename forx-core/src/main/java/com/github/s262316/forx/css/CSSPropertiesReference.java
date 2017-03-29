@@ -65,7 +65,10 @@ public class CSSPropertiesReference
 			logger.warn("no property reference for "+dec.getProperty());
 			return true;
 		}
-		
+
+		if(!propertyTable.containsKey(dec.getProperty()))
+		    return false;
+
 		return propertyTable.get(dec.getProperty()).getValidator().validate(dec.getValue());
 	}
 
