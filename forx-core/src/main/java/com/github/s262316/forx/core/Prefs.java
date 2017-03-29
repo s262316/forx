@@ -14,7 +14,7 @@ public class Prefs
 	private Prefs()
 	{
 		_language="en-gb";
-		_serif="Times";
+		_serif="Times New Roman";
 		_sans_serif="Helvetica";
 		_cursive="Zapf-Chancery";
 		_fantasy="Western";
