@@ -120,14 +120,14 @@ public class CSSParser
 	        String name;
 	        ValueList vl=null;
 	        boolean imp=false;
-	        List<Declaration> decs;
+	        List<Declaration> decs=new ArrayList<>();
 	
 	        logger.debug("parse_declaration()");
 	        
 	        if(tok.curr.type!=TokenType.CR_IDENT)
 	        	throw new BadDeclarationException("expected identifier, found "+tok.curr.syntax);
 	        
-	        name=tok.curr.syntax;
+	        name=tok.curr.syntax.toLowerCase();
 	
 	        tok.advance();
 	        if(!tok.curr.syntax.equals(":"))
@@ -158,7 +158,7 @@ public class CSSParser
 	        }
 	        else
 	        {
-	        	if(propertiesReference.validate(dec));
+	        	if(propertiesReference.validate(dec))
 	        		decs=Lists.newArrayList(dec);
 	        }
 	        
@@ -311,7 +311,7 @@ public class CSSParser
                                     }
                             }
                             else
-                                    throw new CSSParserException(CSSParserException.Type.SELECTOR_BAD_SYNTAX, tok.curr.syntax);
+                                    throw new BadSelectorException();
                     }
                     else
                     	cont=false;
@@ -351,8 +351,6 @@ public class CSSParser
 					c.op=">";
 					tok.advance();
 			}
-			else
-				c=null;
 
 			if(tok.curr.type==TokenType.CR_WHITESPACE)
 					tok.advance();
@@ -377,7 +375,9 @@ public class CSSParser
 			op=parse_combinator();
 			while(op!=null)
 			{
-					if(!tok.curr.syntax.equals("{") && !tok.curr.syntax.equals(",") && tok.curr.type!=TokenType.CR_END)
+					if(!(tok.curr.syntax.equals("{") && tok.curr.type==TokenType.CR_PUNCT) &&
+							!tok.curr.syntax.equals(",") &&
+							tok.curr.type!=TokenType.CR_END)
 					{
 							parts.add(op);
 	

@@ -567,7 +567,7 @@ public class Tokenizer
 				!(input>='a' && input<='f') &&
 				!(input>='A' && input<='F'))
 		{
-
+			++begin;
 		}
 		else
 			result=false;

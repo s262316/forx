@@ -569,4 +569,42 @@ public class TestTokenizer
         assertEquals("{", token.syntax);
         assertEquals(TokenType.CR_PUNCT, token.type);
     }
+
+    @Test
+    public void escapedPunctuationInIdentifier()
+    {
+        Tokenizer tokenizer = new Tokenizer("p\\.class#id");
+        Token token;
+
+        token=tokenizer.nextToken();
+        assertEquals(TokenType.CR_IDENT, token.type);
+        assertEquals("p.class", token.syntax);
+    }
+
+    @Test
+    public void t1111()
+    {
+        Tokenizer tokenizer = new Tokenizer("\\{ background: red; \\}");
+        Token token;
+
+        token=tokenizer.nextToken();
+        System.out.println(token.type+"@@"+token.syntax+"@@");
+        token=tokenizer.nextToken();
+        System.out.println(token.type+"@@"+token.syntax+"@@");
+        token=tokenizer.nextToken();
+        System.out.println(token.type+"@@"+token.syntax+"@@");
+        token=tokenizer.nextToken();
+        System.out.println(token.type+"@@"+token.syntax+"@@");
+        token=tokenizer.nextToken();
+        System.out.println(token.type+"@@"+token.syntax+"@@");
+        token=tokenizer.nextToken();
+        System.out.println(token.type+"@@"+token.syntax+"@@");
+        token=tokenizer.nextToken();
+        System.out.println(token.type+"@@"+token.syntax+"@@");
+        token=tokenizer.nextToken();
+        System.out.println(token.type+"@@"+token.syntax+"@@");
+
+
+
+    }
 }

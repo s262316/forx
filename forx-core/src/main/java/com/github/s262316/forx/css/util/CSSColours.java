@@ -32,7 +32,7 @@ public class CSSColours
 	{
 		Preconditions.checkArgument(name instanceof Identifier);
 
-		String colourName=((Identifier)name).ident;
+		String colourName=((Identifier)name).ident.toLowerCase();
 		if(!COLOUR_NAMES.containsKey(colourName))
 			throw new IllegalArgumentException("unsupported colour name "+colourName);
 
@@ -144,11 +144,11 @@ public class CSSColours
 				ok=true;
 			}
 		}
-		else if(COLOUR_NAMES.containsKey(v))
+		else if(COLOUR_NAMES.containsKey(v.toLowerCase()))
 		{
 			logger.debug("containsKey yes");
 
-			col=COLOUR_NAMES.get(v);
+			col=COLOUR_NAMES.get(v.toLowerCase());
 
 			logger.debug(col.toString());
 

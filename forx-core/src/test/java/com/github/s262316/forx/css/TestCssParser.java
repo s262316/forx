@@ -8,6 +8,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import com.github.s262316.forx.tree.style.selectors.Operator;
+import com.github.s262316.forx.tree.style.selectors.Selector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.resource.Resource;
@@ -32,12 +34,12 @@ public class TestCssParser
 {
 	static Server server=null;
 	
-	static final String TEST_SERVER_URL="http://localhost:8080/"; 
+	static final String TEST_SERVER_URL="http://localhost:8081/";
 	
 	@BeforeClass
 	public static void startup() throws Exception
 	{
-		server = new Server(8080);
+		server = new Server(8081);
 		ResourceHandler staticFiles=new ResourceHandler();
 		staticFiles.setBaseResource(Resource.newClassPathResource("com/github/s262316/forx/css"));
 		staticFiles.setDirectoriesListed(true);
@@ -382,7 +384,20 @@ public class TestCssParser
 		assertEquals("color", decs.get(0).getProperty());
 		assertEquals(new Identifier("red"), decs.get(0).getValue());
 	}
-	
+
+	@Test
+	public void propertyIsLowerCased() throws Exception
+	{
+		TestReferringDocument referrer=new TestReferringDocument();
+		CSSParser parser=new CSSParser("COLOR : red", referrer);
+
+		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
+		tokenizer.advance();
+
+		List<Declaration> decs=parser.parse_declaration();
+		assertEquals("color", decs.get(0).getProperty());
+	}
+
 	@Test(expected=BadDeclarationException.class)
 	public void declarationWithoutColonOrValueFails() throws Exception
 	{
@@ -430,6 +445,38 @@ public class TestCssParser
 
 		parser.parse_ruleset(EnumSet.allOf(MediaType.class));
 	}
+
+	@Test
+	public void selectorContainsEscapedPunct() throws Exception
+	{
+		TestReferringDocument referrer=new TestReferringDocument();
+		CSSParser parser=new CSSParser("p.class#id \\{ background", referrer);
+
+		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
+		tokenizer.advance();
+
+		Selector selector=parser.parse_selector();
+		assertEquals(5, selector.getParts().size());
+		assertEquals(SelectorElement.class, selector.getParts().get(0).getClass());
+		assertEquals(Operator.class, selector.getParts().get(1).getClass());
+		assertEquals(SelectorElement.class, selector.getParts().get(2).getClass());
+		assertEquals(Operator.class, selector.getParts().get(3).getClass());
+		assertEquals(SelectorElement.class, selector.getParts().get(4).getClass());
+
+		assertEquals("{", ((SelectorElement)selector.getParts().get(2)).name);
+	}
+
+	@Test(expected=BadSelectorException.class)
+	public void badPseudoSelector() throws Exception
+	{
+		TestReferringDocument referrer = new TestReferringDocument();
+		CSSParser parser = new CSSParser("background: red", referrer);
+
+		Tokenizer tokenizer = (Tokenizer) ReflectionTestUtils.getField(parser, "tok");
+		tokenizer.advance();
+
+		parser.parse_selector();
+	}
+
+
 }
-
-

@@ -2,6 +2,7 @@ package com.github.s262316.forx.css;
 
 import java.util.Map;
 
+import com.github.s262316.forx.css.validate.ColourValidator;
 import com.github.s262316.forx.tree.style.ColourValue;
 import com.github.s262316.forx.tree.style.Identifier;
 import com.github.s262316.forx.tree.style.NumericValue;
@@ -94,7 +95,7 @@ public class CssProperties
 			.put("counter-reset", new PropertyReference("counter-reset", false, new Identifier("none"), null))
 			.put("counter-increment", new PropertyReference("counter-increment", false, new Identifier("none"), null))
 			.put("clear", new PropertyReference("clear", false, new Identifier("none"), null))
-			.put("color", new PropertyReference("color", true, new ColourValue(0, 0, 0), null))
+			.put("color", new PropertyReference("color", true, new ColourValue(0, 0, 0), new ColourValidator()))
 			.put("background-color", new PropertyReference("background-color", false, new Identifier("transparent"), null))
 			.put("background-image", new PropertyReference("background-image", false, new Identifier("none"), null))
 			.put("background-repeat", new PropertyReference("background-repeat", false, new Identifier("repeat"), null))
