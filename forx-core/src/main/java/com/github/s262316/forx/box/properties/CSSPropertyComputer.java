@@ -616,7 +616,7 @@ public class CSSPropertyComputer
 			vl=(ValueList)v;
             for(Value it : vl.members)
             {
-                if(v.getClass().equals(Identifier.class))
+                if(it.getClass().equals(Identifier.class))
                 {
                     id=(Identifier)it;
                     Prefs p=Prefs.getPrefs();
@@ -633,7 +633,7 @@ public class CSSPropertyComputer
                     else
                         familyName.add(id.ident);
                 }
-                else if(v.getClass().equals(StringValue.class))
+                else if(it.getClass().equals(StringValue.class))
                 {
                     sv=(StringValue)it;
 
