@@ -7,6 +7,8 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.s262316.forx.tree.visual.PseudoElement;
+import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -127,8 +129,26 @@ public class TestSelector
 		
 		boolean result=s.isMatch(p, PseudoElementType.PE_NOT_PSEUDO);
 		assertTrue(result);		
-	}	
-	
+	}
+
+	@Test
+	public void testDescendentWithPseudoBefore()
+	{
+		Selector s=createSelectorWithPseudoElement(" ", PseudoElementType.PE_BEFORE, "body", "p");
+
+		boolean result=s.isMatch(p, PseudoElementType.PE_BEFORE);
+		assertTrue(result);
+	}
+
+	@Test
+	public void testDescendentWithPseudoAfter()
+	{
+		Selector s=createSelectorWithPseudoElement(" ", PseudoElementType.PE_AFTER, "body", "p");
+
+		boolean result=s.isMatch(p, PseudoElementType.PE_AFTER);
+		assertTrue(result);
+	}
+
 	@Test
 	public void testChildSelectorMatch()
 	{
@@ -148,6 +168,24 @@ public class TestSelector
 	}
 
 	@Test
+	public void testChildWithPseudoBefore()
+	{
+		Selector s=createSelectorWithPseudoElement(">", PseudoElementType.PE_BEFORE, "body", "p");
+
+		boolean result=s.isMatch(p, PseudoElementType.PE_BEFORE);
+		assertTrue(result);
+	}
+
+	@Test
+	public void testChildWithPseudoAfter()
+	{
+		Selector s=createSelectorWithPseudoElement(">", PseudoElementType.PE_AFTER, "body", "p");
+
+		boolean result=s.isMatch(p, PseudoElementType.PE_AFTER);
+		assertTrue(result);
+	}
+
+	@Test
 	public void testSiblingSelectorMatch2()
 	{
 		Selector s=createSelector("+", "p", "p2");
@@ -163,32 +201,67 @@ public class TestSelector
 		
 		boolean result=s.isMatch(p3, PseudoElementType.PE_NOT_PSEUDO);
 		assertTrue(result);		
-	}	
-	
+	}
+
+	@Test
+	public void testSiblingWithPseudoBefore()
+	{
+		Selector s=createSelectorWithPseudoElement("+", PseudoElementType.PE_BEFORE, "p", "p2");
+
+		boolean result=s.isMatch(p2, PseudoElementType.PE_BEFORE);
+		assertTrue(result);
+	}
+
+	@Test
+	public void testSiblingWithPseudoAfter()
+	{
+		Selector s=createSelectorWithPseudoElement("+", PseudoElementType.PE_AFTER, "p", "p2");
+
+		boolean result=s.isMatch(p2, PseudoElementType.PE_AFTER);
+		assertTrue(result);
+	}
+
 	public static Selector createSelector(String operator, String... names)
 	{
 		List<SelectorPart> parts=new ArrayList<>();
-		
+
 		for(String name : names)
 			parts.add(new SelectorElement(name));
-		
+
 		for(int i=0; i<parts.size(); i++)
 		{
 			if(i%2==1)
 				parts.add(i, new Operator(operator));
 		}
-		
-		Selector s=new Selector(parts);
-		
-		return s;
-	}	
-	
-	@Test
-	public void testToString()
-	{
-		Selector s=createSelector("+", "p", "p2", "p3");
 
-		System.out.println(s);
+		Selector s=new Selector(parts);
+
+		return s;
+	}
+
+	public static Selector createSelectorWithPseudoElement(String operator, PseudoElementType pseudo, String... names)
+	{
+		List<SelectorPart> parts=new ArrayList<>();
+		SelectorElement se=null;
+
+		for(String name : names)
+		{
+			se=new SelectorElement(name);
+			parts.add(se);
+		}
+
+		// se is the last one
+		se.pseudoElements=Lists.newArrayList(pseudo);
+
+		for(int i=0; i<parts.size(); i++)
+		{
+			if(i%2==1)
+				parts.add(i, new Operator(operator));
+		}
+
+		Selector s=new Selector(parts);
+
+		return s;
 	}
 }
 

@@ -63,7 +63,8 @@ public class Selector
                 	while(pit.hasNext() && !found)
                 	{
                 		lastMatchedNode=(XElement)pit.next();
-                   		found=sp.isMatch(lastMatchedNode, pseudoType);
+                		// the parent elements are not pseudos. TODO should we pass in lastMatchedNode.pseudoType() instead?
+                   		found=sp.isMatch(lastMatchedNode, PseudoElementType.PE_NOT_PSEUDO);
                 	}
                 }
                 else if(op.op.equals(">"))
@@ -71,7 +72,8 @@ public class Selector
                     if(lastMatchedNode.parentNode().type()==NodeType.X_ELEMENT)
                     {
                     	lastMatchedNode=(XElement)lastMatchedNode.parentNode();
-                        if(sp.isMatch(lastMatchedNode, pseudoType))
+                        // the parent elements are not pseudos. TODO should we pass in lastMatchedNode.pseudoType() instead?
+                        if(sp.isMatch(lastMatchedNode, PseudoElementType.PE_NOT_PSEUDO))
                             found=true;
                     }
                 }
@@ -80,7 +82,8 @@ public class Selector
                 	lastMatchedNode=(XElement)StyleXNodes.previous(lastMatchedNode);
                     if(lastMatchedNode!=null)
                     {
-                        if(sp.isMatch(lastMatchedNode, pseudoType))
+                        // the sibling elements are not pseudos. TODO should we pass in lastMatchedNode.pseudoType() instead?
+                        if(sp.isMatch(lastMatchedNode, PseudoElementType.PE_NOT_PSEUDO))
                             found=true;
                     }
                 }
