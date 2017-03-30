@@ -30,8 +30,8 @@ public class TestCounters
 	{
 		Value resetValue=new Identifier("mycounter");
 		Value incrementValue=new Identifier("mycounter");
-		when(velement.getPropertyValue("counter-reset", MediaType.MT_SCREEN, PseudoElementType.PE_NOT_PSEUDO)).thenReturn(resetValue);
-		when(velement.getPropertyValue("counter-increment", MediaType.MT_SCREEN, PseudoElementType.PE_NOT_PSEUDO)).thenReturn(incrementValue);
+		when(velement.getPropertyValue("counter-reset", MediaType.MT_SCREEN)).thenReturn(resetValue);
+		when(velement.getPropertyValue("counter-increment", MediaType.MT_SCREEN)).thenReturn(incrementValue);
 		when(velement.find_counter(anyString())).thenReturn(velement);
 		
 		Counters.handleCounters(velement);
@@ -45,8 +45,8 @@ public class TestCounters
 	{
 		ValueList resetValue=TestCounterActions.vl("mycounter", 1, "mycounter2", 2);
 		Value incrementValue=TestCounterActions.vl("mycounter", 1, "mycounter2", 2);
-		when(velement.getPropertyValue("counter-reset", MediaType.MT_SCREEN, PseudoElementType.PE_NOT_PSEUDO)).thenReturn(resetValue);
-		when(velement.getPropertyValue("counter-increment", MediaType.MT_SCREEN, PseudoElementType.PE_NOT_PSEUDO)).thenReturn(incrementValue);
+		when(velement.getPropertyValue("counter-reset", MediaType.MT_SCREEN)).thenReturn(resetValue);
+		when(velement.getPropertyValue("counter-increment", MediaType.MT_SCREEN)).thenReturn(incrementValue);
 		when(velement.find_counter(anyString())).thenReturn(velement);
 		
 		Counters.handleCounters(velement);
@@ -62,8 +62,8 @@ public class TestCounters
 	{
 		ValueList resetValue=TestCounterActions.vl("mycounter", 1, "mycounter2");
 		Value incrementValue=TestCounterActions.vl("mycounter", "mycounter2", 2);
-		when(velement.getPropertyValue("counter-reset", MediaType.MT_SCREEN, PseudoElementType.PE_NOT_PSEUDO)).thenReturn(resetValue);
-		when(velement.getPropertyValue("counter-increment", MediaType.MT_SCREEN, PseudoElementType.PE_NOT_PSEUDO)).thenReturn(incrementValue);
+		when(velement.getPropertyValue("counter-reset", MediaType.MT_SCREEN)).thenReturn(resetValue);
+		when(velement.getPropertyValue("counter-increment", MediaType.MT_SCREEN)).thenReturn(incrementValue);
 		when(velement.find_counter(anyString())).thenReturn(velement);
 		
 		Counters.handleCounters(velement);
@@ -79,8 +79,8 @@ public class TestCounters
 	{
 		Value resetValue=new Identifier("none");
 		Value incrementValue=new Identifier("none");
-		when(velement.getPropertyValue("counter-reset", MediaType.MT_SCREEN, PseudoElementType.PE_NOT_PSEUDO)).thenReturn(resetValue);
-		when(velement.getPropertyValue("counter-increment", MediaType.MT_SCREEN, PseudoElementType.PE_NOT_PSEUDO)).thenReturn(incrementValue);
+		when(velement.getPropertyValue("counter-reset", MediaType.MT_SCREEN)).thenReturn(resetValue);
+		when(velement.getPropertyValue("counter-increment", MediaType.MT_SCREEN)).thenReturn(incrementValue);
 		when(velement.find_counter(anyString())).thenReturn(velement);
 		
 		Counters.handleCounters(velement);
@@ -88,6 +88,5 @@ public class TestCounters
 		verify(velement, never()).reset_counter(anyString(), anyInt());
 		verify(velement, never()).inc_counter(anyString(), anyInt());
 	}
-	
 }
 

@@ -8,8 +8,9 @@ import com.github.s262316.forx.tree.style.StringValue;
 import com.github.s262316.forx.tree.style.Value;
 import com.github.s262316.forx.tree.style.ValueList;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
+
+import java.util.Optional;
 
 public class ValuesHelper
 {
@@ -20,7 +21,7 @@ public class ValuesHelper
 			return Optional.of(((Identifier)value).ident);
 		}
 		else
-			return Optional.absent();
+			return Optional.empty();
 	}
 	
 	public static Optional<Integer> getInt(Value value)
@@ -30,7 +31,7 @@ public class ValuesHelper
 			return Optional.of((int)((com.github.s262316.forx.tree.style.NumericValue)value).amount);
 		}
 		else
-			return Optional.absent();
+			return Optional.empty();
 	}	
 	
 	/**

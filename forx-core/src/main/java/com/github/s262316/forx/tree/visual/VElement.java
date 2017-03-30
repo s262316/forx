@@ -11,6 +11,7 @@ import com.github.s262316.forx.tree.style.selectors.PseudoElementType;
 public interface VElement
 {
     public Value getPropertyValue(String property, MediaType mediaType, PseudoElementType pseudoType);
+    public Value getPropertyValue(String property, MediaType mediaType);
     public void reset_counter(String name, int to);
     public void inc_counter(String name, int amount);
     public int counter_value(String name);

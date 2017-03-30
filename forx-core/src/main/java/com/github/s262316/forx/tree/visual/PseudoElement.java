@@ -2,6 +2,7 @@ package com.github.s262316.forx.tree.visual;
 
 import java.awt.Font;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +48,7 @@ public class PseudoElement implements Visual, VElement
     private XmlVElement subject;
     private PseudoElementType pseudoType;
     private Box visualPart;
-    private Map<String, Integer> counters;
+    private Map<String, Integer> counters=new HashMap<>();
 
     public PseudoElement(XmlVElement subj, PseudoElementType pt)
     {
@@ -363,6 +364,7 @@ public class PseudoElement implements Visual, VElement
         return subject.getPropertyValue(property, mediaType, pseudoType);
     }
 
+    @Override
     public Value getPropertyValue(String property, MediaType mediaType)
     {
         return getPropertyValue(property, mediaType, PseudoElementType.PE_BEFORE);

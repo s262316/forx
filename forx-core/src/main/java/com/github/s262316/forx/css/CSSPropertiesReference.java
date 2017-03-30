@@ -10,7 +10,10 @@ import com.github.s262316.forx.tree.style.Declaration;
 import com.github.s262316.forx.tree.style.PropertyReference;
 import com.github.s262316.forx.tree.style.ShorthandPropertyReference;
 import com.github.s262316.forx.tree.style.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
 
 @Component
 public class CSSPropertiesReference
@@ -26,6 +29,7 @@ public class CSSPropertiesReference
 		BorderStyles borderStyles=new BorderStyles();
 		CssProperties p=new CssProperties();
 		shorthandPropertyTable=p.cssShorthandPropertyTable(borderStyles);
+		// TODO do not call this??
 		propertyTable=p.cssPropertyTable(borderStyles);
 	}
 

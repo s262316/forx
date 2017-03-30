@@ -12,12 +12,16 @@ import com.github.s262316.forx.tree.style.StringValue;
 import com.github.s262316.forx.tree.style.util.ValuesHelper;
 
 import com.google.common.collect.ImmutableMap;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class CssProperties
 {
+	@Autowired
+	GeneratedContent generatedContent;
+
 	@Bean
 	public Map<String, ShorthandPropertyReference> cssShorthandPropertyTable(BorderStyles borderStyles)
 	{
@@ -90,7 +94,7 @@ public class CssProperties
 			.put("font-variant", new PropertyReference("font-variant", true, new Identifier("normal"), null))
 			.put("font-weight", new PropertyReference("font-weight", true, new Identifier("normal"), null))
 			.put("font-size", new PropertyReference("font-size", true, new Identifier("medium"), null))
-			.put("content", new PropertyReference("content", false, new Identifier("normal"), null))
+			.put("content", new PropertyReference("content", false, new Identifier("normal"), generatedContent::validateContentProperty))
 			.put("quotes", new PropertyReference("quotes", true, ValuesHelper.newValueList(new StringValue("\""), new StringValue("\""), new StringValue("\'"), new StringValue("\'")), null))
 			.put("counter-reset", new PropertyReference("counter-reset", false, new Identifier("none"), null))
 			.put("counter-increment", new PropertyReference("counter-increment", false, new Identifier("none"), null))

@@ -4,8 +4,9 @@ import javax.annotation.Nullable;
 
 import com.github.s262316.forx.tree.style.Value;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
+
+import java.util.Optional;
 
 public class FilterNoneValues implements Predicate<Value>
 {
@@ -14,6 +15,6 @@ public class FilterNoneValues implements Predicate<Value>
 	{
 		Optional<String> identifier=ValuesHelper.getIdentifier(input);
 
-		return !identifier.or("").equals("none");
+		return !identifier.orElse("").equals("none");
 	}
 }

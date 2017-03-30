@@ -2,6 +2,7 @@ package com.github.s262316.forx.css;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import com.github.s262316.forx.gui.CounterAction;
 import com.github.s262316.forx.tree.style.DummyValue;
@@ -13,7 +14,6 @@ import com.github.s262316.forx.tree.style.util.FilterNoneValues;
 import com.github.s262316.forx.tree.style.util.ValuesHelper;
 import com.github.s262316.forx.tree.visual.VElement;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.PeekingIterator;
@@ -50,7 +50,7 @@ public class Counters
 					counterAmount=Optional.of(missingAmount);
 				
 				
-				counterActions.add(new CounterAction(counterName.get(), counterAmount.or(missingAmount)));
+				counterActions.add(new CounterAction(counterName.get(), counterAmount.orElse(missingAmount)));
 			}
 			
 			return counterActions;
@@ -67,14 +67,14 @@ public class Counters
 		Value v;
 
 		// look for any counters
-		v=visual_element.getPropertyValue("counter-reset", MediaType.MT_SCREEN, PseudoElementType.PE_NOT_PSEUDO);
+		v=visual_element.getPropertyValue("counter-reset", MediaType.MT_SCREEN);
 		List<CounterAction> resets=counterActions(v, 0);
 		for(CounterAction action : resets)
 		{
 			visual_element.reset_counter(action.getName(), action.getAmount());
 		}
 		
-        v=visual_element.getPropertyValue("counter-increment", MediaType.MT_SCREEN, PseudoElementType.PE_NOT_PSEUDO);
+        v=visual_element.getPropertyValue("counter-increment", MediaType.MT_SCREEN);
 		List<CounterAction> increments=counterActions(v, 1);
 		for(CounterAction action : increments)
 		{

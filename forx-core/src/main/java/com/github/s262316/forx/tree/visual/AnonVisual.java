@@ -214,6 +214,12 @@ public class AnonVisual implements Visual, VElement
     }
 
     @Override
+    public Value getPropertyValue(String property, MediaType mediaType)
+    {
+        return getPropertyValue(property, mediaType, PseudoElementType.PE_NOT_PSEUDO);
+    }
+
+    @Override
     public VElement find_counter(String name)
     {
         return null;

@@ -462,7 +462,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 
     public XmlVElement visualParentNode()
     {
-		if(parentNode().getClass().equals(XmlVElement.class))
+		if(parentNode()!=null && XmlVElement.class.isAssignableFrom(parentNode().getClass()))
 		{
 			return (XmlVElement)parentNode();
 		}
@@ -715,8 +715,13 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 
         if(!counters.containsKey(name))
         {
-            // the counter is not in our map... try the non-pseudo node
-            ve=visualParentNode().find_counter(name);
+        	if(visualParentNode()!=null)
+			{
+				// the counter is not in our map... try the parent node
+				ve = visualParentNode().find_counter(name);
+			}
+			else
+				return null;
         }
         else
             ve=this;
