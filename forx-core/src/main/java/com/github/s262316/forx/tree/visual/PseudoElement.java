@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.fracpete.romannumerals4j.RomanNumeralFormat;
 import com.github.s262316.forx.box.BlockBox;
 import com.github.s262316.forx.box.Box;
 import com.github.s262316.forx.box.BoxError;
@@ -43,6 +44,7 @@ import com.github.s262316.forx.tree.style.StringValue;
 import com.github.s262316.forx.tree.style.Value;
 import com.github.s262316.forx.tree.style.ValueList;
 import com.github.s262316.forx.tree.style.selectors.PseudoElementType;
+import org.apache.commons.lang3.StringUtils;
 
 public class PseudoElement implements Visual, VElement
 {
@@ -293,6 +295,7 @@ public class PseudoElement implements Visual, VElement
         Identifier counter_name=null, counter_style;
         String result="";
         int value;
+        RomanNumeralFormat romanFormat = new RomanNumeralFormat();
 
         v=values.members.get(0);
         if(v.getClass().equals(Identifier.class))
@@ -328,11 +331,14 @@ public class PseudoElement implements Visual, VElement
                     if(value < 10)
                         result="0" + result;
                 }
-                //			else if(counter_style.ident=="lower-roman")
-                //			{
-                //			}
-                //			else if(counter_style.ident=="upper-roman")
-                //				;
+                else if(StringUtils.equals(counter_style.ident, "lower-roman"))
+                {
+                    result=romanFormat.format(value).toLowerCase();
+                }
+                else if(StringUtils.equals(counter_style.ident, "upper-roman"))
+                {
+                    result=romanFormat.format(value);
+                }
                 //			else if(counter_style.ident=="lower-greek")
                 //				;
                 else if(counter_style.ident.equals("lower-latin"))
