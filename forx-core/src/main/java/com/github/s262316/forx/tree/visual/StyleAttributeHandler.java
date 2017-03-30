@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
 
+import com.github.s262316.forx.css.CSSPropertiesReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,13 +37,15 @@ public class StyleAttributeHandler extends XMutationListener
 	
 	/** element that has been added/removed/connected/disconnected */
 	private XmlVElement changed;
+	private CSSPropertiesReference cssPropertiesReference;
 	
-	public StyleAttributeHandler(XmlVElement changed)
+	public StyleAttributeHandler(XmlVElement changed, CSSPropertiesReference cssPropertiesReference)
 	{
 		super(new SelectorPredicate(Selectors.createAttributeNameSelector("style")),
 				PropagationType.ON_TARGET, changed, EnumSet.of(MutationType.ADD));
 		
 		this.changed=changed;
+		this.cssPropertiesReference=cssPropertiesReference;
 	}
 	
 	@Override
@@ -77,7 +80,7 @@ public class StyleAttributeHandler extends XMutationListener
 
 		try
 		{
-			CSSParser parser=new CSSParser(a.getValue(), (XmlDocument)changed.getDocument(), ((XmlDocument)changed.getDocument()).getCssLoader());
+			CSSParser parser=new CSSParser(a.getValue(), (XmlDocument)changed.getDocument(), ((XmlDocument)changed.getDocument()).getCssLoader(), cssPropertiesReference);
 			List<Declaration> decs=parser.parse_declist();
 
 			changed.setStyles(decs);

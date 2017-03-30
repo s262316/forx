@@ -28,11 +28,11 @@ public class TestLinkElementHandler
 
         XmlDocument doc=Mockito.mock(XmlDocument.class);
         when(doc.getCharset()).thenReturn(Optional.of(StandardCharsets.UTF_8));
-        XmlVElement spyElement=new XmlVElement("link", doc, 0, null, null);
+        XmlVElement spyElement=new XmlVElement("link", doc, 0, null, null, null);
         spyElement.setAttr("href", url.toString());
         spyElement.setAttr("charset", "utf-8");
         XmlVElement element=Mockito.spy(spyElement);
-        LinkElementHandler listener=new LinkElementHandler(element);
+        LinkElementHandler listener=new LinkElementHandler(element, null);
 
         ReflectionTestUtils.setField(listener, "connected", true);
 
@@ -48,11 +48,11 @@ public class TestLinkElementHandler
 
         XmlDocument doc=Mockito.mock(XmlDocument.class);
         when(doc.getCharset()).thenReturn(Optional.of(StandardCharsets.UTF_8));
-        XmlVElement spyElement=new XmlVElement("link", doc, 0, null, null);
+        XmlVElement spyElement=new XmlVElement("link", doc, 0, null, null, null);
         spyElement.setAttr("href", url.toString());
         spyElement.setAttr("charset", "utf-8");
         XmlVElement element=Mockito.spy(spyElement);
-        LinkElementHandler listener=new LinkElementHandler(element);
+        LinkElementHandler listener=new LinkElementHandler(element, null);
 
         listener.added(new XmlMutationEvent(MutationType.ADD, element));
         verify(doc, never()).demergeStylesFrom(any(XmlVElement.class));
@@ -65,8 +65,8 @@ public class TestLinkElementHandler
     {
         XmlDocument doc=Mockito.mock(XmlDocument.class);
         when(doc.getCharset()).thenReturn(Optional.of(StandardCharsets.UTF_8));
-        XmlVElement element=Mockito.spy(new XmlVElement("link", doc, 0, null, null));
-        LinkElementHandler listener=new LinkElementHandler(element);
+        XmlVElement element=Mockito.spy(new XmlVElement("link", doc, 0, null, null, null));
+        LinkElementHandler listener=new LinkElementHandler(element, null);
 
         ReflectionTestUtils.setField(listener, "connected", true);
         ReflectionTestUtils.setField(listener, "linkElementStylesheet", new Stylesheet(null, null));
@@ -85,11 +85,11 @@ public class TestLinkElementHandler
 
         XmlDocument doc=Mockito.mock(XmlDocument.class);
         when(doc.getCharset()).thenReturn(Optional.of(StandardCharsets.UTF_8));
-        XmlVElement spyElement=new XmlVElement("link", doc, 0, null, null);
+        XmlVElement spyElement=new XmlVElement("link", doc, 0, null, null, null);
         spyElement.setAttr("href", url.toString());
         spyElement.setAttr("charset", "utf-8");
         XmlVElement element=Mockito.spy(spyElement);
-        LinkElementHandler listener=new LinkElementHandler(element);
+        LinkElementHandler listener=new LinkElementHandler(element, null);
 
         Stylesheet ss=new Stylesheet(null, null);
         ReflectionTestUtils.setField(listener, "linkElementStylesheet", ss);

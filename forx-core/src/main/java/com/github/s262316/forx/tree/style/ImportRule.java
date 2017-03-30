@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.github.s262316.forx.css.CSSParser;
 import com.github.s262316.forx.css.CSSParserException;
+import com.github.s262316.forx.css.CSSPropertiesReference;
 import com.github.s262316.forx.net.ResourceLoader;
 
 import com.google.common.collect.Sets;
@@ -17,13 +18,15 @@ public class ImportRule
     private Set<MediaType> media;
     private ResourceLoader resourceLoader;
     private ReferringDocument referringDocument;
+    private CSSPropertiesReference cssPropertiesReference;
     
-    public ImportRule(String location, Set<MediaType> media, ResourceLoader resourceLoader, ReferringDocument referringDocument)
+    public ImportRule(String location, Set<MediaType> media, ResourceLoader resourceLoader, ReferringDocument referringDocument, CSSPropertiesReference cssPropertiesReference)
 	{
 		this.location = location;
 		this.media = media;
 		this.resourceLoader = resourceLoader;
         this.referringDocument=referringDocument;
+        this.cssPropertiesReference=cssPropertiesReference;
 	}
 
 	public Stylesheet loadStylesheet(Set<MediaType> usingMediaTypesOf) throws MalformedURLException, IOException, CSSParserException
@@ -31,7 +34,7 @@ public class ImportRule
 		if(!Sets.intersection(usingMediaTypesOf, media).isEmpty() ||
                 media.contains(MediaType.MT_ALL))
 		{
-            CSSParser parser=new CSSParser(location, referringDocument, resourceLoader);
+            CSSParser parser=new CSSParser(location, referringDocument, resourceLoader, cssPropertiesReference);
             Stylesheet ss=parser.parse_stylesheet();
 
 	    	return ss;

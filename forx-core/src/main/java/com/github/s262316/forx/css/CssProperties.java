@@ -19,9 +19,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class CssProperties
 {
-	@Autowired
-	GeneratedContent generatedContent;
-
 	@Bean
 	public Map<String, ShorthandPropertyReference> cssShorthandPropertyTable(BorderStyles borderStyles)
 	{
@@ -46,7 +43,7 @@ public class CssProperties
 	}
 
 	@Bean
-	public Map<String, PropertyReference> cssPropertyTable(BorderStyles borderStyles)
+	public Map<String, PropertyReference> cssPropertyTable(BorderStyles borderStyles, GeneratedContent generatedContent)
 	{
 		ImmutableMap<String, PropertyReference> propertyTable = new ImmutableMap.Builder<String, PropertyReference>()
 			.put("display", new PropertyReference("display", false, new Identifier("inline"), null))

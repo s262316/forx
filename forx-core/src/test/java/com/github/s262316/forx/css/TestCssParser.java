@@ -58,7 +58,7 @@ public class TestCssParser
 	public void parseSimpleRuleset() throws Exception
 	{
 		TestReferringDocument referrer=new TestReferringDocument();		
-		CSSParser parser=new CSSParser("p { color : red }", referrer);
+		CSSParser parser=new CSSParser("p { color : red }", referrer, null);
 
 		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
 		tokenizer.advance();				
@@ -79,7 +79,7 @@ public class TestCssParser
 	public void testParseRulesetGroupedSelectors() throws Exception
 	{
 		TestReferringDocument referrer=new TestReferringDocument();		
-		CSSParser parser=new CSSParser("p , h4 { color : red }", referrer);
+		CSSParser parser=new CSSParser("p , h4 { color : red }", referrer, null);
 
 		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
 		tokenizer.advance();				
@@ -109,7 +109,7 @@ public class TestCssParser
 	public void testParseRulesetBadSelector() throws Exception
 	{
 		TestReferringDocument referrer=new TestReferringDocument();		
-		CSSParser parser=new CSSParser("p , h4 , { color : red }\r\ndiv { color : green }", referrer);
+		CSSParser parser=new CSSParser("p , h4 , { color : red }\r\ndiv { color : green }", referrer, null);
 
 		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
 		tokenizer.advance();				
@@ -124,7 +124,7 @@ public class TestCssParser
 	public void testParseRulesetBadSelector2() throws Exception
 	{
 		TestReferringDocument referrer=new TestReferringDocument();		
-		CSSParser parser=new CSSParser(".1 { color: red; }", referrer);
+		CSSParser parser=new CSSParser(".1 { color: red; }", referrer, null);
 
 		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
 		tokenizer.advance();				
@@ -137,7 +137,7 @@ public class TestCssParser
 	public void parseRulesetWithBadDeclarationRecovers1() throws Exception
 	{
 		TestReferringDocument referrer=new TestReferringDocument();		
-		CSSParser parser=new CSSParser("div { color: red; background-color}", referrer);
+		CSSParser parser=new CSSParser("div { color: red; background-color}", referrer, null);
 
 		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
 		tokenizer.advance();				
@@ -152,7 +152,7 @@ public class TestCssParser
 	public void parseRulesetWithBadDeclarationRecovers2() throws Exception
 	{
 		TestReferringDocument referrer=new TestReferringDocument();		
-		CSSParser parser=new CSSParser("div { background-color: ; color : red }", referrer);
+		CSSParser parser=new CSSParser("div { background-color: ; color : red }", referrer, null);
 
 		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
 		tokenizer.advance();				
@@ -167,7 +167,7 @@ public class TestCssParser
 	public void testParseRulesetDuplicateProperties() throws Exception
 	{
 		TestReferringDocument referrer=new TestReferringDocument();		
-		CSSParser parser=new CSSParser("div { color: red; color : blue}", referrer);
+		CSSParser parser=new CSSParser("div { color: red; color : blue}", referrer, null);
 
 		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
 		tokenizer.advance();
@@ -180,7 +180,7 @@ public class TestCssParser
 	public void testIdInvalidSelector() throws Exception
 	{
 		TestReferringDocument referrer=new TestReferringDocument();		
-		CSSParser parser=new CSSParser("#1ident { color : red }\r\n div { color : green }", referrer);
+		CSSParser parser=new CSSParser("#1ident { color : red }\r\n div { color : green }", referrer, null);
 
 		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
 		tokenizer.advance();				
@@ -195,7 +195,7 @@ public class TestCssParser
 	public void parseRulesetWithMultipleSelectors() throws Exception
 	{
 		TestReferringDocument referrer=new TestReferringDocument();		
-		CSSParser parser=new CSSParser(".one, .two, .three { color: green; }", referrer);
+		CSSParser parser=new CSSParser(".one, .two, .three { color: green; }", referrer, null);
 
 		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
 		tokenizer.advance();				
@@ -238,7 +238,7 @@ public class TestCssParser
 	public void parseRulesetWithUniversalSelector() throws Exception
 	{
 		TestReferringDocument referrer=new TestReferringDocument();		
-		CSSParser parser=new CSSParser("* { color: white  }", referrer);
+		CSSParser parser=new CSSParser("* { color: white  }", referrer, null);
 
 		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
 		tokenizer.advance();				
@@ -262,7 +262,7 @@ public class TestCssParser
 	public void parseRulesetWithMultipleDeclarations() throws Exception
 	{
 		TestReferringDocument referrer=new TestReferringDocument();		
-		CSSParser parser=new CSSParser("* { color: white ; background-color: green ; }", referrer);
+		CSSParser parser=new CSSParser("* { color: white ; background-color: green ; }", referrer, null);
 
 		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
 		tokenizer.advance();				
@@ -281,7 +281,7 @@ public class TestCssParser
 	public void parseRulesetWithMultipleImportants() throws Exception
 	{
 		TestReferringDocument referrer=new TestReferringDocument();		
-		CSSParser parser=new CSSParser("* { color: white ! important; background-color: green ! important; }", referrer);
+		CSSParser parser=new CSSParser("* { color: white ! important; background-color: green ! important; }", referrer, null);
 
 		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
 		tokenizer.advance();				
@@ -300,7 +300,7 @@ public class TestCssParser
 	public void testParseAttrib() throws Exception
 	{
 		TestReferringDocument referrer=new TestReferringDocument();		
-		CSSParser parser=new CSSParser("[id=\"foo\"]", referrer);
+		CSSParser parser=new CSSParser("[id=\"foo\"]", referrer, null);
 
 		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
 		tokenizer.advance();				
@@ -318,7 +318,7 @@ public class TestCssParser
 		CSSParser parser=new CSSParser(TEST_SERVER_URL+"simple.cass", null, null);
 
 		Set<MediaType> media=Sets.newHashSet();
-		ImportRule imr=new ImportRule(TEST_SERVER_URL+"simple2.css", media, null, null);
+		ImportRule imr=new ImportRule(TEST_SERVER_URL+"simple2.css", media, null, null, null);
 
 //	    Stylesheet ss=parser.importRules(imr);
 //	    assertEquals(new Identifier("red"), Iterables.get(ss.getRuleset(), 0).getDeclarations().get("color").getValue());
@@ -332,7 +332,7 @@ public class TestCssParser
 
 	    URL location=new URL("simple.css");
 		Set<MediaType> media=Sets.newHashSet();
-		ImportRule imr=new ImportRule(TEST_SERVER_URL+"myfile.html", media, null, null);
+		ImportRule imr=new ImportRule(TEST_SERVER_URL+"myfile.html", media, null, null, null);
 
 //	    Stylesheet ss=parser.importRules(imr);
 //	    assertEquals(new Identifier("green"), Iterables.get(ss.getRuleset(), 0).getDeclarations().get("color").getValue());
@@ -343,7 +343,7 @@ public class TestCssParser
 	public void cssParserIgnoresCharsetAndAdvancesPast() throws Exception
 	{
 		TestReferringDocument referrer=new TestReferringDocument();
-		CSSParser parser=new CSSParser("@charset \"something\"; div ", referrer);
+		CSSParser parser=new CSSParser("@charset \"something\"; div ", referrer, null);
 
 		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
 		tokenizer.advance();
@@ -361,7 +361,7 @@ public class TestCssParser
 		Mockito.when(valueParser.parse()).thenThrow(BadValueException.class);
 		
 		TestReferringDocument referrer=new TestReferringDocument();
-		CSSParser parser=new CSSParser("color : redddd !important", referrer);
+		CSSParser parser=new CSSParser("color : redddd !important", referrer, null);
 		ReflectionTestUtils.setField(parser, "valueParser", valueParser);
 	
 		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
@@ -374,7 +374,7 @@ public class TestCssParser
 	public void validDeclarationParses() throws Exception
 	{
 		TestReferringDocument referrer=new TestReferringDocument();
-		CSSParser parser=new CSSParser("color : red", referrer);
+		CSSParser parser=new CSSParser("color : red", referrer, null);
 	
 		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
 		tokenizer.advance();
@@ -389,7 +389,7 @@ public class TestCssParser
 	public void propertyIsLowerCased() throws Exception
 	{
 		TestReferringDocument referrer=new TestReferringDocument();
-		CSSParser parser=new CSSParser("COLOR : red", referrer);
+		CSSParser parser=new CSSParser("COLOR : red", referrer, null);
 
 		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
 		tokenizer.advance();
@@ -402,7 +402,7 @@ public class TestCssParser
 	public void declarationWithoutColonOrValueFails() throws Exception
 	{
 		TestReferringDocument referrer=new TestReferringDocument();
-		CSSParser parser=new CSSParser("color", referrer);
+		CSSParser parser=new CSSParser("color", referrer, null);
 	
 		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
 		tokenizer.advance();
@@ -414,7 +414,7 @@ public class TestCssParser
 	public void declarationWithoutValueFails() throws Exception
 	{
 		TestReferringDocument referrer=new TestReferringDocument();
-		CSSParser parser=new CSSParser("color : ", referrer);
+		CSSParser parser=new CSSParser("color : ", referrer, null);
 	
 		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
 		tokenizer.advance();
@@ -426,7 +426,7 @@ public class TestCssParser
 	public void declarationWithoutPropertyFails() throws Exception
 	{
 		TestReferringDocument referrer=new TestReferringDocument();
-		CSSParser parser=new CSSParser(" : red ", referrer);
+		CSSParser parser=new CSSParser(" : red ", referrer, null);
 	
 		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
 		tokenizer.advance();
@@ -438,7 +438,7 @@ public class TestCssParser
 	public void prematureEndOfRuleset() throws Exception
 	{
 		TestReferringDocument referrer=new TestReferringDocument();
-		CSSParser parser=new CSSParser("selector", referrer);
+		CSSParser parser=new CSSParser("selector", referrer, null);
 
 		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
 		tokenizer.advance();
@@ -450,7 +450,7 @@ public class TestCssParser
 	public void selectorContainsEscapedPunct() throws Exception
 	{
 		TestReferringDocument referrer=new TestReferringDocument();
-		CSSParser parser=new CSSParser("p.class#id \\{ background", referrer);
+		CSSParser parser=new CSSParser("p.class#id \\{ background", referrer, null);
 
 		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
 		tokenizer.advance();
@@ -470,13 +470,11 @@ public class TestCssParser
 	public void badPseudoSelector() throws Exception
 	{
 		TestReferringDocument referrer = new TestReferringDocument();
-		CSSParser parser = new CSSParser("background: red", referrer);
+		CSSParser parser = new CSSParser("background: red", referrer, null);
 
 		Tokenizer tokenizer = (Tokenizer) ReflectionTestUtils.getField(parser, "tok");
 		tokenizer.advance();
 
 		parser.parse_selector();
 	}
-
-
 }

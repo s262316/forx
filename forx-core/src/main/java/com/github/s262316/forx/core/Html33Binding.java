@@ -21,7 +21,7 @@ import com.github.s262316.forx.tree.impl.XmlDocument;
 import com.github.s262316.forx.tree.impl.XmlNode;
 import com.github.s262316.forx.tree.visual.XmlVElement;
 
-
+@Deprecated
 public class Html33Binding extends HTMLEditorKit.ParserCallback 
 {
 	private final static Logger logger=LoggerFactory.getLogger(Html33Binding.class);
@@ -35,7 +35,7 @@ public class Html33Binding extends HTMLEditorKit.ParserCallback
     {
         this.builder=builder;
         
-	    doc=new XmlDocument(null, builder, eventDispatcher, null);
+	    doc=new XmlDocument(null, builder, eventDispatcher, null, null);
     }
 
     public XmlDocument getDoc()

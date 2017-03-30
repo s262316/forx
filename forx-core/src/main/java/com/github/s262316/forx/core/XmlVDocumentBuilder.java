@@ -2,6 +2,7 @@ package com.github.s262316.forx.core;
 
 import java.util.Map;
 
+import com.github.s262316.forx.css.CSSPropertiesReference;
 import com.github.s262316.forx.tree.visual.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,12 +32,14 @@ public class XmlVDocumentBuilder implements XmlDocumentBuilder
     private XmlDocument doc;
     private BoxRealMapping boxRealMapping;
     private EventDispatcher eventDispatcher;
+    private CSSPropertiesReference cssPropertiesReference;
 
-    public XmlVDocumentBuilder(GraphicsContext graphicsContext, EventDispatcher eventDispatcher, BoxRealMapping boxRealMapping) throws ApplicationConfigException
+    public XmlVDocumentBuilder(GraphicsContext graphicsContext, EventDispatcher eventDispatcher, BoxRealMapping boxRealMapping, CSSPropertiesReference cssPropertiesReference) throws ApplicationConfigException
     {
         this.graphicsContext=graphicsContext;
         this.boxRealMapping=boxRealMapping;
         this.eventDispatcher=eventDispatcher;
+        this.cssPropertiesReference=cssPropertiesReference;
     }
 
     @Override    
@@ -57,7 +60,7 @@ public class XmlVDocumentBuilder implements XmlDocumentBuilder
         AttributeKey ak;
         XmlAttribute a;
 
-		e=new XmlVElement(key.name, doc, nextId(), graphicsContext, eventDispatcher);
+		e=new XmlVElement(key.name, doc, nextId(), graphicsContext, eventDispatcher, cssPropertiesReference);
 
 		for(Map.Entry<String, AttributeKey> it : key.attrs.entrySet())
 		{
@@ -71,11 +74,11 @@ public class XmlVDocumentBuilder implements XmlDocumentBuilder
 		e.language=key.lang;
 
 		if(key.name.equals("style"))
-			e.addMutationListener(new StyleElementHandler(e));
+			e.addMutationListener(new StyleElementHandler(e, cssPropertiesReference));
         else if(key.name.equals("link"))
-            e.addMutationListener(new LinkElementHandler(e));
+            e.addMutationListener(new LinkElementHandler(e, cssPropertiesReference));
 
-		e.addMutationListener(new StyleAttributeHandler(e));
+		e.addMutationListener(new StyleAttributeHandler(e, cssPropertiesReference));
 		e.addMutationListener(new BoxBuilder(e, this.boxRealMapping));
 		e.addMutationListener(new MetaTagHandler(e));
 		

@@ -20,18 +20,12 @@ public class CSSPropertiesReference
 {
 	private static final Logger logger=LoggerFactory.getLogger(CSSPropertiesReference.class);
 
+	@Autowired
 	private Map<String, ShorthandPropertyReference> shorthandPropertyTable;
-
+	@Autowired
 	private Map<String, PropertyReference> propertyTable;
-
-	public CSSPropertiesReference()
-	{
-		BorderStyles borderStyles=new BorderStyles();
-		CssProperties p=new CssProperties();
-		shorthandPropertyTable=p.cssShorthandPropertyTable(borderStyles);
-		// TODO do not call this??
-		propertyTable=p.cssPropertyTable(borderStyles);
-	}
+	@Autowired
+	private BorderStyles borderStyles;
 
 	public boolean isShorthand(String propertyName)
 	{

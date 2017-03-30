@@ -12,6 +12,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 
+import com.github.s262316.forx.css.CSSPropertiesReference;
 import org.codehaus.stax2.XMLInputFactory2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,12 +40,14 @@ public class StaxBinding
     private XmlDocumentBuilder builder;
     private EventDispatcher eventDispatcher;
 	private URL location;
+	private CSSPropertiesReference propertiesReference;
 		
-    public StaxBinding(EventDispatcher eventDispatcher, XmlDocumentBuilder builder, URL location)
+    public StaxBinding(EventDispatcher eventDispatcher, XmlDocumentBuilder builder, URL location, CSSPropertiesReference propertiesReference)
     {
         this.builder=builder;
         this.eventDispatcher=eventDispatcher;
 		this.location=location;
+		this.propertiesReference=propertiesReference;
     }        
     
     public void parse(InputStream in) throws XMLStreamException
@@ -65,7 +68,7 @@ public class StaxBinding
 				
 				try
 				{
-					doc=new XmlDocument(null, builder, eventDispatcher, location);
+					doc=new XmlDocument(null, builder, eventDispatcher, location, propertiesReference);
 					doc.setProperty(VisualConstants.META_TAGS, new HashMap<String, String>());
 					builder.setDoc(doc);
 				}

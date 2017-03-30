@@ -18,10 +18,10 @@ public class TestStyleAttributeHandler
 	@Test
 	public void testOnTargetAdded()
 	{
-		XmlVElement element=new XmlVElement("name", null, 0, null, null);
+		XmlVElement element=new XmlVElement("name", null, 0, null, null, null);
 		element.setAttr("style", "display : block");
 		
-		StyleAttributeHandler handler=new StyleAttributeHandler(element);
+		StyleAttributeHandler handler=new StyleAttributeHandler(element, null);
 		handler.selectedHandle(new XmlMutationEvent(MutationType.ADD, element));
 		Value value=element.getPropertyValue("display", MediaType.MT_ALL);
 		assertEquals(new Identifier("block"), value);
@@ -30,9 +30,9 @@ public class TestStyleAttributeHandler
 	@Test
 	public void testWithoutStyleAttr()
 	{
-		XmlVElement element=new XmlVElement("name", null, 0, null, null);
+		XmlVElement element=new XmlVElement("name", null, 0, null, null, null);
 		
-		StyleAttributeHandler listener=Mockito.spy(new StyleAttributeHandler(element));
+		StyleAttributeHandler listener=Mockito.spy(new StyleAttributeHandler(element, null));
 		
 		// ensure can handle no style attribute. not crashing is pass
 		listener.selectedHandle(new XmlMutationEvent(MutationType.ADD, element));
@@ -46,10 +46,10 @@ public class TestStyleAttributeHandler
 	@Test
 	public void testAllMutationTypes()
 	{
-		XmlVElement element=new XmlVElement("name", null, 0, null, null);
+		XmlVElement element=new XmlVElement("name", null, 0, null, null, null);
 		element.setAttr("style", "display : block");
 		
-		StyleAttributeHandler listener=Mockito.spy(new StyleAttributeHandler(element));
+		StyleAttributeHandler listener=Mockito.spy(new StyleAttributeHandler(element, null));
 		
 		XmlMutationEvent addedEvent=new XmlMutationEvent(MutationType.ADD, element);
 		XmlMutationEvent removedEvent=new XmlMutationEvent(MutationType.REMOVE, element);

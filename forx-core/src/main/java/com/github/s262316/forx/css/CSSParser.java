@@ -54,12 +54,12 @@ public class CSSParser
 
     private Tokenizer tok=null;
     private int order=0;
-    private CSSPropertiesReference propertiesReference=new CSSPropertiesReference();
+    private CSSPropertiesReference propertiesReference;
     private URL url;
     private Charset charset;
     private ValueParser valueParser;
 
-    public CSSParser(String cssUrl, ReferringDocument refereringDocument, ResourceLoader resourceLoader)
+    public CSSParser(String cssUrl, ReferringDocument refereringDocument, ResourceLoader resourceLoader, CSSPropertiesReference propertiesReference)
     {
         try
         {
@@ -69,6 +69,7 @@ public class CSSParser
             this.charset=resource.getCharset();
             tok = new Tokenizer(data);
             valueParser=new ValueParser(tok);
+			this.propertiesReference=propertiesReference;
         }
         catch(IOException ioe)
         {
@@ -76,12 +77,13 @@ public class CSSParser
         }
     }
 
-    public CSSParser(String inlineCss, ReferringDocument referringDocument)
+    public CSSParser(String inlineCss, ReferringDocument referringDocument, CSSPropertiesReference propertiesReference)
     {
         this.url=referringDocument.getLocation();
         this.charset=referringDocument.getCharset().get();
         tok = new Tokenizer(inlineCss);
-        valueParser=new ValueParser(tok);        
+        valueParser=new ValueParser(tok);
+		this.propertiesReference=propertiesReference;
     }
 
 	// [ CDO | CDC | S | statement ]*;
@@ -543,7 +545,7 @@ public class CSSParser
                     .map(v -> Enum.valueOf(MediaType.class, v))
                     .collect(Collectors.toSet());
 
-            ir = new ImportRule(location, mediaTypes, new CssLoader(() -> com.google.common.base.Optional.absent()), stylesheet);
+            ir = new ImportRule(location, mediaTypes, new CssLoader(() -> com.google.common.base.Optional.absent()), stylesheet, propertiesReference);
 
             return ir;
         }

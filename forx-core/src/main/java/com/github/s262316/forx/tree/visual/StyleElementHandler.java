@@ -3,6 +3,7 @@ package com.github.s262316.forx.tree.visual;
 import java.io.IOException;
 import java.util.EnumSet;
 
+import com.github.s262316.forx.css.CSSPropertiesReference;
 import com.google.common.base.Preconditions;
 
 import com.github.s262316.forx.css.CSSParser;
@@ -36,13 +37,15 @@ public class StyleElementHandler extends XMutationListener
 	private XmlVElement styleElement;
 	private Stylesheet styleElementStylesheet;
 	private boolean connected=false;
+	private CSSPropertiesReference cssPropertiesReference;
 	
-	public StyleElementHandler(XmlVElement styleElement)
+	public StyleElementHandler(XmlVElement styleElement, CSSPropertiesReference cssPropertiesReference)
 	{
 		super(new SelectorPredicate(Selectors.createSimpleElementNameSelector("style")),
 				PropagationType.CAPTURE, styleElement, EnumSet.of(MutationType.ADD, MutationType.CONNECT, MutationType.DISCONNECT));
 		
 		this.styleElement=styleElement;
+		this.cssPropertiesReference=cssPropertiesReference;
 	}
 
 	@Override
@@ -52,7 +55,7 @@ public class StyleElementHandler extends XMutationListener
 		{
 			String text=XNodes.collectAllText(styleElement);
 
-			CSSParser parser=new CSSParser(text, (XmlDocument)styleElement.getDocument());
+			CSSParser parser=new CSSParser(text, (XmlDocument)styleElement.getDocument(), cssPropertiesReference);
 			styleElementStylesheet=parser.parse_stylesheet();
 
 			if(connected)

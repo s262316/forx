@@ -39,9 +39,9 @@ public class AnonVisual implements Visual, VElement
     private GraphicsContext graphics_context;
     private String style_lang;
     private VElement container;
-    private CSSPropertiesReference ref=new CSSPropertiesReference();
+    private CSSPropertiesReference ref;
 
-    public AnonVisual(VElement container, GraphicsContext gfxCtx, String sl)
+    public AnonVisual(VElement container, GraphicsContext gfxCtx, String sl, CSSPropertiesReference ref)
     {
         graphics_context=gfxCtx;
         style_lang=sl;
@@ -132,7 +132,7 @@ public class AnonVisual implements Visual, VElement
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang);
+        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref);
 
         return BoxFactory.createAnonymousInlineFlowBox(anon);
     }
@@ -142,7 +142,7 @@ public class AnonVisual implements Visual, VElement
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang);
+        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref);
 
         return BoxFactory.createAnonymousBlockFlowBox(anon);
     }
@@ -152,7 +152,7 @@ public class AnonVisual implements Visual, VElement
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang);
+        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref);
 
         return BoxFactory.createAnonInlineBlockRootBox(anon);
     }
@@ -162,7 +162,7 @@ public class AnonVisual implements Visual, VElement
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang);
+        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref);
 
         return BoxFactory.createAnonRowBox(anon);
     }
@@ -172,7 +172,7 @@ public class AnonVisual implements Visual, VElement
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang);
+        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref);
 
         return BoxFactory.createAnonColBox(anon);
     }
@@ -182,7 +182,7 @@ public class AnonVisual implements Visual, VElement
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang);
+        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref);
 
         return BoxFactory.createAnonTableBox(anon);
     }
@@ -192,7 +192,7 @@ public class AnonVisual implements Visual, VElement
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang);
+        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref);
 
         return BoxFactory.createAnonCellBox(anon);
     }

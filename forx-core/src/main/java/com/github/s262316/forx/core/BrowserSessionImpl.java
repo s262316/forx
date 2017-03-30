@@ -10,6 +10,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.XMLStreamException;
 
+import com.github.s262316.forx.css.CSSPropertiesReference;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
@@ -50,6 +51,8 @@ public class BrowserSessionImpl implements WebpageHolder
     private EventDispatcher eventDispatcher=new EventDispatcher();
 	@Autowired
     private BoxDrawer drawer;
+	@Autowired
+	CSSPropertiesReference cssPropertiesReference;
     
 //    @Autowired
     public BrowserSessionImpl()//BoxRealMapping realMapping, BoxDrawer drawer)
@@ -85,8 +88,8 @@ public class BrowserSessionImpl implements WebpageHolder
 
 		GraphicsContext graphicsContext=applicationContext.getBean(GraphicsContext.class);
 
-        XmlVDocumentBuilder docBuilder=new XmlVDocumentBuilder(graphicsContext, eventDispatcher, screenTranslator);
-        StaxBinding binding=new StaxBinding(eventDispatcher, docBuilder, locationUrl);
+        XmlVDocumentBuilder docBuilder=new XmlVDocumentBuilder(graphicsContext, eventDispatcher, screenTranslator, cssPropertiesReference);
+        StaxBinding binding=new StaxBinding(eventDispatcher, docBuilder, locationUrl, cssPropertiesReference);
         
         SAXParserFactory spf=SAXParserFactory.newInstance();
         spf.setNamespaceAware(true);

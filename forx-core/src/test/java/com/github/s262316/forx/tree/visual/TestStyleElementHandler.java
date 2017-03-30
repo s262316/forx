@@ -31,8 +31,8 @@ public class TestStyleElementHandler
 	public void addStyleToConnectedTree()
 	{
 		XmlDocument doc=Mockito.mock(XmlDocument.class);
-		XmlVElement element=Mockito.spy(new XmlVElement("style", doc, 0, null, null));
-		StyleElementHandler listener=new StyleElementHandler(element);
+		XmlVElement element=Mockito.spy(new XmlVElement("style", doc, 0, null, null, null));
+		StyleElementHandler listener=new StyleElementHandler(element, null);
 
 		listener.added(new XmlMutationEvent(MutationType.ADD, element));
 		verify(doc, never()).demergeStylesFrom(any(XmlVElement.class));
@@ -56,8 +56,8 @@ public class TestStyleElementHandler
 	public void addTextToStyleToConnectedTree()
 	{
 		XmlDocument doc=Mockito.mock(XmlDocument.class);
-		XmlVElement element=Mockito.spy(new XmlVElement("style", doc, 0, null, null));
-		StyleElementHandler listener=new StyleElementHandler(element);
+		XmlVElement element=Mockito.spy(new XmlVElement("style", doc, 0, null, null, null));
+		StyleElementHandler listener=new StyleElementHandler(element, null);
 
 		listener.added(new XmlMutationEvent(MutationType.ADD, element));
 		listener.connected(new XmlMutationEvent(MutationType.CONNECT, element));
@@ -83,8 +83,8 @@ public class TestStyleElementHandler
 	public void addStyleToDisconnectedTree()
 	{
 		XmlDocument doc=Mockito.mock(XmlDocument.class);
-		XmlVElement element=Mockito.spy(new XmlVElement("style", doc, 0, null, null));
-		StyleElementHandler listener=new StyleElementHandler(element);
+		XmlVElement element=Mockito.spy(new XmlVElement("style", doc, 0, null, null, null));
+		StyleElementHandler listener=new StyleElementHandler(element, null);
 
 		listener.added(new XmlMutationEvent(MutationType.ADD, element));
 		verify(doc, never()).demergeStylesFrom(any(XmlVElement.class));
@@ -96,8 +96,8 @@ public class TestStyleElementHandler
 	public void addTextToStyleToDisconnectedTree()
 	{
 		XmlDocument doc=Mockito.mock(XmlDocument.class);
-		XmlVElement element=Mockito.spy(new XmlVElement("style", doc, 0, null, null));
-		StyleElementHandler listener=new StyleElementHandler(element);
+		XmlVElement element=Mockito.spy(new XmlVElement("style", doc, 0, null, null, null));
+		StyleElementHandler listener=new StyleElementHandler(element, null);
 
 		listener.added(new XmlMutationEvent(MutationType.ADD, element));
 		
@@ -116,9 +116,9 @@ public class TestStyleElementHandler
 	public void connectStyleAndTextToConnectedTree()
 	{
 		XmlDocument doc=Mockito.mock(XmlDocument.class);
-		XmlVElement styleElement=Mockito.spy(new XmlVElement("style", doc, 0, null, null));
+		XmlVElement styleElement=Mockito.spy(new XmlVElement("style", doc, 0, null, null, null));
 		XmlVText text=new XmlVText("p { display : block }", doc, 1, null);
-		StyleElementHandler listener=new StyleElementHandler(styleElement);
+		StyleElementHandler listener=new StyleElementHandler(styleElement, null);
 		
 		listener.added(new XmlMutationEvent(MutationType.ADD, styleElement));
 		((List)ReflectionTestUtils.getField(styleElement, "members")).add(text);
@@ -138,9 +138,9 @@ public class TestStyleElementHandler
 	public void connectStyleAndTextToDisconnectedTree()
 	{
 		XmlDocument doc=Mockito.mock(XmlDocument.class);
-		XmlVElement styleElement=Mockito.spy(new XmlVElement("style", doc, 0, null, null));
+		XmlVElement styleElement=Mockito.spy(new XmlVElement("style", doc, 0, null, null, null));
 		XmlVText text=new XmlVText("p { display : block }", doc, 1, null);
-		StyleElementHandler listener=new StyleElementHandler(styleElement);
+		StyleElementHandler listener=new StyleElementHandler(styleElement, null);
 
 		listener.added(new XmlMutationEvent(MutationType.ADD, styleElement));
 		((List)ReflectionTestUtils.getField(styleElement, "members")).add(text);
@@ -157,10 +157,10 @@ public class TestStyleElementHandler
 	public void addMoreTextToStyleInConnectedTree()
 	{
 		XmlDocument doc=Mockito.mock(XmlDocument.class);
-		XmlVElement styleElement=Mockito.spy(new XmlVElement("style", doc, 0, null, null));
+		XmlVElement styleElement=Mockito.spy(new XmlVElement("style", doc, 0, null, null, null));
 		XmlVText text1=new XmlVText("p { display : block }", doc, 1, null);
 		XmlVText text2=new XmlVText("div { display : block }", doc, 2, null);
-		StyleElementHandler listener=new StyleElementHandler(styleElement);
+		StyleElementHandler listener=new StyleElementHandler(styleElement, null);
 
 		listener.added(new XmlMutationEvent(MutationType.ADD, styleElement));
 		listener.connected(new XmlMutationEvent(MutationType.CONNECT, styleElement));
@@ -190,10 +190,10 @@ public class TestStyleElementHandler
 	public void addMoreTextToDisconnectedTree()
 	{
 		XmlDocument doc=Mockito.mock(XmlDocument.class);
-		XmlVElement styleElement=Mockito.spy(new XmlVElement("style", doc, 0, null, null));
+		XmlVElement styleElement=Mockito.spy(new XmlVElement("style", doc, 0, null, null, null));
 		XmlVText text1=new XmlVText("p { display : block }", doc, 1, null);
 		XmlVText text2=new XmlVText("div { display : block }", doc, 2, null);
-		StyleElementHandler listener=new StyleElementHandler(styleElement);
+		StyleElementHandler listener=new StyleElementHandler(styleElement, null);
 
 		listener.added(new XmlMutationEvent(MutationType.ADD, styleElement));
 		((List)ReflectionTestUtils.getField(styleElement, "members")).add(text1);
@@ -217,8 +217,8 @@ public class TestStyleElementHandler
 	public void testDisconnectStyleFromConnectedTree()
 	{
 		XmlDocument doc=Mockito.mock(XmlDocument.class);
-		XmlVElement element=Mockito.spy(new XmlVElement("style", doc, 0, null, null));
-		StyleElementHandler listener=new StyleElementHandler(element);
+		XmlVElement element=Mockito.spy(new XmlVElement("style", doc, 0, null, null, null));
+		StyleElementHandler listener=new StyleElementHandler(element, null);
 
 		listener.added(new XmlMutationEvent(MutationType.ADD, element));
 		listener.connected(new XmlMutationEvent(MutationType.CONNECT, element));
@@ -235,8 +235,8 @@ public class TestStyleElementHandler
 	public void testDisconnectStyleFromDisconnectedTree()
 	{
 		XmlDocument doc=Mockito.mock(XmlDocument.class);
-		XmlVElement element=Mockito.spy(new XmlVElement("style", doc, 0, null, null));
-		StyleElementHandler listener=new StyleElementHandler(element);
+		XmlVElement element=Mockito.spy(new XmlVElement("style", doc, 0, null, null, null));
+		StyleElementHandler listener=new StyleElementHandler(element, null);
 
 		listener.added(new XmlMutationEvent(MutationType.ADD, element));
 		listener.removed(new XmlMutationEvent(MutationType.REMOVE, element));
@@ -250,8 +250,8 @@ public class TestStyleElementHandler
 	public void testDisconnectTextFromStyleInConnectedTree()
 	{
 		XmlDocument doc=Mockito.mock(XmlDocument.class);
-		XmlVElement element=Mockito.spy(new XmlVElement("style", doc, 0, null, null));
-		StyleElementHandler listener=new StyleElementHandler(element);
+		XmlVElement element=Mockito.spy(new XmlVElement("style", doc, 0, null, null, null));
+		StyleElementHandler listener=new StyleElementHandler(element, null);
 
 		listener.added(new XmlMutationEvent(MutationType.ADD, element));
 		listener.connected(new XmlMutationEvent(MutationType.CONNECT, element));
@@ -280,8 +280,8 @@ public class TestStyleElementHandler
 	public void testDisconnectTextFromStyleInDisconnectedTree()
 	{
 		XmlDocument doc=Mockito.mock(XmlDocument.class);
-		XmlVElement element=Mockito.spy(new XmlVElement("style", doc, 0, null, null));
-		StyleElementHandler listener=new StyleElementHandler(element);
+		XmlVElement element=Mockito.spy(new XmlVElement("style", doc, 0, null, null, null));
+		StyleElementHandler listener=new StyleElementHandler(element, null);
 
 		listener.added(new XmlMutationEvent(MutationType.ADD, element));
 
@@ -307,10 +307,10 @@ public class TestStyleElementHandler
 	public void testDisconnectText2FromStyleInConnectedTree()
 	{
 		XmlDocument doc=Mockito.mock(XmlDocument.class);
-		XmlVElement styleElement=Mockito.spy(new XmlVElement("style", doc, 0, null, null));
+		XmlVElement styleElement=Mockito.spy(new XmlVElement("style", doc, 0, null, null, null));
 		XmlVText text1=new XmlVText("p { display : block }", doc, 1, null);
 		XmlVText text2=new XmlVText("div { display : block }", doc, 2, null);
-		StyleElementHandler listener=new StyleElementHandler(styleElement);
+		StyleElementHandler listener=new StyleElementHandler(styleElement, null);
 
 		listener.added(new XmlMutationEvent(MutationType.ADD, styleElement)); 
 		listener.connected(new XmlMutationEvent(MutationType.CONNECT, styleElement)); // merge=1
@@ -351,10 +351,10 @@ public class TestStyleElementHandler
 	public void testDisconnectText2FromStyleInDisconnectedTree()
 	{
 		XmlDocument doc=Mockito.mock(XmlDocument.class);
-		XmlVElement styleElement=Mockito.spy(new XmlVElement("style", doc, 0, null, null));
+		XmlVElement styleElement=Mockito.spy(new XmlVElement("style", doc, 0, null, null, null));
 		XmlVText text1=new XmlVText("p { display : block }", doc, 1, null);
 		XmlVText text2=new XmlVText("div { display : block }", doc, 2, null);
-		StyleElementHandler listener=new StyleElementHandler(styleElement);
+		StyleElementHandler listener=new StyleElementHandler(styleElement, null);
 
 		listener.added(new XmlMutationEvent(MutationType.ADD, styleElement));
 
@@ -382,10 +382,10 @@ public class TestStyleElementHandler
 	public void testAllMutationTypes() throws Exception
 	{
 		XmlDocument doc=Mockito.mock(XmlDocument.class);
-		XmlVElement element=Mockito.spy(new XmlVElement("style", null, 0, null, null));
+		XmlVElement element=Mockito.spy(new XmlVElement("style", null, 0, null, null, null));
 		when(element.getDocument()).thenReturn(doc);
 		
-		StyleElementHandler listener=Mockito.spy(new StyleElementHandler(element));
+		StyleElementHandler listener=Mockito.spy(new StyleElementHandler(element, null));
 
 		XmlMutationEvent addedEvent=new XmlMutationEvent(MutationType.ADD, element);
 		XmlMutationEvent removedEvent=new XmlMutationEvent(MutationType.REMOVE, element);

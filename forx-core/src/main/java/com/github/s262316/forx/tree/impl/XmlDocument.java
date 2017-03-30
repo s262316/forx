@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.github.s262316.forx.css.CSSPropertiesReference;
 import com.google.common.base.Optional;
 import org.apache.commons.io.FileUtils;
 import com.github.s262316.forx.common.ApplicationConfigException;
@@ -67,8 +68,9 @@ public class XmlDocument extends XmlNode implements XDocument, ReferringDocument
     private EventDispatcher eventDispatcher;
     private CssLoader cssLoader;
     private URL location;
+    private CSSPropertiesReference cssPropertiesReference;
 
-    public XmlDocument(DocumentTypeDecl dtd, XmlDocumentBuilder builder, EventDispatcher eventDispatcher, URL location) throws ApplicationConfigException
+    public XmlDocument(DocumentTypeDecl dtd, XmlDocumentBuilder builder, EventDispatcher eventDispatcher, URL location, CSSPropertiesReference cssPropertiesReference) throws ApplicationConfigException
     {
         super(null, 0);
 
@@ -77,6 +79,7 @@ public class XmlDocument extends XmlNode implements XDocument, ReferringDocument
         this.builder=builder;
         this.eventDispatcher=eventDispatcher;
         this.location=location;
+        this.cssPropertiesReference=cssPropertiesReference;
 
         userNormalStylesheet=StylesheetFactory.createEmptyStylesheet();
         authorNormalStylesheet=StylesheetFactory.createEmptyStylesheet();
@@ -93,7 +96,7 @@ public class XmlDocument extends XmlNode implements XDocument, ReferringDocument
             File userAgentCss=ResourceUtils.getFile("classpath:com/github/s262316/forx/css/user_agent.css");
             String cssData=FileUtils.readFileToString(userAgentCss, StandardCharsets.UTF_8);
 
-            CSSParser parser=new CSSParser(cssData, this);
+            CSSParser parser=new CSSParser(cssData, this, cssPropertiesReference);
             agentStylesheet=parser.parse_stylesheet();
         }
         catch(CSSParserException cpe)

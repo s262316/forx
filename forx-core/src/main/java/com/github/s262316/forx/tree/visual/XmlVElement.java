@@ -82,9 +82,9 @@ public class XmlVElement extends XmlElement implements Visual, VElement
     private List<Declaration> localStyleDeclarations=new ArrayList<Declaration>();
     private Map<String, Value> computedValues=new HashMap<String, Value>();
 	private Map<String, Integer> counters=new HashMap<String, Integer>();
-	private CSSPropertiesReference cssPropertiesReference=new CSSPropertiesReference();
+	private CSSPropertiesReference cssPropertiesReference;
 
-    public XmlVElement(String name, XmlDocument doc, int id, GraphicsContext gfxCtx, EventDispatcher eventDispatcher)
+    public XmlVElement(String name, XmlDocument doc, int id, GraphicsContext gfxCtx, EventDispatcher eventDispatcher, CSSPropertiesReference cssPropertiesReference)
     {
 		super(name, doc, id, eventDispatcher);
 
@@ -94,6 +94,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 		graphics_context=gfxCtx;
 		ql=0;
 		replaced_plugin=null;
+		this.cssPropertiesReference=cssPropertiesReference;
 	}
 
     public boolean isSensitiveTo(PseudoClassType classType)
@@ -489,7 +490,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
     {
 		AnonVisual anon;
 
-		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage());
+		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference);
 
 		return BoxFactory.createAnonymousInlineFlowBox(anon);
     }
@@ -499,7 +500,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
     {
 		AnonVisual anon;
 
-		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage());
+		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference);
 
 		return BoxFactory.createAnonymousBlockFlowBox(anon);
     }
@@ -509,7 +510,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
     {
 		AnonVisual anon;
 
-		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage());
+		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference);
 
 		return BoxFactory.createAnonInlineBlockRootBox(anon);
     }
@@ -519,7 +520,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
     {
 		AnonVisual anon;
 
-		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage());
+		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference);
 
 		return BoxFactory.createAnonRowBox(anon);
     }
@@ -529,7 +530,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
     {
 		AnonVisual anon;
 
-		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage());
+		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference);
 
 		return BoxFactory.createAnonColBox(anon);
     }
@@ -539,7 +540,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
     {
 		AnonVisual anon;
 
-		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage());
+		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference);
 
 		return BoxFactory.createAnonTableBox(anon);
     }
@@ -549,7 +550,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
     {
 		AnonVisual anon;
 
-		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage());
+		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference);
 
 		return BoxFactory.createAnonCellBox(anon);
     }
@@ -786,7 +787,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 		{
 			display=(Identifier)v;
 
-			pe=new PseudoElement(this, PseudoElementType.PE_BEFORE);
+			pe=new PseudoElement(this, PseudoElementType.PE_BEFORE, cssPropertiesReference);
 
 			if(display.ident.equals("inline"))
 				pseudoBox=BoxFactory.createInlineFlowBox(pe);
@@ -810,7 +811,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 		PseudoElement pe;
 		Box pseudoBox;
 
-		pe=new PseudoElement(this, PseudoElementType.PE_FIRST_LINE);
+		pe=new PseudoElement(this, PseudoElementType.PE_FIRST_LINE, cssPropertiesReference);
 		pseudoBox=BoxFactory.createInlineFlowBox(pe);
 		pe.setVisualBox(pseudoBox);
 		
@@ -824,7 +825,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 		PseudoElement pe;
 		Box pseudoBox;
 
-		pe=new PseudoElement(psuedoLetterDeclared, PseudoElementType.PE_FIRST_LETTER);
+		pe=new PseudoElement(psuedoLetterDeclared, PseudoElementType.PE_FIRST_LETTER, cssPropertiesReference);
 		pseudoBox=BoxFactory.createInlineFlowBox(pe);
 		pe.setVisualBox(pseudoBox);
 		

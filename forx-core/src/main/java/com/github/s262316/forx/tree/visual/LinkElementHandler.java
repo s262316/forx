@@ -2,6 +2,7 @@ package com.github.s262316.forx.tree.visual;
 
 import com.github.s262316.forx.css.CSSParser;
 import com.github.s262316.forx.css.CSSParserException;
+import com.github.s262316.forx.css.CSSPropertiesReference;
 import com.github.s262316.forx.css.CssLoader;
 import com.github.s262316.forx.net.ResourceLoader;
 import com.github.s262316.forx.tree.LinkingMechanism;
@@ -35,13 +36,15 @@ public class LinkElementHandler extends XMutationListener implements LinkingMech
     private Stylesheet linkElementStylesheet;
     private boolean connected=false;
     private Charset charset=null;
+    private CSSPropertiesReference cssPropertiesReference;
 
-    public LinkElementHandler(XmlVElement linkElement)
+    public LinkElementHandler(XmlVElement linkElement, CSSPropertiesReference cssPropertiesReference)
     {
         super(new SelectorPredicate(Selectors.createSimpleElementNameSelector("link")),
                 PropagationType.CAPTURE, linkElement, EnumSet.of(MutationType.ADD, MutationType.CONNECT, MutationType.DISCONNECT));
 
         this.linkElement=linkElement;
+        this.cssPropertiesReference=cssPropertiesReference;
     }
 
     // connected is invoked for subject and children of subject
@@ -104,7 +107,7 @@ public class LinkElementHandler extends XMutationListener implements LinkingMech
                             .transform(Charset::forName).orNull();
 
                     CssLoader cssLoader = new CssLoader(this);
-                    CSSParser cssParser = new CSSParser(href, (XmlDocument) linkElement.getDocument(), cssLoader);
+                    CSSParser cssParser = new CSSParser(href, (XmlDocument) linkElement.getDocument(), cssLoader, cssPropertiesReference);
                     linkElementStylesheet = cssParser.parse_stylesheet();
 
                     if (connected)

@@ -32,6 +32,7 @@ import com.github.s262316.forx.box.properties.Visual;
 import com.github.s262316.forx.box.properties.WordProperties;
 import com.github.s262316.forx.common.NumberRep;
 import com.github.s262316.forx.css.BorderStyles;
+import com.github.s262316.forx.css.CSSPropertiesReference;
 import com.github.s262316.forx.graphics.GraphicsContext;
 import com.github.s262316.forx.tree.XAttribute;
 import com.github.s262316.forx.tree.style.Declaration;
@@ -49,11 +50,13 @@ public class PseudoElement implements Visual, VElement
     private PseudoElementType pseudoType;
     private Box visualPart;
     private Map<String, Integer> counters=new HashMap<>();
+    private CSSPropertiesReference cssPropertiesReference;
 
-    public PseudoElement(XmlVElement subj, PseudoElementType pt)
+    public PseudoElement(XmlVElement subj, PseudoElementType pt, CSSPropertiesReference cssPropertiesReference)
     {
         this.subject=subj;
         this.pseudoType=pt;
+        this.cssPropertiesReference=cssPropertiesReference;
     }
 
     public void setVisualBox(Box b)
@@ -145,7 +148,7 @@ public class PseudoElement implements Visual, VElement
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage());
+        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage(), cssPropertiesReference);
 
         return BoxFactory.createAnonymousInlineFlowBox(anon);
     }
@@ -155,7 +158,7 @@ public class PseudoElement implements Visual, VElement
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage());
+        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage(), cssPropertiesReference);
 
         return BoxFactory.createAnonymousBlockFlowBox(anon);
     }
@@ -165,7 +168,7 @@ public class PseudoElement implements Visual, VElement
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage());
+        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage(), cssPropertiesReference);
 
         return BoxFactory.createAnonColBox(anon);
     }
@@ -175,7 +178,7 @@ public class PseudoElement implements Visual, VElement
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage());
+        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage(), cssPropertiesReference);
 
         return BoxFactory.createAnonTableBox(anon);
     }
@@ -185,7 +188,7 @@ public class PseudoElement implements Visual, VElement
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage());
+        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage(), cssPropertiesReference);
 
         return BoxFactory.createAnonInlineBlockRootBox(anon);
     }
@@ -195,7 +198,7 @@ public class PseudoElement implements Visual, VElement
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage());
+        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage(), cssPropertiesReference);
 
         return BoxFactory.createAnonRowBox(anon);
     }
@@ -205,7 +208,7 @@ public class PseudoElement implements Visual, VElement
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage());
+        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage(), cssPropertiesReference);
 
         return BoxFactory.createAnonCellBox(anon);
     }

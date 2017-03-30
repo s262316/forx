@@ -14,7 +14,7 @@ public class XmlVElementTest
     @Test
     public void findCounterIsPresentLocally()
     {
-        XmlVElement element = new XmlVElement("div", null, 0, null, null);
+        XmlVElement element = new XmlVElement("div", null, 0, null, null, null);
         element.reset_counter("mycounter", 22);
 
         VElement location = element.find_counter("mycounter");
@@ -27,7 +27,7 @@ public class XmlVElementTest
         XmlVElement parent=mock(XmlVElement.class);
         when(parent.find_counter("mycounter")).thenReturn(parent);
 
-        XmlVElement element = new XmlVElement("div", null, 0, null, null);
+        XmlVElement element = new XmlVElement("div", null, 0, null, null, null);
         element.setParentNode(parent);
 
         VElement location = element.find_counter("mycounter");
@@ -37,7 +37,7 @@ public class XmlVElementTest
     @Test
     public void findCounterIsNotPresent()
     {
-        XmlVElement element = new XmlVElement("div", null, 0, null, null);
+        XmlVElement element = new XmlVElement("div", null, 0, null, null, null);
         VElement location = element.find_counter("mycounter");
         assertNull(location);
     }
