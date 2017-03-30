@@ -5,6 +5,9 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.github.fracpete.romannumerals4j.RomanNumeralFormat;
 import com.github.s262316.forx.box.BlockBox;
@@ -34,8 +37,11 @@ import com.github.s262316.forx.box.properties.WordProperties;
 import com.github.s262316.forx.common.NumberRep;
 import com.github.s262316.forx.css.BorderStyles;
 import com.github.s262316.forx.css.CSSPropertiesReference;
+import com.github.s262316.forx.css.GeneratedContent;
 import com.github.s262316.forx.graphics.GraphicsContext;
 import com.github.s262316.forx.tree.XAttribute;
+import com.github.s262316.forx.tree.XNodes;
+import com.github.s262316.forx.tree.impl.XmlNode;
 import com.github.s262316.forx.tree.style.Declaration;
 import com.github.s262316.forx.tree.style.FunctionValue;
 import com.github.s262316.forx.tree.style.Identifier;
@@ -44,6 +50,11 @@ import com.github.s262316.forx.tree.style.StringValue;
 import com.github.s262316.forx.tree.style.Value;
 import com.github.s262316.forx.tree.style.ValueList;
 import com.github.s262316.forx.tree.style.selectors.PseudoElementType;
+import com.github.s262316.forx.tree.style.util.ValuesHelper;
+import com.github.s262316.forx.tree.visual.util.XmlVNodes;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class PseudoElement implements Visual, VElement
@@ -53,6 +64,20 @@ public class PseudoElement implements Visual, VElement
     private Box visualPart;
     private Map<String, Integer> counters=new HashMap<>();
     private CSSPropertiesReference cssPropertiesReference;
+
+    private static final Map<String, Function<Integer, String>> LIST_STYLE_FORMATTERS=ImmutableMap.<String, Function<Integer, String>>builder()
+            .put("decimal" , GeneratedContent::formatCounterAsDecimal)
+            .put("decimal-leading-zero" , GeneratedContent::formatCounterAsDecimalLeadingZero)
+            .put("lower-roman" , GeneratedContent::formatCounterAsLowerRoman)
+            .put("upper-roman" , GeneratedContent::formatCounterAsUpperRoman)
+            .put("lower-greek" , GeneratedContent::formatCounterAsLowerGreek)
+            .put("lower-latin" , GeneratedContent::formatCounterAsLowerAlpha)
+            .put("upper-latin" , GeneratedContent::formatCounterAsUpperAlpha)
+            .put("armenian" , GeneratedContent::formatCounterAsArmenian)
+            .put("georgian" , GeneratedContent::formatAsGeorgian)
+            .put("lower-alpha" , GeneratedContent::formatCounterAsLowerAlpha)
+            .put("upper-alpha" , GeneratedContent::formatCounterAsUpperAlpha)
+            .build();
 
     public PseudoElement(XmlVElement subj, PseudoElementType pt, CSSPropertiesReference cssPropertiesReference)
     {
@@ -107,9 +132,9 @@ public class PseudoElement implements Visual, VElement
     }
 
     @Override
-    public int counter_value(String name)
+    public Optional<Integer> counter_value(String name)
     {
-        return counters.get(name);
+        return Optional.ofNullable(counters.get(name));
     }
 
     /* normal | none | [ <String> | <uri> | <counter> | attr(<identifier>) |
@@ -283,9 +308,47 @@ public class PseudoElement implements Visual, VElement
 
     // counters(name, String) or
     // counters(name, String, style)
-    private String counters_function(ValueList values)
+    String counters_function(ValueList values)
     {
-        return "";
+        String counterName=ValuesHelper.getIdentifier(values.members.get(0))
+                .orElseThrow(CounterFunctionMalformedException::new);
+
+        String separator=ValuesHelper.getString(values.members.get(1))
+                .orElseThrow(CounterFunctionMalformedException::new);
+
+        Function<Integer, String> listStyleFormatter=GeneratedContent::formatCounterAsDecimal;
+        if(values.members.size()==3)
+        {
+            listStyleFormatter = ValuesHelper.getIdentifier(values.members.get(2))
+                    .map(LIST_STYLE_FORMATTERS::get)
+                    .orElse(GeneratedContent::formatCounterAsDecimal);
+        }
+
+        List<XmlVElement> path=XmlVNodes.pathToHere(subject);
+        String generatedContent=path.stream()
+                .map(v -> v.counter_value(counterName))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(listStyleFormatter)
+                .collect(Collectors.joining(separator));
+
+        List<Optional<Integer>> aa=path.stream()
+                .map(v -> v.counter_value(counterName))
+                .collect(Collectors.toList());
+
+        List<Optional<Integer>> bb=aa.stream()
+                .filter(Optional::isPresent)
+                .collect(Collectors.toList());
+
+        List<Integer> cc=bb.stream()
+                .map(Optional::get)
+                .collect(Collectors.toList());
+
+        List<String> dd=cc.stream()
+                .map(listStyleFormatter)
+                .collect(Collectors.toList());
+
+        return generatedContent;
     }
 
     private String counter_function(ValueList values)
@@ -308,19 +371,13 @@ public class PseudoElement implements Visual, VElement
                 reset_counter(counter_name.ident, 0);
                 counter_location=find_counter(counter_name.ident);
             }
-            value=counter_location.counter_value(counter_name.ident);
+            value=counter_location.counter_value(counter_name.ident).get();
 
             if(values.members.size() > 1)
             {
                 v=values.members.get(1);
                 counter_style=(Identifier) v;
 
-                //			if(counter_style.ident=="disc")
-                //				;
-                //			else if(counter_style.ident=="circle")
-                //				;
-                //			else if(counter_style.ident=="square")
-                //				;
                 if(counter_style.ident.equals("decimal"))
                 {
                     result=String.valueOf(value);
@@ -342,7 +399,7 @@ public class PseudoElement implements Visual, VElement
                 //			else if(counter_style.ident=="lower-greek")
                 //				;
                 else if(counter_style.ident.equals("lower-latin"))
-                    result=NumberRep.translate_alpha_lower(value);
+                    result=NumberRep.translate_alpha_upper(value).toLowerCase();
                 else if(counter_style.ident.equals("upper-latin"))
                     result=NumberRep.translate_alpha_upper(value);
                 //			else if(counter_style.ident=="armenian")
@@ -350,7 +407,7 @@ public class PseudoElement implements Visual, VElement
                 //			else if(counter_style.ident=="georgian")
                 //				;
                 else if(counter_style.ident.equals("lower-alpha"))
-                    result=NumberRep.translate_alpha_lower(value);
+                    result=NumberRep.translate_alpha_upper(value).toLowerCase();
                 else if(counter_style.ident.equals("upper-alpha"))
                     result=NumberRep.translate_alpha_upper(value);
                 else

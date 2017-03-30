@@ -3,6 +3,7 @@ package com.github.s262316.forx.tree.visual;
 import java.awt.Font;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 
 import com.github.s262316.forx.box.BlockBox;
 import com.github.s262316.forx.box.CellBox;
@@ -236,9 +237,9 @@ public class AnonVisual implements Visual, VElement
     }
 
     @Override
-    public int counter_value(String name)
+    public Optional<Integer> counter_value(String name)
     {
-        return 0;
+        return Optional.of(1);
     }
 
     public VElement find_counter_before(String name)

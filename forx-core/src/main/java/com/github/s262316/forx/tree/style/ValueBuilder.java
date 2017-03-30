@@ -71,6 +71,30 @@ public class ValueBuilder
         return this;
     }
 
+
+    public ValueBuilder counters(String countername, String separator)
+    {
+        ValueList args=new ValueBuilder()
+                .identifier(countername)
+                .string(separator)
+                .buildAsList();
+
+        v.add(new FunctionValue("counters", args));
+        return this;
+    }
+
+    public ValueBuilder counters(String countername, String separator, String style)
+    {
+        ValueList args=new ValueBuilder()
+                .identifier(countername)
+                .string(separator)
+                .identifier(style)
+                .buildAsList();
+
+        v.add(new FunctionValue("counters", args));
+        return this;
+    }
+
     public ValueBuilder attr(String myattr)
     {
         ValueList args=new ValueBuilder().identifier(myattr).buildAsList();

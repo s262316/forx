@@ -23,6 +23,16 @@ public class ValuesHelper
 		else
 			return Optional.empty();
 	}
+
+	public static Optional<String> getString(Value value)
+	{
+		if(ObjectUtils.equals(value.getClass(), StringValue.class))
+		{
+			return Optional.of(((StringValue)value).str);
+		}
+		else
+			return Optional.empty();
+	}
 	
 	public static Optional<Integer> getInt(Value value)
 	{
@@ -78,7 +88,7 @@ public class ValuesHelper
 		valuelist.members=Lists.<Value>newArrayList(sv);
 		
 		return valuelist;
-	}	
+	}
 }
 
 

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -750,9 +751,9 @@ public class XmlVElement extends XmlElement implements Visual, VElement
     }
 
     @Override
-    public int counter_value(String name)
+    public Optional<Integer> counter_value(String name)
     {
-        return counters.get(name);
+        return Optional.ofNullable(counters.get(name));
     }
 
 	private void create_generated_content(PseudoElementType pseudoType)
