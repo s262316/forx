@@ -53,8 +53,11 @@ public class Tokenizer
 	// finishes on untilTrue=true
 	public void advanceUntil(Predicate<Tokenizer> untilTrue)
 	{
+		logger.debug("current token {}", curr.syntax);
+
 		while(!(untilTrue.test(this)) && curr.type!=TokenType.CR_END)
 		{
+			logger.debug("tests true, current token {}", curr.syntax);
 			advance();
 		}
 	}

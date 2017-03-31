@@ -83,6 +83,7 @@ public class CssProperties
 			.put("vertical-align", new PropertyReference("vertical-align", false, new Identifier("baseline"), null))
 			.put("text-indent", new PropertyReference("text-indent", true, new NumericValue(0, "px"), null))
 			.put("text-align", new PropertyReference("text-align", true, null, null))
+			.put("text-decoration", new PropertyReference("text-decoration", true, null, null))
 			.put("letter-spacing", new PropertyReference("letter-spacing", true, new Identifier("normal"), null))
 			.put("word-spacing", new PropertyReference("word-spacing", true, new Identifier("normal"), null))
 			.put("direction", new PropertyReference("direction", true, new Identifier("ltr"), null))

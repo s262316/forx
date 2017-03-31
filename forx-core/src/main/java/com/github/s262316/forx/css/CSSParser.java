@@ -470,8 +470,9 @@ public class CSSParser
 			}
 			catch(BadDeclarationException bde)
 			{
-				// advance to next ";"
-				tok.advanceUntil(v -> Arrays.asList(";", "}").contains(v.curr.syntax));
+				// advance to next ";" and skip all nested blocks
+				tok.advanceUntil(new IsInsideNestedBlock().negate());
+				tok.advanceUntil(v -> Arrays.asList(";", "{", "[", "(").contains(v.curr.syntax));
 			}
 		}
 		

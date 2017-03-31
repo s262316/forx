@@ -457,6 +457,52 @@ public class TestCssParser
 	}
 
 	@Test
+	public void rulesetWithNestedBlockIsRecovered1() throws Exception
+	{
+		TestReferringDocument referrer=new TestReferringDocument();
+		CSSParser parser=new CSSParser("div { color:green; color{;color:maroon}}", referrer, cssPropertiesReference);
+
+		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
+		tokenizer.advance();
+
+		List<StyleRule> sr=parser.parse_ruleset(EnumSet.of(MediaType.MT_ALL));
+		assertEquals(1, sr.size());
+		assertEquals(1, sr.get(0).getDeclarations().size());
+		assertEquals(new Identifier("green"), sr.get(0).getDeclarations().get("color").getValue());
+	}
+
+	@Test
+	public void rulesetWithNestedBlockIsRecovered2() throws Exception
+	{
+		TestReferringDocument referrer=new TestReferringDocument();
+		CSSParser parser=new CSSParser("div{color:red;   color{;color:maroon}; background-color:green}", referrer, cssPropertiesReference);
+
+		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
+		tokenizer.advance();
+
+		List<StyleRule> sr=parser.parse_ruleset(EnumSet.of(MediaType.MT_ALL));
+		assertEquals(1, sr.size());
+		assertEquals(2, sr.get(0).getDeclarations().size());
+		assertEquals(new Identifier("green"), sr.get(0).getDeclarations().get("background-color").getValue());
+		assertEquals(new Identifier("red"), sr.get(0).getDeclarations().get("color").getValue());
+	}
+
+	@Test
+	public void testSkipSemicolonWithinBlockOnMalformedDeclaration() throws Exception
+	{
+		TestReferringDocument referrer=new TestReferringDocument();
+		CSSParser parser=new CSSParser("p { span { color: yellow; background: red; } .test { color: maroon; background: yellow; } ; display : block }", referrer, cssPropertiesReference);
+
+		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
+		tokenizer.advance();
+
+		List<StyleRule> sr=parser.parse_ruleset(EnumSet.of(MediaType.MT_ALL));
+		assertEquals(1, sr.size());
+		assertEquals(1, sr.get(0).getDeclarations().size());
+		assertEquals(new Identifier("block"), sr.get(0).getDeclarations().get("display").getValue());
+	}
+
+	@Test
 	public void prematureEndOfRuleset() throws Exception
 	{
 		TestReferringDocument referrer=new TestReferringDocument();
