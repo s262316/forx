@@ -184,10 +184,10 @@ public class Tokenizer
 		char input=source.charAt(begin);
 		int start=begin;
 
-		if(Character.isWhitespace(input))
+		if(isWhitespace(input))
 		{
 			++begin;
-			while(begin<source.length() && Character.isWhitespace(source.charAt(begin)))
+			while(begin<source.length() && isWhitespace(source.charAt(begin)))
 				++begin;
 
 			return new Token(TokenType.CR_WHITESPACE, source.subSequence(start, begin).toString());
@@ -547,7 +547,7 @@ public class Tokenizer
 					cont=false;
 			}
 
-			if(Character.isWhitespace(input))
+			if(isWhitespace(input))
 			{
 				if(input=='\r')
 				{
@@ -715,5 +715,11 @@ public class Tokenizer
 		}
 
 		return syntax.toString();
+	}
+
+	// css whitespace not the same as Java Character.isWhitespace
+	boolean isWhitespace(char ch)
+	{
+		return ch=='\u0020' || ch=='\u0009' || ch==0xA || ch==0xD || ch==0xC;
 	}
 }
