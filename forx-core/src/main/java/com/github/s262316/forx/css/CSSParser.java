@@ -146,6 +146,13 @@ public class CSSParser
                 imp=true;
                 tok.advance();
 	        }
+	        else if(tok.curr.syntax.equals("!"))
+			{
+				// invalid priority
+				tok.advance();
+
+				throw new BadDeclarationException("expected priority value, found "+tok.curr.syntax);
+			}
 	
 	        if(vl.members.size()==1)
 	        	dec=new Declaration(name, vl.members.get(0), imp);

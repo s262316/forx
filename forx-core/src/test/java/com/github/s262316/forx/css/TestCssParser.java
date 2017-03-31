@@ -21,7 +21,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -50,6 +52,9 @@ public class TestCssParser
 
 	@Mock
 	CSSPropertiesReference cssPropertiesReference;
+
+	@Rule
+	public ExpectedException thrown=ExpectedException.none();
 
 	@Before
 	public void setup()
@@ -316,8 +321,8 @@ public class TestCssParser
 						"color", new Declaration("color", new Identifier("white"), true),
 						"background-color", new Declaration("background-color", new Identifier("green"), true)),
 						sr.get(0).declarations);
-	}		
-	
+	}
+
 	@Test
 	public void testParseAttrib() throws Exception
 	{
@@ -390,6 +395,21 @@ public class TestCssParser
 		tokenizer.advance();
 		
 		parser.parse_declaration();		
+	}
+
+	@Test
+	public void invalidPriorityResultsInBadDeclaration() throws Exception
+	{
+		thrown.expect(BadDeclarationException.class);
+		thrown.expectMessage("expected priority value, found fffff");
+
+		TestReferringDocument referrer=new TestReferringDocument();
+		CSSParser parser=new CSSParser("color : redddd ! fffff", referrer, cssPropertiesReference);
+
+		Tokenizer tokenizer=(Tokenizer)ReflectionTestUtils.getField(parser, "tok");
+		tokenizer.advance();
+
+		parser.parse_declaration();
 	}
 	
 	@Test
