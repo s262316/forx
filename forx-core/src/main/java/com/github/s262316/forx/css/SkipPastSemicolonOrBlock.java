@@ -43,8 +43,8 @@ public class SkipPastSemicolonOrBlock implements Predicate<Tokenizer>
 			done=true;
 		
 		if(tokenizer.curr.type!=TokenType.CR_END)
-			tokenizer.advance();		
-		
+			tokenizer.advance();
+
 		return done;
 	}
 }
