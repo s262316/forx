@@ -2,9 +2,9 @@ package com.github.s262316.forx.box.properties.converters;
 
 import java.awt.Color;
 
-import com.github.s262316.forx.tree.style.ColourValue;
-import com.github.s262316.forx.tree.style.NumericValue;
-import com.github.s262316.forx.tree.style.Value;
+import com.github.s262316.forx.style.ColourValue;
+import com.github.s262316.forx.style.NumericValue;
+import com.github.s262316.forx.style.Value;
 import com.github.s262316.forx.tree.visual.VElement;
 
 public class ComputedValues

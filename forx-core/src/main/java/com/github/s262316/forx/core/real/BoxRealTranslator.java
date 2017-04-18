@@ -12,9 +12,8 @@ import org.slf4j.LoggerFactory;
 import com.github.s262316.forx.box.Box;
 import com.github.s262316.forx.box.Inline;
 import com.github.s262316.forx.box.Layable;
-import com.github.s262316.forx.box.RootBox;
 import com.github.s262316.forx.core.WebpageHolder;
-import com.github.s262316.forx.tree.impl.XmlNode;
+import com.github.s262316.forx.tree.XmlNode;
 import com.github.s262316.forx.tree.visual.XmlVElement;
 
 import com.google.common.base.Preconditions;

@@ -4,7 +4,7 @@ import com.github.s262316.forx.tree.events2.Event;
 import com.github.s262316.forx.tree.events2.EventDispatcher;
 import com.github.s262316.forx.tree.events2.MouseEventType;
 import com.github.s262316.forx.tree.events2.XmlMouseEvent;
-import com.github.s262316.forx.tree.impl.XmlNode;
+import com.github.s262316.forx.tree.XmlNode;
 import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;

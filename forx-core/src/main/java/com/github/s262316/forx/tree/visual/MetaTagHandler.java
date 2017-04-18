@@ -3,12 +3,13 @@ package com.github.s262316.forx.tree.visual;
 import java.util.EnumSet;
 import java.util.Map;
 
+import com.github.s262316.forx.css.VisualConstants;
 import com.github.s262316.forx.tree.events2.MutationType;
 import com.github.s262316.forx.tree.events2.PropagationType;
 import com.github.s262316.forx.tree.events2.XMutationListener;
 import com.github.s262316.forx.tree.events2.XmlMutationEvent;
-import com.github.s262316.forx.tree.style.util.SelectorPredicate;
-import com.github.s262316.forx.tree.style.util.Selectors;
+import com.github.s262316.forx.style.selectors.util.SelectorPredicate;
+import com.github.s262316.forx.style.selectors.util.Selectors;
 
 public class MetaTagHandler extends XMutationListener
 {

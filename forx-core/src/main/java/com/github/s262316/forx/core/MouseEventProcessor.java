@@ -5,14 +5,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.github.s262316.forx.box.relayouter.RegressionLayoutStrategy;
 import com.github.s262316.forx.tree.events2.EventDispatcher;
 import com.github.s262316.forx.tree.events2.Events;
 import com.github.s262316.forx.tree.events2.MouseEventType;
 import com.github.s262316.forx.tree.events2.XmlMouseEvent;
-import com.github.s262316.forx.tree.impl.XmlNode;
-import com.github.s262316.forx.tree.visual.VisualConstants;
-import com.github.s262316.forx.tree.visual.VisualState;
+import com.github.s262316.forx.tree.XmlNode;
 import com.github.s262316.forx.util.Functions2;
 
 import com.google.common.collect.Iterables;

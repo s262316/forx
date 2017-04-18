@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.github.s262316.forx.box.Box;
 import com.github.s262316.forx.box.Inline;
-import com.github.s262316.forx.tree.impl.XmlNode;
+import com.github.s262316.forx.tree.XmlNode;
 import com.github.s262316.forx.tree.visual.XmlVElement;
 
 public interface BoxRealMapping

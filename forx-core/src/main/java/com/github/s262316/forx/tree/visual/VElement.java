@@ -3,11 +3,10 @@ package com.github.s262316.forx.tree.visual;
 import java.net.URL;
 import java.util.Optional;
 
-import com.github.s262316.forx.box.properties.converters.ModelPropertyBinding;
 import com.github.s262316.forx.graphics.GraphicsContext;
-import com.github.s262316.forx.tree.style.MediaType;
-import com.github.s262316.forx.tree.style.Value;
-import com.github.s262316.forx.tree.style.selectors.PseudoElementType;
+import com.github.s262316.forx.style.MediaType;
+import com.github.s262316.forx.style.Value;
+import com.github.s262316.forx.style.selectors.PseudoElementType;
 
 public interface VElement
 {

@@ -1,12 +1,11 @@
 package com.github.s262316.forx.tree.visual;
 
+import com.github.s262316.forx.tree.XmlText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.s262316.forx.box.Box;
 import com.github.s262316.forx.graphics.GraphicsContext;
-import com.github.s262316.forx.tree.impl.XmlDocument;
-import com.github.s262316.forx.tree.impl.XmlText;
 
 public class XmlVText extends XmlText
 {
@@ -14,7 +13,7 @@ public class XmlVText extends XmlText
 
 	private GraphicsContext graphicsContext;
 
-	public XmlVText(String t, XmlDocument doc, int id, GraphicsContext gfxCtx)
+	public XmlVText(String t, XmlVDocument doc, int id, GraphicsContext gfxCtx)
 	{
 		super(t, doc, id);
 

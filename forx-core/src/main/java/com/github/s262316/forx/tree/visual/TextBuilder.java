@@ -14,7 +14,6 @@ import com.github.s262316.forx.tree.events2.MutationType;
 import com.github.s262316.forx.tree.events2.PropagationType;
 import com.github.s262316.forx.tree.events2.XMutationListener;
 import com.github.s262316.forx.tree.events2.XmlMutationEvent;
-import com.github.s262316.forx.tree.style.util.GenerateABox;
 
 public class TextBuilder extends XMutationListener
 {

@@ -9,6 +9,8 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 
+import com.github.s262316.forx.css.PropertyReference;
+import com.github.s262316.forx.tree.XmlElement;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -44,26 +46,22 @@ import com.github.s262316.forx.box.properties.TextProperties;
 import com.github.s262316.forx.box.properties.Visual;
 import com.github.s262316.forx.box.properties.WordProperties;
 import com.github.s262316.forx.box.util.SpaceFlag;
-import com.github.s262316.forx.core.StyleXNodes;
-import com.github.s262316.forx.css.BorderStyles;
+import com.github.s262316.forx.css.StyleXNodes;
+import com.github.s262316.forx.box.properties.BorderStylesImpl;
 import com.github.s262316.forx.css.CSSPropertiesReference;
-import com.github.s262316.forx.css.Counters;
 import com.github.s262316.forx.graphics.GraphicsContext;
 import com.github.s262316.forx.tree.NodeType;
 import com.github.s262316.forx.tree.XNode;
 import com.github.s262316.forx.tree.XNodes;
 import com.github.s262316.forx.tree.events2.EventDispatcher;
 import com.github.s262316.forx.tree.events2.XmlMouseEvent;
-import com.github.s262316.forx.tree.impl.XmlDocument;
-import com.github.s262316.forx.tree.impl.XmlElement;
-import com.github.s262316.forx.tree.impl.XmlNode;
-import com.github.s262316.forx.tree.style.Declaration;
-import com.github.s262316.forx.tree.style.Identifier;
-import com.github.s262316.forx.tree.style.MediaType;
-import com.github.s262316.forx.tree.style.PropertyReference;
-import com.github.s262316.forx.tree.style.Value;
-import com.github.s262316.forx.tree.style.selectors.PseudoClassType;
-import com.github.s262316.forx.tree.style.selectors.PseudoElementType;
+import com.github.s262316.forx.tree.XmlNode;
+import com.github.s262316.forx.style.Declaration;
+import com.github.s262316.forx.style.Identifier;
+import com.github.s262316.forx.style.MediaType;
+import com.github.s262316.forx.style.Value;
+import com.github.s262316.forx.style.selectors.PseudoClassType;
+import com.github.s262316.forx.style.selectors.PseudoElementType;
 import com.github.s262316.forx.util.PseudoElements;
 
 import com.google.common.base.CharMatcher;
@@ -85,7 +83,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 	private Map<String, Integer> counters=new HashMap<String, Integer>();
 	private CSSPropertiesReference cssPropertiesReference;
 
-    public XmlVElement(String name, XmlDocument doc, int id, GraphicsContext gfxCtx, EventDispatcher eventDispatcher, CSSPropertiesReference cssPropertiesReference)
+    public XmlVElement(String name, XmlVDocument doc, int id, GraphicsContext gfxCtx, EventDispatcher eventDispatcher, CSSPropertiesReference cssPropertiesReference)
     {
 		super(name, doc, id, eventDispatcher);
 
@@ -100,12 +98,12 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 
     public boolean isSensitiveTo(PseudoClassType classType)
     {
-		return ((XmlDocument)getDocument()).isSensitiveToPseudoClass(this, MediaType.MT_ALL, PseudoElementType.PE_NOT_PSEUDO, classType);
+		return ((XmlVDocument)getDocument()).isSensitiveToPseudoClass(this, MediaType.MT_ALL, PseudoElementType.PE_NOT_PSEUDO, classType);
     }
     
     public boolean isSensitiveTo(PseudoElementType elementType)
     {
-		return ((XmlDocument)getDocument()).isSensitiveToPseudoElement(this, MediaType.MT_ALL, elementType, PseudoClassType.PCT_NO_CLASS);
+		return ((XmlVDocument)getDocument()).isSensitiveToPseudoElement(this, MediaType.MT_ALL, elementType, PseudoClassType.PCT_NO_CLASS);
     }
     
     @Override
@@ -139,7 +137,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 			logger.debug("looking in gloval stylesheet");
 
 			// 1.2. look in global stylesheet
-			v=((XmlDocument)getDocument()).getPropertyValue(this, property, mediaType, pseudoType);
+			v=((XmlVDocument)getDocument()).getPropertyValue(this, property, mediaType, pseudoType);
 			if(v==null)
 			{
 				// 2. does it inherit?
@@ -216,7 +214,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 
 			if(isSensitiveTo(PseudoClassType.PCT_HOVER))
 			{
-				// install a css hover listener
+				// install a com.github.s262316.forx.css hover listener
 				this.addListener(new CSSHoverHandler(this), XmlMouseEvent.class);
 			}
 			
@@ -641,7 +639,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
     @Override
     public void calculateBorders(PropertyAdaptor on, BorderDescriptor borderdesc)
     {
-		BorderStyles.resolveBorders(on, this, borderdesc, PseudoElementType.PE_NOT_PSEUDO);
+		BorderStylesImpl.resolveBorders(on, this, borderdesc, PseudoElementType.PE_NOT_PSEUDO);
     }
 
     @Override
@@ -837,7 +835,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 	
 	public String getDefaultStyleLanguage()
 	{
-		return ((XmlDocument)getDocument()).getDefaultStyleLanguage();
+		return ((XmlVDocument)getDocument()).getDefaultStyleLanguage();
 	}
 
     @Override

@@ -7,9 +7,9 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import com.github.s262316.forx.tree.events2.MutationType;
 import com.github.s262316.forx.tree.events2.XmlMutationEvent;
-import com.github.s262316.forx.tree.style.Identifier;
-import com.github.s262316.forx.tree.style.MediaType;
-import com.github.s262316.forx.tree.style.Value;
+import com.github.s262316.forx.style.Identifier;
+import com.github.s262316.forx.style.MediaType;
+import com.github.s262316.forx.style.Value;
 
 import static org.mockito.Mockito.*;
 

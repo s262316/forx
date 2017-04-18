@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.github.s262316.forx.tree.visual.XmlVDocument;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.github.s262316.forx.tree.XNodes;
-import com.github.s262316.forx.tree.impl.XmlDocument;
-import com.github.s262316.forx.tree.impl.XmlNode;
-import com.github.s262316.forx.tree.style.MediaType;
-import com.github.s262316.forx.tree.style.selectors.PseudoClassType;
-import com.github.s262316.forx.tree.style.selectors.PseudoElementType;
+import com.github.s262316.forx.tree.XmlNode;
+import com.github.s262316.forx.style.MediaType;
+import com.github.s262316.forx.style.selectors.PseudoClassType;
+import com.github.s262316.forx.style.selectors.PseudoElementType;
 import com.github.s262316.forx.tree.visual.XmlVElement;
 
 import com.google.common.collect.Lists;
@@ -40,7 +40,7 @@ public class PseudoElements
 
 	public static XmlVElement nearestParentWithFirstLetter(XmlVElement element)
 	{
-		XmlDocument doc=(XmlDocument)element.getDocument();
+		XmlVDocument doc=(XmlVDocument)element.getDocument();
 		List<XmlNode> rootToHere=XNodes.pathToHere(element);
 		boolean isSensitive;
 		

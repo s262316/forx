@@ -5,9 +5,9 @@ import java.util.Optional;
 
 import com.google.common.base.Preconditions;
 
-import com.github.s262316.forx.tree.style.MediaType;
-import com.github.s262316.forx.tree.style.Value;
-import com.github.s262316.forx.tree.style.selectors.PseudoElementType;
+import com.github.s262316.forx.style.MediaType;
+import com.github.s262316.forx.style.Value;
+import com.github.s262316.forx.style.selectors.PseudoElementType;
 import com.github.s262316.forx.tree.visual.VElement;
 
 

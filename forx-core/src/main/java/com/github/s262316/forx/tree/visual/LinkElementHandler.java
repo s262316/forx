@@ -4,21 +4,15 @@ import com.github.s262316.forx.css.CSSParser;
 import com.github.s262316.forx.css.CSSParserException;
 import com.github.s262316.forx.css.CSSPropertiesReference;
 import com.github.s262316.forx.css.CssLoader;
-import com.github.s262316.forx.net.ResourceLoader;
-import com.github.s262316.forx.tree.LinkingMechanism;
-import com.github.s262316.forx.tree.ReferringDocument;
-import com.github.s262316.forx.tree.XAttribute;
+import com.github.s262316.forx.css.LinkingMechanism;
 import com.github.s262316.forx.tree.XNodes;
 import com.github.s262316.forx.tree.events2.MutationType;
 import com.github.s262316.forx.tree.events2.PropagationType;
 import com.github.s262316.forx.tree.events2.XMutationListener;
 import com.github.s262316.forx.tree.events2.XmlMutationEvent;
-import com.github.s262316.forx.tree.impl.XmlDocument;
-import com.github.s262316.forx.tree.impl.XmlElement;
-import com.github.s262316.forx.tree.style.Stylesheet;
-import com.github.s262316.forx.tree.style.util.SelectorPredicate;
-import com.github.s262316.forx.tree.style.util.Selectors;
-import com.google.common.base.Charsets;
+import com.github.s262316.forx.style.Stylesheet;
+import com.github.s262316.forx.style.selectors.util.SelectorPredicate;
+import com.github.s262316.forx.style.selectors.util.Selectors;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
@@ -59,7 +53,7 @@ public class LinkElementHandler extends XMutationListener implements LinkingMech
         {
             Preconditions.checkArgument(connected==false);
 
-            linkElement.getDocument().mergeStyles(linkElement, linkElementStylesheet);
+            ((XmlVDocument)linkElement.getDocument()).mergeStyles(linkElement, linkElementStylesheet);
             connected=true;
         }
     }
@@ -75,7 +69,7 @@ public class LinkElementHandler extends XMutationListener implements LinkingMech
         {
             Preconditions.checkArgument(connected==true);
 
-            linkElement.getDocument().demergeStylesFrom(linkElement);
+            ((XmlVDocument)linkElement.getDocument()).demergeStylesFrom(linkElement);
 
             linkElementStylesheet=null;
             connected=false;
@@ -107,12 +101,12 @@ public class LinkElementHandler extends XMutationListener implements LinkingMech
                             .transform(Charset::forName).orNull();
 
                     CssLoader cssLoader = new CssLoader(this);
-                    CSSParser cssParser = new CSSParser(href, (XmlDocument) linkElement.getDocument(), cssLoader, cssPropertiesReference);
+                    CSSParser cssParser = new CSSParser(href, (XmlVDocument) linkElement.getDocument(), cssLoader, cssPropertiesReference);
                     linkElementStylesheet = cssParser.parse_stylesheet();
 
                     if (connected)
                     {
-                        linkElement.getDocument().mergeStyles(linkElement, linkElementStylesheet);
+                        ((XmlVDocument)linkElement.getDocument()).mergeStyles(linkElement, linkElementStylesheet);
                     }
                 }
             }

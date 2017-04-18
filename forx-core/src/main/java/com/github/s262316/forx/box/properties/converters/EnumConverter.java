@@ -1,7 +1,7 @@
 package com.github.s262316.forx.box.properties.converters;
 
-import com.github.s262316.forx.tree.style.Identifier;
-import com.github.s262316.forx.tree.style.Value;
+import com.github.s262316.forx.style.Identifier;
+import com.github.s262316.forx.style.Value;
 
 import com.google.common.base.Preconditions;
 

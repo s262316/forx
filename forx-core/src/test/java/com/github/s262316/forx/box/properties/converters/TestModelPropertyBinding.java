@@ -3,7 +3,6 @@ package com.github.s262316.forx.box.properties.converters;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
@@ -17,11 +16,11 @@ import org.junit.Test;
 
 import com.github.s262316.forx.box.properties.BorderDescriptor;
 import com.github.s262316.forx.box.util.BorderStyle;
-import com.github.s262316.forx.tree.style.Identifier;
-import com.github.s262316.forx.tree.style.MediaType;
-import com.github.s262316.forx.tree.style.NumericValue;
-import com.github.s262316.forx.tree.style.Value;
-import com.github.s262316.forx.tree.style.selectors.PseudoElementType;
+import com.github.s262316.forx.style.Identifier;
+import com.github.s262316.forx.style.MediaType;
+import com.github.s262316.forx.style.NumericValue;
+import com.github.s262316.forx.style.Value;
+import com.github.s262316.forx.style.selectors.PseudoElementType;
 import com.github.s262316.forx.tree.visual.VElement;
 
 import com.google.common.base.Function;

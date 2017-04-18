@@ -6,7 +6,7 @@ import com.github.s262316.forx.tree.events2.MouseEventType;
 import com.github.s262316.forx.tree.events2.PropagationType;
 import com.github.s262316.forx.tree.events2.XMouseListener;
 import com.github.s262316.forx.tree.events2.XmlMouseEvent;
-import com.github.s262316.forx.tree.impl.XmlNode;
+import com.github.s262316.forx.tree.XmlNode;
 
 public class CSSHoverHandler extends XMouseListener
 {

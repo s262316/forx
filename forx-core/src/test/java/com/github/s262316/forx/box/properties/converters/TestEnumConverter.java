@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import com.github.s262316.forx.box.util.BorderStyle;
-import com.github.s262316.forx.tree.style.Identifier;
+import com.github.s262316.forx.style.Identifier;
 
 public class TestEnumConverter
 {

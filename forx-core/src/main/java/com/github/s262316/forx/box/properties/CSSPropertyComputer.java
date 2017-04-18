@@ -26,17 +26,17 @@ import com.github.s262316.forx.core.Prefs;
 import com.github.s262316.forx.css.util.CSSColours;
 import com.github.s262316.forx.graphics.FontUtils;
 import com.github.s262316.forx.graphics.GraphicsContext;
-import com.github.s262316.forx.tree.style.ColourValue;
-import com.github.s262316.forx.tree.style.FunctionValue;
-import com.github.s262316.forx.tree.style.HashValue;
-import com.github.s262316.forx.tree.style.Identifier;
-import com.github.s262316.forx.tree.style.MediaType;
-import com.github.s262316.forx.tree.style.NumericValue;
-import com.github.s262316.forx.tree.style.StringValue;
-import com.github.s262316.forx.tree.style.UrlValue;
-import com.github.s262316.forx.tree.style.Value;
-import com.github.s262316.forx.tree.style.ValueList;
-import com.github.s262316.forx.tree.style.selectors.PseudoElementType;
+import com.github.s262316.forx.style.ColourValue;
+import com.github.s262316.forx.style.FunctionValue;
+import com.github.s262316.forx.style.HashValue;
+import com.github.s262316.forx.style.Identifier;
+import com.github.s262316.forx.style.MediaType;
+import com.github.s262316.forx.style.NumericValue;
+import com.github.s262316.forx.style.StringValue;
+import com.github.s262316.forx.style.UrlValue;
+import com.github.s262316.forx.style.Value;
+import com.github.s262316.forx.style.ValueList;
+import com.github.s262316.forx.style.selectors.PseudoElementType;
 import com.github.s262316.forx.tree.visual.VElement;
 
 
@@ -108,7 +108,7 @@ public class CSSPropertyComputer
         {
         	nv=(NumericValue)v;
 
-            margindesc.top.set(nv.absLength(on));
+            margindesc.top.set(NumericValues.absLength(nv, on));
         }        
         else
             throw new BoxError(BoxExceptionType.BET_INCORRECT_PROPERTY_VALUE);
@@ -127,7 +127,7 @@ public class CSSPropertyComputer
         {
         	nv=(NumericValue)v;
 
-            margindesc.bottom.set(nv.absLength(on));
+            margindesc.bottom.set(NumericValues.absLength(nv, on));
         }        
         else
             throw new BoxError(BoxExceptionType.BET_INCORRECT_PROPERTY_VALUE);
@@ -148,7 +148,7 @@ public class CSSPropertyComputer
         {
         	nv=(NumericValue)v;
 
-            margindesc.right.set(nv.absLength(on));
+            margindesc.right.set(NumericValues.absLength(nv, on));
         }        
         else
             throw new BoxError(BoxExceptionType.BET_INCORRECT_PROPERTY_VALUE);
@@ -168,7 +168,7 @@ public class CSSPropertyComputer
         {
         	nv=(NumericValue)v;
 
-            margindesc.left.set(nv.absLength(on));
+            margindesc.left.set(NumericValues.absLength(nv, on));
         }                
         else
             throw new BoxError(BoxExceptionType.BET_INCORRECT_PROPERTY_VALUE);
@@ -225,7 +225,7 @@ public class CSSPropertyComputer
         {
             nv=(NumericValue)v;
 
-            pd.zIndex.set(nv.absLength(on));
+            pd.zIndex.set(NumericValues.absLength(nv, on));
         }
         else
             throw new BoxError(BoxExceptionType.BET_INCORRECT_PROPERTY_VALUE);
@@ -243,7 +243,7 @@ public class CSSPropertyComputer
         {
             nv=(NumericValue)v;
 
-            pd.top.set(nv.absLength(on));
+            pd.top.set(NumericValues.absLength(nv, on));
         }
         else
             throw new BoxError(BoxExceptionType.BET_INCORRECT_PROPERTY_VALUE);
@@ -261,7 +261,7 @@ public class CSSPropertyComputer
         {
             nv=(NumericValue)v;
 
-            pd.right.set(nv.absLength(on));
+            pd.right.set(NumericValues.absLength(nv, on));
         }
         else
             throw new BoxError(BoxExceptionType.BET_INCORRECT_PROPERTY_VALUE);
@@ -279,7 +279,7 @@ public class CSSPropertyComputer
         {
             nv=(NumericValue)v;
 
-            pd.bottom.set(nv.absLength(on));
+            pd.bottom.set(NumericValues.absLength(nv, on));
         }
         else
             throw new BoxError(BoxExceptionType.BET_INCORRECT_PROPERTY_VALUE);
@@ -297,7 +297,7 @@ public class CSSPropertyComputer
         {
             nv=(NumericValue)v;
 
-            pd.left.set(nv.absLength(on));
+            pd.left.set(NumericValues.absLength(nv, on));
         }
         else
             throw new BoxError(BoxExceptionType.BET_INCORRECT_PROPERTY_VALUE);
@@ -329,7 +329,7 @@ public class CSSPropertyComputer
         {
         	nv=(NumericValue)v;
 
-            dd.width.set(nv.absLength(on));
+            dd.width.set(NumericValues.absLength(nv, on));
         }
         else
             throw new BoxError(BoxExceptionType.BET_INCORRECT_PROPERTY_VALUE);
@@ -348,7 +348,7 @@ public class CSSPropertyComputer
         {
             nv=(NumericValue)v;
 
-            dd.height.set(nv.absLength(on));
+            dd.height.set(NumericValues.absLength(nv, on));
         }
         else
             throw new BoxError(BoxExceptionType.BET_INCORRECT_PROPERTY_VALUE);
@@ -359,7 +359,7 @@ public class CSSPropertyComputer
         {
             nv=(NumericValue)v;
 
-            dd.minWidth.set(nv.absLength(on));
+            dd.minWidth.set(NumericValues.absLength(nv, on));
         }
         else
             throw new BoxError(BoxExceptionType.BET_INCORRECT_PROPERTY_VALUE);
@@ -378,7 +378,7 @@ public class CSSPropertyComputer
         {
             nv=(NumericValue)v;
 
-            dd.maxWidth.set(nv.absLength(on));
+            dd.maxWidth.set(NumericValues.absLength(nv, on));
         }
         else
             throw new BoxError(BoxExceptionType.BET_INCORRECT_PROPERTY_VALUE);
@@ -389,7 +389,7 @@ public class CSSPropertyComputer
         {
             nv=(NumericValue)v;
 
-            dd.minHeight.set(nv.absLength(on));
+            dd.minHeight.set(NumericValues.absLength(nv, on));
         }
         else
             throw new BoxError(BoxExceptionType.BET_INCORRECT_PROPERTY_VALUE);
@@ -408,7 +408,7 @@ public class CSSPropertyComputer
         {
             nv=(NumericValue)v;
 
-            dd.maxHeight.set(nv.absLength(on));
+            dd.maxHeight.set(NumericValues.absLength(nv, on));
         }
         else
             throw new BoxError(BoxExceptionType.BET_INCORRECT_PROPERTY_VALUE);
@@ -442,7 +442,7 @@ public class CSSPropertyComputer
         {
             nv=(NumericValue)v;
 
-            ld.lineHeight=nv.absLength(on);
+            ld.lineHeight=NumericValues.absLength(nv, on);
             subj.computed_value("line-height", new NumericValue((int)ld.lineHeight, "px"));
         }
         else
@@ -478,7 +478,7 @@ public class CSSPropertyComputer
         {
             nv=(NumericValue)v;
 
-            ld.verticalAlign.value=nv.absLength(on);
+            ld.verticalAlign.value=NumericValues.absLength(nv, on);
             ld.verticalAlign.specified=VerticalAlignmentSpecial.VAS_LENGTH;
             subj.computed_value("vertical-align", new NumericValue((int)ld.lineHeight, "px"));
         }
@@ -500,7 +500,7 @@ public class CSSPropertyComputer
         {
             nv=(NumericValue)v;
 
-            tp.text_indent=nv.absLength(on);
+            tp.text_indent=NumericValues.absLength(nv, on);
         }
         else
             throw new BoxError(BoxExceptionType.BET_INCORRECT_PROPERTY_VALUE);
@@ -564,7 +564,7 @@ public class CSSPropertyComputer
         {
             nv=(NumericValue)v;
 
-            wp.letter_spacing=nv.absLength(on);
+            wp.letter_spacing=NumericValues.absLength(nv, on);
         }
         else
             throw new BoxError(BoxExceptionType.BET_UNKNOWN);
@@ -585,7 +585,7 @@ public class CSSPropertyComputer
         {
             nv=(NumericValue)v;
 
-            wp.word_spacing=nv.absLength(on);
+            wp.word_spacing=NumericValues.absLength(nv, on);
             subj.computed_value("word-spacing", v);
         }
         else
@@ -756,7 +756,7 @@ public class CSSPropertyComputer
             nv=(NumericValue)v;
 
             int cont_font_size=FontUtils.size_pt(on.getContainer().getFont());
-            fontSize=nv.absLength(on);
+            fontSize=NumericValues.absLength(nv, on);
         }
         else if(v.getClass().equals(Identifier.class))
         {
@@ -971,7 +971,7 @@ public class CSSPropertyComputer
                 {
                     nv=(NumericValue)vl.members.get(0);
 
-                    bp.horiz=nv.absLength(on);
+                    bp.horiz=NumericValues.absLength(nv, on);
                 }
                 else
                     throw new BoxError(BoxExceptionType.BET_UNKNOWN);
@@ -993,7 +993,7 @@ public class CSSPropertyComputer
                     {
                         nv=(NumericValue)vl.members.get(1);
 
-                        bp.vert=nv.absLength(on);
+                        bp.vert=NumericValues.absLength(nv, on);
                     }
                     else
                         throw new BoxError(BoxExceptionType.BET_UNKNOWN);
@@ -1044,7 +1044,7 @@ public class CSSPropertyComputer
                 {
                     nv=(NumericValue)v;
 
-                    bp.horiz=nv.absLength(on);
+                    bp.horiz=NumericValues.absLength(nv, on);
                     bp.vert=on.contentHeight() - bp.image.sheight().value + 1;
                 }
                 else

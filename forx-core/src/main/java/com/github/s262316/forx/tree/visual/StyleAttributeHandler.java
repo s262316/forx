@@ -5,6 +5,8 @@ import java.util.EnumSet;
 import java.util.List;
 
 import com.github.s262316.forx.css.CSSPropertiesReference;
+import com.github.s262316.forx.style.selectors.util.SelectorPredicate;
+import com.github.s262316.forx.style.selectors.util.Selectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,10 +17,7 @@ import com.github.s262316.forx.tree.events2.MutationType;
 import com.github.s262316.forx.tree.events2.PropagationType;
 import com.github.s262316.forx.tree.events2.XMutationListener;
 import com.github.s262316.forx.tree.events2.XmlMutationEvent;
-import com.github.s262316.forx.tree.impl.XmlDocument;
-import com.github.s262316.forx.tree.style.Declaration;
-import com.github.s262316.forx.tree.style.util.SelectorPredicate;
-import com.github.s262316.forx.tree.style.util.Selectors;
+import com.github.s262316.forx.style.Declaration;
 
 /**
  * listens for elements with style attributes
@@ -80,7 +79,7 @@ public class StyleAttributeHandler extends XMutationListener
 
 		try
 		{
-			CSSParser parser=new CSSParser(a.getValue(), (XmlDocument)changed.getDocument(), ((XmlDocument)changed.getDocument()).getCssLoader(), cssPropertiesReference);
+			CSSParser parser=new CSSParser(a.getValue(), (XmlVDocument)changed.getDocument(), ((XmlVDocument)changed.getDocument()).getCssLoader(), cssPropertiesReference);
 			List<Declaration> decs=parser.parse_declist();
 
 			changed.setStyles(decs);

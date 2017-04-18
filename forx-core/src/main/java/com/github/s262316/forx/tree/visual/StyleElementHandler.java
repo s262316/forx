@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.EnumSet;
 
 import com.github.s262316.forx.css.CSSPropertiesReference;
+import com.github.s262316.forx.style.selectors.util.SelectorPredicate;
+import com.github.s262316.forx.style.selectors.util.Selectors;
 import com.google.common.base.Preconditions;
 
 import com.github.s262316.forx.css.CSSParser;
@@ -13,10 +15,7 @@ import com.github.s262316.forx.tree.events2.MutationType;
 import com.github.s262316.forx.tree.events2.PropagationType;
 import com.github.s262316.forx.tree.events2.XMutationListener;
 import com.github.s262316.forx.tree.events2.XmlMutationEvent;
-import com.github.s262316.forx.tree.impl.XmlDocument;
-import com.github.s262316.forx.tree.style.Stylesheet;
-import com.github.s262316.forx.tree.style.util.SelectorPredicate;
-import com.github.s262316.forx.tree.style.util.Selectors;
+import com.github.s262316.forx.style.Stylesheet;
 
 /**
  * listens for elements named style
@@ -55,12 +54,12 @@ public class StyleElementHandler extends XMutationListener
 		{
 			String text=XNodes.collectAllText(styleElement);
 
-			CSSParser parser=new CSSParser(text, (XmlDocument)styleElement.getDocument(), cssPropertiesReference);
+			CSSParser parser=new CSSParser(text, (XmlVDocument)styleElement.getDocument(), cssPropertiesReference);
 			styleElementStylesheet=parser.parse_stylesheet();
 
 			if(connected)
 			{
-				((XmlDocument)styleElement.getDocument()).mergeStyles(styleElement, styleElementStylesheet);
+				((XmlVDocument)styleElement.getDocument()).mergeStyles(styleElement, styleElementStylesheet);
 			}
 		}
 		catch(CSSParserException cpe)
@@ -76,7 +75,7 @@ public class StyleElementHandler extends XMutationListener
 
 		if(connected)
 		{
-			((XmlDocument)styleElement.getDocument()).demergeStylesFrom(styleElement);
+			((XmlVDocument)styleElement.getDocument()).demergeStylesFrom(styleElement);
 		}
 	}	
 	
@@ -87,7 +86,7 @@ public class StyleElementHandler extends XMutationListener
 		{
 			Preconditions.checkArgument(connected==false);
 			
-			((XmlDocument)styleElement.getDocument()).mergeStyles(styleElement, styleElementStylesheet);
+			((XmlVDocument)styleElement.getDocument()).mergeStyles(styleElement, styleElementStylesheet);
 			connected=true;
 		}
 	}
@@ -100,7 +99,7 @@ public class StyleElementHandler extends XMutationListener
 		{
 			Preconditions.checkArgument(connected==true);
 			
-			((XmlDocument)styleElement.getDocument()).demergeStylesFrom(styleElement);
+			((XmlVDocument)styleElement.getDocument()).demergeStylesFrom(styleElement);
 			connected=false;
 		}
 	}

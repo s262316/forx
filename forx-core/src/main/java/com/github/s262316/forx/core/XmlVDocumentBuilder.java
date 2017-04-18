@@ -1,8 +1,16 @@
 package com.github.s262316.forx.core;
 
+import java.net.URL;
 import java.util.Map;
 
 import com.github.s262316.forx.css.CSSPropertiesReference;
+import com.github.s262316.forx.css.VisualConstants;
+import com.github.s262316.forx.css.VisualState;
+import com.github.s262316.forx.tree.DocumentTypeDecl;
+import com.github.s262316.forx.tree.XmlAttribute;
+import com.github.s262316.forx.tree.XmlComment;
+import com.github.s262316.forx.tree.XmlElement;
+import com.github.s262316.forx.tree.XmlText;
 import com.github.s262316.forx.tree.visual.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,12 +24,6 @@ import com.github.s262316.forx.tree.build.ElementKey;
 import com.github.s262316.forx.tree.build.TextKey;
 import com.github.s262316.forx.tree.build.XmlDocumentBuilder;
 import com.github.s262316.forx.tree.events2.EventDispatcher;
-import com.github.s262316.forx.tree.impl.XmlAttribute;
-import com.github.s262316.forx.tree.impl.XmlComment;
-import com.github.s262316.forx.tree.impl.XmlDocument;
-import com.github.s262316.forx.tree.impl.XmlElement;
-import com.github.s262316.forx.tree.impl.XmlText;
-
 
 public class XmlVDocumentBuilder implements XmlDocumentBuilder
 {
@@ -29,7 +31,7 @@ public class XmlVDocumentBuilder implements XmlDocumentBuilder
 	
     private GraphicsContext graphicsContext;
     private int id=0;
-    private XmlDocument doc;
+    private XmlVDocument doc;
     private BoxRealMapping boxRealMapping;
     private EventDispatcher eventDispatcher;
     private CSSPropertiesReference cssPropertiesReference;
@@ -42,16 +44,18 @@ public class XmlVDocumentBuilder implements XmlDocumentBuilder
         this.cssPropertiesReference=cssPropertiesReference;
     }
 
-    @Override    
-    public void setDoc(XmlDocument doc)
+	public XmlVDocument createDocument(URL location)
     {
-    	this.doc=doc;
+        try
+        {
+            doc = new XmlVDocument(new DocumentTypeDecl(), this, eventDispatcher, location, cssPropertiesReference);
+            return doc;
+        }
+        catch (ApplicationConfigException ace)
+        {
+            throw new RuntimeException(ace);
+        }
     }
-    
-    public XmlDocument getDoc()
-    {
-		return doc;
-	}
 
     @Override
     public XmlElement createElement(ElementKey key)

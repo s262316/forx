@@ -1,7 +1,7 @@
 package com.github.s262316.forx.tree.visual.util;
 
 import com.github.s262316.forx.tree.XNode;
-import com.github.s262316.forx.tree.impl.XmlNode;
+import com.github.s262316.forx.tree.XmlNode;
 import com.github.s262316.forx.tree.visual.XmlVElement;
 import com.google.common.collect.Lists;
 

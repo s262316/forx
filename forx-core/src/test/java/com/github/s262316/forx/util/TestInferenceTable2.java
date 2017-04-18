@@ -4,12 +4,13 @@ import static org.junit.Assert.*;
 
 import java.util.Map;
 
+import com.github.s262316.forx.css.util.InferenceTable2;
 import org.junit.Test;
 
 import com.google.common.collect.HashBasedTable;
 
-import com.github.s262316.forx.tree.style.Identifier;
-import com.github.s262316.forx.tree.style.Value;
+import com.github.s262316.forx.style.Identifier;
+import com.github.s262316.forx.style.Value;
 
 public class TestInferenceTable2
 {
@@ -35,7 +36,7 @@ public class TestInferenceTable2
 		table.put(new Identifier("red"), "border-top-color", true);
 		table.put(new Identifier("solid"), "border-top-color", false);
 		
-		Map<String, Value> map=InferenceTable2.infer(table);
+		Map<String, Value> map= InferenceTable2.infer(table);
 		assertEquals(3, map.size());
 		assertEquals(new Identifier("thin"), map.get("border-top-width"));
 		assertEquals(new Identifier("solid"), map.get("border-top-style"));

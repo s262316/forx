@@ -1,7 +1,5 @@
 package com.github.s262316.forx.tree.visual;
 
-import com.github.s262316.forx.tree.events2.EventDispatcher;
-import com.github.s262316.forx.tree.impl.XmlDocument;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNull;

@@ -13,6 +13,7 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 
 import com.github.s262316.forx.css.CSSPropertiesReference;
+import com.github.s262316.forx.tree.XmlDocument;
 import org.codehaus.stax2.XMLInputFactory2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +25,8 @@ import com.github.s262316.forx.tree.build.ElementKey;
 import com.github.s262316.forx.tree.build.TextKey;
 import com.github.s262316.forx.tree.build.XmlDocumentBuilder;
 import com.github.s262316.forx.tree.events2.EventDispatcher;
-import com.github.s262316.forx.tree.impl.XmlDocument;
-import com.github.s262316.forx.tree.impl.XmlNode;
-import com.github.s262316.forx.tree.visual.VisualConstants;
+import com.github.s262316.forx.tree.XmlNode;
+import com.github.s262316.forx.css.VisualConstants;
 import com.github.s262316.forx.tree.visual.XmlVElement;
 
 
@@ -50,7 +50,7 @@ public class StaxBinding
 		this.propertiesReference=propertiesReference;
     }        
     
-    public void parse(InputStream in) throws XMLStreamException
+    public XmlDocument parse(InputStream in) throws XMLStreamException
 	{
 		XMLInputFactory2 xmlInputFactory = (XMLInputFactory2)XMLInputFactory.newInstance();
 		xmlInputFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
@@ -66,16 +66,9 @@ public class StaxBinding
 			{
 				logger.debug("startDocument");
 				
-				try
-				{
-					doc=new XmlDocument(null, builder, eventDispatcher, location, propertiesReference);
-					doc.setProperty(VisualConstants.META_TAGS, new HashMap<String, String>());
-					builder.setDoc(doc);
-				}
-				catch(ApplicationConfigException ace)
-				{
-					throw new RuntimeException(ace);
-				}				
+				doc=builder.createDocument(location);
+				doc.setProperty(VisualConstants.META_TAGS, new HashMap<String, String>());
+
 			}
 			else if(xmlEvent.isStartElement())
 			{
@@ -155,5 +148,7 @@ public class StaxBinding
 				}					
 			}
 		}
+
+		return doc;
 	}
 }

@@ -1,10 +1,7 @@
 package com.github.s262316.forx.tree.visual;
 
-import com.github.s262316.forx.css.CSSPropertiesReference;
-import com.github.s262316.forx.tree.style.ValueBuilder;
-import com.github.s262316.forx.tree.style.ValueList;
-import com.github.s262316.forx.tree.style.selectors.PseudoElementType;
-import com.github.s262316.forx.tree.style.util.ValuesHelper;
+import com.github.s262316.forx.style.ValueBuilder;
+import com.github.s262316.forx.style.ValueList;
 import com.github.s262316.forx.tree.visual.util.XmlVNodes;
 import com.google.common.collect.Lists;
 import org.junit.Before;

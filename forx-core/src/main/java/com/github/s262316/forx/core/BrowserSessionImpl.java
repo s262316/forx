@@ -11,6 +11,8 @@ import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.XMLStreamException;
 
 import com.github.s262316.forx.css.CSSPropertiesReference;
+import com.github.s262316.forx.tree.XmlDocument;
+import com.github.s262316.forx.tree.visual.XmlVDocument;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
@@ -29,8 +31,7 @@ import com.github.s262316.forx.core.real.RealMouseMoveEvent;
 import com.github.s262316.forx.core.real.RealMousePressedEvent;
 import com.github.s262316.forx.graphics.GraphicsContext;
 import com.github.s262316.forx.tree.events2.EventDispatcher;
-import com.github.s262316.forx.tree.impl.XmlDocument;
-import com.github.s262316.forx.tree.impl.XmlNode;
+import com.github.s262316.forx.tree.XmlNode;
 import com.github.s262316.forx.tree.visual.XmlVElement;
 
 import com.google.common.collect.Sets;
@@ -41,7 +42,7 @@ public class BrowserSessionImpl implements WebpageHolder
 {
 	private final static Logger logger=LoggerFactory.getLogger(BrowserSessionImpl.class);	
 
-    private XmlDocument doc;
+    private XmlVDocument doc;
 	@Autowired
 	ApplicationContext applicationContext;
 	@Autowired
@@ -96,15 +97,11 @@ public class BrowserSessionImpl implements WebpageHolder
         spf.setValidating(true);
         SAXParser sp=spf.newSAXParser();
 
-
-        binding.parse(inputStream);
+		doc=(XmlVDocument)binding.parse(inputStream);
         
         //Html33Binding binding=new Html33Binding(eventDispatcher, docBuilder);
         //new ParserDelegator().parse(in, binding, false);
 
-        
-        
-		doc=docBuilder.getDoc();
 		inputStream.close();
 		
 		
@@ -141,7 +138,7 @@ public class BrowserSessionImpl implements WebpageHolder
     }
     
 	@Override
-	public XmlDocument getDocument()
+	public XmlVDocument getDocument()
 	{
 		return doc;
 	}

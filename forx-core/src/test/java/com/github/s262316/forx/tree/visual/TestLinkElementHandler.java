@@ -2,8 +2,7 @@ package com.github.s262316.forx.tree.visual;
 
 import com.github.s262316.forx.tree.events2.MutationType;
 import com.github.s262316.forx.tree.events2.XmlMutationEvent;
-import com.github.s262316.forx.tree.impl.XmlDocument;
-import com.github.s262316.forx.tree.style.Stylesheet;
+import com.github.s262316.forx.style.Stylesheet;
 import com.google.common.base.Optional;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -24,9 +23,9 @@ public class TestLinkElementHandler
     @Test
     public void adddingLinkToConnectedTreeCausesStylesheetToBeMerged() throws Exception
     {
-        URL url=ResourceUtils.getFile("classpath:com/github/s262316/forx/css/simple.css").toURI().toURL();
+        URL url=ResourceUtils.getFile("classpath:com/github/s262316/forx/com.github.s262316.forx.css/simple.com.github.s262316.forx.css").toURI().toURL();
 
-        XmlDocument doc=Mockito.mock(XmlDocument.class);
+        XmlVDocument doc=Mockito.mock(XmlVDocument.class);
         when(doc.getCharset()).thenReturn(Optional.of(StandardCharsets.UTF_8));
         XmlVElement spyElement=new XmlVElement("link", doc, 0, null, null, null);
         spyElement.setAttr("href", url.toString());
@@ -44,9 +43,9 @@ public class TestLinkElementHandler
     @Test
     public void adddingLinkToConnectedTreeCausesStylesheetProcessedButNotMerged() throws Exception
     {
-        URL url=ResourceUtils.getFile("classpath:com/github/s262316/forx/css/simple.css").toURI().toURL();
+        URL url=ResourceUtils.getFile("classpath:com/github/s262316/forx/com.github.s262316.forx.css/simple.com.github.s262316.forx.css").toURI().toURL();
 
-        XmlDocument doc=Mockito.mock(XmlDocument.class);
+        XmlVDocument doc=Mockito.mock(XmlVDocument.class);
         when(doc.getCharset()).thenReturn(Optional.of(StandardCharsets.UTF_8));
         XmlVElement spyElement=new XmlVElement("link", doc, 0, null, null, null);
         spyElement.setAttr("href", url.toString());
@@ -63,7 +62,7 @@ public class TestLinkElementHandler
     @Test
     public void disconnectingLinkCausesStylesheetToBeDemerged()
     {
-        XmlDocument doc=Mockito.mock(XmlDocument.class);
+        XmlVDocument doc=Mockito.mock(XmlVDocument.class);
         when(doc.getCharset()).thenReturn(Optional.of(StandardCharsets.UTF_8));
         XmlVElement element=Mockito.spy(new XmlVElement("link", doc, 0, null, null, null));
         LinkElementHandler listener=new LinkElementHandler(element, null);
@@ -81,9 +80,9 @@ public class TestLinkElementHandler
     @Test
     public void connectLinkToCausesStylesheetToBeMerged() throws Exception
     {
-        URL url=ResourceUtils.getFile("classpath:com/github/s262316/forx/css/simple.css").toURI().toURL();
+        URL url=ResourceUtils.getFile("classpath:com/github/s262316/forx/com.github.s262316.forx.css/simple.com.github.s262316.forx.css").toURI().toURL();
 
-        XmlDocument doc=Mockito.mock(XmlDocument.class);
+        XmlVDocument doc=Mockito.mock(XmlVDocument.class);
         when(doc.getCharset()).thenReturn(Optional.of(StandardCharsets.UTF_8));
         XmlVElement spyElement=new XmlVElement("link", doc, 0, null, null, null);
         spyElement.setAttr("href", url.toString());

@@ -45,7 +45,7 @@ public class ComputeStylesheetListener //extends XMutationListener
 //						Stylesheet ss=CSSParser.parseFromStream(new InputStreamReader(file.openStream()));
 //						ss.setOrder(listenee.getId());
 //						if(d.getDefaultStyleLanguage().equals(""))
-//							d.setDefaultStyleLanguage("text/css");
+//							d.setDefaultStyleLanguage("text/com.github.s262316.forx.css");
 //
 //						d.mergeStyles(listenee, ss);
 //					}

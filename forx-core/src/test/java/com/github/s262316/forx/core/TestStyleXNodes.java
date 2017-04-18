@@ -1,10 +1,11 @@
 package com.github.s262316.forx.core;
 
+import com.github.s262316.forx.css.StyleXNodes;
 import com.github.s262316.forx.tree.XNode;
 import com.github.s262316.forx.tree.events2.EventDispatcher;
-import com.github.s262316.forx.tree.impl.XmlDocument;
-import com.github.s262316.forx.tree.impl.XmlElement;
-import com.github.s262316.forx.tree.impl.XmlText;
+import com.github.s262316.forx.tree.XmlDocument;
+import com.github.s262316.forx.tree.XmlElement;
+import com.github.s262316.forx.tree.XmlText;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -25,7 +26,7 @@ public class TestStyleXNodes
 		e1.add(e2);
 		e1.add(e3);
 
-		first=StyleXNodes.firstMember(e1);
+		first= StyleXNodes.firstMember(e1);
 		assertSame(e2, first);
 	}
 	

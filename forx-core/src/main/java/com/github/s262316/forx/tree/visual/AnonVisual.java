@@ -26,14 +26,14 @@ import com.github.s262316.forx.box.properties.PropertyAdaptor;
 import com.github.s262316.forx.box.properties.TextProperties;
 import com.github.s262316.forx.box.properties.Visual;
 import com.github.s262316.forx.box.properties.WordProperties;
-import com.github.s262316.forx.css.BorderStyles;
+import com.github.s262316.forx.box.properties.BorderStylesImpl;
 import com.github.s262316.forx.css.CSSPropertiesReference;
+import com.github.s262316.forx.css.PropertyReference;
 import com.github.s262316.forx.graphics.GraphicsContext;
-import com.github.s262316.forx.tree.style.Declaration;
-import com.github.s262316.forx.tree.style.MediaType;
-import com.github.s262316.forx.tree.style.PropertyReference;
-import com.github.s262316.forx.tree.style.Value;
-import com.github.s262316.forx.tree.style.selectors.PseudoElementType;
+import com.github.s262316.forx.style.Declaration;
+import com.github.s262316.forx.style.MediaType;
+import com.github.s262316.forx.style.Value;
+import com.github.s262316.forx.style.selectors.PseudoElementType;
 
 public class AnonVisual implements Visual, VElement
 {
@@ -59,7 +59,7 @@ public class AnonVisual implements Visual, VElement
     @Override
     public void calculateBorders(PropertyAdaptor on, BorderDescriptor borderdesc)
     {
-        BorderStyles.resolveBorders(on, this, borderdesc, PseudoElementType.PE_NOT_PSEUDO);
+        BorderStylesImpl.resolveBorders(on, this, borderdesc, PseudoElementType.PE_NOT_PSEUDO);
     }
 
     @Override
