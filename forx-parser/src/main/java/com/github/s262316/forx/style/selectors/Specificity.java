@@ -1,5 +1,6 @@
 package com.github.s262316.forx.style.selectors;
 
+import com.google.common.base.MoreObjects;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import com.google.common.base.Objects;
@@ -57,7 +58,7 @@ public class Specificity
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.addValue(a)
 			.addValue(b)
 			.addValue(c)

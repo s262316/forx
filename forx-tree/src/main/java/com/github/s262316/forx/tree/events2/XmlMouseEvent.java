@@ -1,5 +1,6 @@
 package com.github.s262316.forx.tree.events2;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 
@@ -53,7 +54,7 @@ public class XmlMouseEvent implements Event
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.addValue(eventType)
 			.add("mouseX", mouseX)
 			.add("mouseY", mouseY)

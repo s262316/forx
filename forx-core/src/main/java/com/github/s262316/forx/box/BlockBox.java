@@ -13,6 +13,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.TreeSet;
 
+import com.google.common.base.MoreObjects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -2289,6 +2290,6 @@ public class BlockBox implements Box, HasAbsolutePosition, HasBackgroundProperti
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this).add("id", id).toString();
+		return MoreObjects.toStringHelper(this).add("id", id).toString();
 	}	
 }

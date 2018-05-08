@@ -1,10 +1,7 @@
 package com.github.s262316.forx.test.actual;
 
 import com.github.s262316.forx.gui.WebView;
-import com.github.s262316.forx.test.expected.GenerateExpected;
 import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
-import javafx.application.Application;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -18,7 +15,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 
 import javax.imageio.ImageIO;
@@ -26,19 +22,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-@SpringBootApplication(scanBasePackages = {"com/github/s262316/forx"})
+@SpringBootApplication(scanBasePackages = {"com.github.s262316.forx"})
 @Order(2)
 @ConditionalOnProperty(name="run-actual")
 public class RunTests implements CommandLineRunner
@@ -125,6 +115,7 @@ public class RunTests implements CommandLineRunner
 		catch(Exception e)
 		{
 			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -150,7 +141,7 @@ public class RunTests implements CommandLineRunner
 	public static void main(String args[])
 	{
 		SpringApplication app=new SpringApplication(RunTests.class);
-		app.setWebEnvironment(true);
+		app.setWebEnvironment(false);
 		app.run(args);
 	}
 }

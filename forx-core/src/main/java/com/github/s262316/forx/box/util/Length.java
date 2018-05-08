@@ -1,5 +1,6 @@
 package com.github.s262316.forx.box.util;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class Length
@@ -84,7 +85,7 @@ public class Length
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 	       .addValue(value)
 	       .addValue(specified)
 	       .toString();

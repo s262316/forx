@@ -17,6 +17,7 @@ import com.github.s262316.forx.tree.resource.Resource;
 import com.github.s262316.forx.tree.resource.ResourceLoader;
 import com.github.s262316.forx.tree.ReferringDocument;
 import com.github.s262316.forx.style.selectors.util.Selectors;
+import com.google.common.base.MoreObjects;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.slf4j.Logger;
@@ -326,7 +327,7 @@ public class CSSParser
         	if(elementName==null && ids.isEmpty() && attrs.isEmpty() && pseudoClasses.isEmpty() && pseudoElements.isEmpty())
         		throw new BadSelectorException();
             	
-            return new SelectorElement(Objects.firstNonNull(elementName, "*"), attrs, pseudoClasses, pseudoElements, ids);
+            return new SelectorElement(MoreObjects.firstNonNull(elementName, "*"), attrs, pseudoClasses, pseudoElements, ids);
     }
 
 	//combinator

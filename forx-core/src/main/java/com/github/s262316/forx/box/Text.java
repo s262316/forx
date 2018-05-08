@@ -5,6 +5,7 @@ import java.awt.FontMetrics;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.base.MoreObjects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -218,7 +219,7 @@ public class Text extends AtomicInline
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			       .add("id",id)
 			       .add("text", _text)
 			       .add("spaceFlag", _space)

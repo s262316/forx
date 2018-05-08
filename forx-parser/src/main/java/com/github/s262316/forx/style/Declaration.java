@@ -1,5 +1,6 @@
 package com.github.s262316.forx.style;
 
+import com.google.common.base.MoreObjects;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import com.google.common.base.Objects;
@@ -52,7 +53,7 @@ public class Declaration
     @Override
     public String toString()
     {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 				.add("property", property)
 				.add("value", value)
 				.add("important", important)

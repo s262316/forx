@@ -4,9 +4,14 @@ import com.github.s262316.forx.test.ForxTest;
 
 import com.google.common.collect.Iterators;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,9 +45,10 @@ public class GenerateExpected implements CommandLineRunner
     private Path expectedResultsFolder;
     @Value("${cssTestSuiteFolder}")
     private Path cssTestSuiteFolder;
+    private ChromeDriver driver;
     //	private InternetExplorerDriver driver;
-    private FirefoxDriver driver;
-    private FirefoxProfile firefoxProfile;
+//    private FirefoxDriver driver;
+//    private FirefoxProfile firefoxProfile;
     private AntPathMatcher pathMatcher=new AntPathMatcher();
     @Value("${cssTestsFilter}")
     private String cssTestsFilter;
@@ -51,8 +57,10 @@ public class GenerateExpected implements CommandLineRunner
     @PostConstruct
     public void init()
     {
-        firefoxProfile = new FirefoxProfile();
-        driver = new FirefoxDriver(firefoxProfile);
+//        FirefoxOptions options=new FirefoxOptions();
+//        options.setLogLevel(FirefoxDriverLogLevel.TRACE);
+//        driver = new FirefoxDriver(options);
+        driver=new ChromeDriver();
 
         // this implicit wait will invisibly wait for elements to become loaded
         // while we're requesting them
@@ -65,16 +73,19 @@ public class GenerateExpected implements CommandLineRunner
     {
         logger.info("run()");
 
-        Files.walk(cssTestSuiteFolder)
+        List<Path> allFiles=Files.walk(cssTestSuiteFolder)
                 .filter(v -> pathMatcher.match(this.cssTestsFilter, v.toString()))
-                .forEach(v -> doTest(v));
+                .collect(Collectors.toList());
+
+        for(Path v : allFiles)
+            doTest(v);
 
         logger.info("performed {} tests", testsPerformed);
     }
 
     public void doTest(Path htmlTestFile)
     {
-        logger.info("doTest({})", htmlTestFile);
+        logger.info("doTest({})", "file:"+htmlTestFile.toString());
 
         try
         {
@@ -95,7 +106,7 @@ public class GenerateExpected implements CommandLineRunner
 
             testsPerformed++;
         }
-        catch(IOException ex)
+        catch(Exception ex)
         {
             logger.error("", ex);
             throw new RuntimeException(ex);

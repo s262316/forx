@@ -2,6 +2,7 @@ package com.github.s262316.forx.box.relayouter;
 
 import java.util.List;
 
+import com.google.common.base.MoreObjects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +55,7 @@ public class MoreHeightLayouter extends AbstractRelayouter
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("toResize", toResize)
 			.add("cause", cause)
 			.add("amount", amount)

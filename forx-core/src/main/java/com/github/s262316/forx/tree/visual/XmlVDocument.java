@@ -63,7 +63,7 @@ public class XmlVDocument extends XmlDocument
         try
         {
             // TODO difference com.github.s262316.forx.css for xhtml/html docs
-            File userAgentCss= ResourceUtils.getFile("classpath:com/github/s262316/forx/com.github.s262316.forx.css/user_agent.com.github.s262316.forx.css");
+            File userAgentCss= ResourceUtils.getFile("classpath:com/github/s262316/forx/css/user_agent.css");
             String cssData= FileUtils.readFileToString(userAgentCss, StandardCharsets.UTF_8);
 
             CSSParser parser=new CSSParser(cssData, this, cssPropertiesReference);

@@ -4,6 +4,7 @@ import com.github.s262316.forx.box.cast.BoxTypes;
 import com.github.s262316.forx.box.util.Overflow;
 import com.github.s262316.forx.tree.events2.XmlMouseEvent;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class CollapsedMargins
@@ -111,7 +112,7 @@ public class CollapsedMargins
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 				.add("topMarginCollapsesIn", topMarginCollapsesIn)
 				.add("topMarginCollapsesOut", topMarginCollapsesOut)
 				.add("bottomMarginCollapsesIn", bottomMarginCollapsesIn)

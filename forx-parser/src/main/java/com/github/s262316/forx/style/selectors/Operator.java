@@ -5,6 +5,7 @@
 
 package com.github.s262316.forx.style.selectors;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class Operator extends SelectorPart
@@ -23,7 +24,7 @@ public class Operator extends SelectorPart
 	@Override
     public String toString()
     {
-		return Objects.toStringHelper(this).addValue(op).toString();
+		return MoreObjects.toStringHelper(this).addValue(op).toString();
     }
 
 }

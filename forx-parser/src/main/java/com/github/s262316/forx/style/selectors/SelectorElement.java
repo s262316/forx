@@ -11,6 +11,7 @@ import com.github.s262316.forx.tree.XAttribute;
 import com.github.s262316.forx.tree.XElement;
 import com.github.s262316.forx.style.selectors.util.Selectors;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class SelectorElement extends SelectorPart
@@ -157,7 +158,7 @@ public class SelectorElement extends SelectorPart
     @Override
     public String toString()
     {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 				.add("name", name)
 				.add("attrs", attrs)
 				.add("pseudoClasses", pseudoClasses)

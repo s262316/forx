@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
         <title th:text="${thisFolder}"></title>
-        <link rel="stylesheet" type="text/css" href="/test_results.css"/>
+        <link rel="stylesheet" type="text/com.github.s262316.forx.css" href="/test_results.com.github.s262316.forx.css"/>
         <script src="/jquery-1.11.1.min.js"/>
         <script src="/test_results.js"/>
     </head>
@@ -28,7 +28,7 @@
 
                 <div class="testDetail">
                     <img th:src="@{${testcaseResult.expectedScreenshotUrl}}"></img>
-                    <img th:src="@{${testcaseResult.actualScreenshotUrl}}"></img>
+                    <img th:src="@{${testcaseResult.actualScreenshotUrl}}" border="1"></img>
 
                     <input type="button" th:onclick="'setStatus(\''+${#ids.prev('testResultArea_')}+'\', \'pass\');'" value="pass"/>
                     <input type="button" th:onclick="'setStatus(\''+${#ids.prev('testResultArea_')}+'\', \'fail\');'" value="fail"/>

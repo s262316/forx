@@ -22,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -90,7 +91,7 @@ public class TestResultsController
                 .map(Path::toString)
                 .collect(Collectors.toList());
 
-        File html[]=parentFolderFile.listFiles(v -> v.isFile() && testcaseFilenameExtensions.contains(FilenameUtils.getExtension(v.getName())));
+        File html[]=parentFolderFile.listFiles(v -> v.isFile() && FilenameUtils.getExtension(v.getName()).equals("png"));
         List<File> htmlTestCaseFiles=Arrays.asList(html);
 
         List<TestcaseResult> htmlTestCaseName=htmlTestCaseFiles.stream()
@@ -141,19 +142,15 @@ public class TestResultsController
 
     public static String formulateExpectedFilename(String testcaseHtmlFilename)
     {
-        String filenameWithoutExtension=FilenameUtils.removeExtension(testcaseHtmlFilename);
-//        String expectedFilename=filenameWithoutExtension+"_expected.png";
-        String expectedFilename=filenameWithoutExtension+".png";
-
-        return StringUtils.replace(expectedFilename, "\\", "/");
+        return StringUtils.replace(testcaseHtmlFilename, "\\", "/");
     }
 
     public static String formulateActualFilename(String testcaseHtmlFilename)
     {
-        String filenameWithoutExtension=FilenameUtils.removeExtension(testcaseHtmlFilename);
-        String expectedFilename=filenameWithoutExtension+"_actual.png";
+        String runName=StringUtils.substringBefore(testcaseHtmlFilename, "\\");
+        String newName=StringUtils.replace(testcaseHtmlFilename, runName, "expected");
 
-        return StringUtils.replace(expectedFilename, "\\", "/");
+        return StringUtils.replace(newName, "\\", "/");
     }
 
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.github.s262316.forx.style.selectors.Selector;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class StyleRule
@@ -45,7 +46,7 @@ public class StyleRule
 	@Override
     public String toString()
     {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 				.add("selector", selector)
 				.add("declarations", declarations)
 				.add("media", media)

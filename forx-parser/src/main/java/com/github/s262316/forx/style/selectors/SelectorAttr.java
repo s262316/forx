@@ -1,5 +1,6 @@
 package com.github.s262316.forx.style.selectors;
 
+import com.google.common.base.MoreObjects;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import com.github.s262316.forx.tree.XAttribute;
@@ -67,7 +68,7 @@ public class SelectorAttr implements Predicate<XElement>
     @Override
     public String toString()
     {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 				.add("attr", attr)
 				.add("op", op)
 				.add("value", value)

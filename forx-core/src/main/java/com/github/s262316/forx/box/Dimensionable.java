@@ -4,6 +4,7 @@
  */
 package com.github.s262316.forx.box;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class Dimensionable
@@ -109,7 +110,7 @@ public class Dimensionable
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 		       .add("left", _left)
 		       .add("top", _top)
 		       .add("width", _width)

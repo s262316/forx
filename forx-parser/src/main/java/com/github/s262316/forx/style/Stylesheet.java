@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.TreeSet;
 
 import com.github.s262316.forx.tree.ReferringDocument;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Optional;
 import com.github.s262316.forx.tree.XElement;
 import com.github.s262316.forx.style.selectors.PseudoElementType;
@@ -144,7 +145,7 @@ public class Stylesheet implements ReferringDocument
     @Override
     public String toString()
     {
-		return Objects.toStringHelper(this).addValue(ruleset).toString();
+		return MoreObjects.toStringHelper(this).addValue(ruleset).toString();
     }
 }
 

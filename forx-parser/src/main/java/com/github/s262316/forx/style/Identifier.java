@@ -1,5 +1,6 @@
 package com.github.s262316.forx.style;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class Identifier extends Value
@@ -20,7 +21,7 @@ public class Identifier extends Value
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("ident", ident)
 			.toString();
 	}

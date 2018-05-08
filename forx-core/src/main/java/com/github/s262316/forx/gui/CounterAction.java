@@ -1,5 +1,6 @@
 package com.github.s262316.forx.gui;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class CounterAction
@@ -44,7 +45,7 @@ public class CounterAction
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			.add("name", name)
 			.add("amount", amount)
 			.toString();

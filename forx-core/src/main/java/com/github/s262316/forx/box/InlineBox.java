@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
 
+import com.google.common.base.MoreObjects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -3410,7 +3411,7 @@ public class InlineBox implements Box, Inline, HasBorders, HasWordProperties, Ha
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 			       .add("id",id)
 			       .toString();
 	}
