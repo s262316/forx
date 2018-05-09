@@ -15,13 +15,14 @@ import com.github.s262316.forx.style.StringValue;
 import com.github.s262316.forx.style.UrlValue;
 import com.github.s262316.forx.style.Value;
 import com.github.s262316.forx.style.ValueList;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 
-class ValueParser
+public class ValueParser
 {
 	private Tokenizer tok;
 	
-	ValueParser(Tokenizer tok)
+	public ValueParser(Tokenizer tok)
 	{
 		this.tok=tok;
 	}
@@ -98,17 +99,32 @@ class ValueParser
     	{
 	        ValueList value=new ValueList();
 	        Value v1;
+	        ValueList subList=null;
 	
 	        v1=parseTerm();
 	        while(v1!=null)
 	        {
 	        	tok.advance();
 	        	
-	            value.members.add(v1);
-	
-	            if(tok.curr.syntax.equals("/") || tok.curr.syntax.equals(",") || tok.curr.type==TokenType.CR_WHITESPACE)
+	        	// if next is a / or , use the sublist
+	            if(tok.curr.syntax.equals("/") || tok.curr.syntax.equals(","))
+	            {
+	            	if(subList==null)
+	            	{
+	            		subList=new ValueList();
+	            		value.members.add(subList);
+	            	}
+	            }
+
+	        	MoreObjects.firstNonNull(subList, value).members.add(v1);
+
+	            if(!(tok.curr.syntax.equals("/") || tok.curr.syntax.equals(",")))
+            		subList=null; // the next symbol is not a comma, don't use the sublist
+
+	        	
+	        	if(tok.curr.syntax.equals("/") || tok.curr.syntax.equals(",") || tok.curr.type==TokenType.CR_WHITESPACE)
 	            	tok.advance();
-	
+
 	            v1=parseTerm();
 	        }
 	
