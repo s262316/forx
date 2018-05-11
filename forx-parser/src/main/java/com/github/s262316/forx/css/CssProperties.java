@@ -2,16 +2,17 @@ package com.github.s262316.forx.css;
 
 import java.util.Map;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import com.github.s262316.forx.css.validate.ColourValidator;
+import com.github.s262316.forx.css.validate.FontFamilyValidator;
 import com.github.s262316.forx.style.ColourValue;
 import com.github.s262316.forx.style.Identifier;
 import com.github.s262316.forx.style.NumericValue;
-
 import com.github.s262316.forx.style.StringValue;
 import com.github.s262316.forx.style.selectors.util.ValuesHelper;
 import com.google.common.collect.ImmutableMap;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class CssProperties
@@ -40,7 +41,7 @@ public class CssProperties
 	}
 
 	@Bean
-	public Map<String, PropertyReference> cssPropertyTable(BorderStyles borderStyles, GeneratedContent generatedContent)
+	public Map<String, PropertyReference> cssPropertyTable(BorderStyles borderStyles, GeneratedContent generatedContent, FontStyles fontStyles)
 	{
 		ImmutableMap<String, PropertyReference> propertyTable = new ImmutableMap.Builder<String, PropertyReference>()
 			.put("display", new PropertyReference("display", false, new Identifier("inline"), null))
@@ -84,9 +85,9 @@ public class CssProperties
 			.put("letter-spacing", new PropertyReference("letter-spacing", true, new Identifier("normal"), null))
 			.put("word-spacing", new PropertyReference("word-spacing", true, new Identifier("normal"), null))
 			.put("direction", new PropertyReference("direction", true, new Identifier("ltr"), null))
-			.put("font-family", new PropertyReference("font-family", true, new Identifier("Times New Roman"), null))
-			.put("font-style", new PropertyReference("font-style", true, new Identifier("normal"), null))
-			.put("font-variant", new PropertyReference("font-variant", true, new Identifier("normal"), null))
+			.put("font-family", new PropertyReference("font-family", true, new Identifier("Times New Roman"), new FontFamilyValidator()))
+			.put("font-style", new PropertyReference("font-style", true, new Identifier("normal"), fontStyles::validateFontStyle))
+			.put("font-variant", new PropertyReference("font-variant", true, new Identifier("normal"), fontStyles::validateFontVariant))
 			.put("font-weight", new PropertyReference("font-weight", true, new Identifier("normal"), null))
 			.put("font-size", new PropertyReference("font-size", true, new Identifier("medium"), null))
 			.put("content", new PropertyReference("content", false, new Identifier("normal"), generatedContent::validateContentProperty))
