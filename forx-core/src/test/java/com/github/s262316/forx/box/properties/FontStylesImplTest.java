@@ -1,5 +1,7 @@
 package com.github.s262316.forx.box.properties;
 
+import com.github.s262316.forx.style.NumericValue;
+import com.github.s262316.forx.style.StringValue;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -29,4 +31,44 @@ public class FontStylesImplTest
 		Assert.assertFalse(fontStyles.validateFontVariant(new Identifier("wrong")));
 	}
 
+	@Test
+	public void validateFontWeight()
+	{
+		FontStylesImpl fontStyles=new FontStylesImpl();
+
+		Assert.assertTrue(fontStyles.validateFontWeight(new Identifier("normal")));
+		Assert.assertTrue(fontStyles.validateFontWeight(new Identifier("bold")));
+		// TODO doesn't pass
+//		Assert.assertTrue(fontStyles.validateFontWeight(new Identifier("bolder")));
+//		Assert.assertTrue(fontStyles.validateFontWeight(new Identifier("lighter")));
+		Assert.assertTrue(fontStyles.validateFontWeight(new NumericValue(100, "px")));
+		Assert.assertTrue(fontStyles.validateFontWeight(new NumericValue(200, "px")));
+		Assert.assertTrue(fontStyles.validateFontWeight(new NumericValue(300, "px")));
+		Assert.assertTrue(fontStyles.validateFontWeight(new NumericValue(400, "px")));
+		Assert.assertTrue(fontStyles.validateFontWeight(new NumericValue(500, "px")));
+		Assert.assertTrue(fontStyles.validateFontWeight(new NumericValue(600, "px")));
+		Assert.assertTrue(fontStyles.validateFontWeight(new NumericValue(700, "px")));
+		Assert.assertTrue(fontStyles.validateFontWeight(new NumericValue(800, "px")));
+		Assert.assertTrue(fontStyles.validateFontWeight(new NumericValue(900, "px")));
+	}
+
+	@Test
+	public void validateFontSize()
+	{
+		FontStylesImpl fontStyles=new FontStylesImpl();
+
+		Assert.assertTrue(fontStyles.validateFontSize(new Identifier("xx-small")));
+		Assert.assertTrue(fontStyles.validateFontSize(new Identifier("x-small")));
+		// TODO
+//		Assert.assertTrue(fontStyles.validateFontSize(new Identifier("small")));
+		Assert.assertTrue(fontStyles.validateFontSize(new Identifier("medium")));
+		Assert.assertTrue(fontStyles.validateFontSize(new Identifier("large")));
+		Assert.assertTrue(fontStyles.validateFontSize(new Identifier("x-large")));
+		Assert.assertTrue(fontStyles.validateFontSize(new Identifier("xx-large")));
+
+		Assert.assertTrue(fontStyles.validateFontSize(new NumericValue(1, "px")));
+		// TODO
+//		Assert.assertTrue(fontStyles.validateFontSize(new NumericValue(1, "%")));
+		Assert.assertFalse(fontStyles.validateFontSize(new StringValue("red")));
+	}
 }

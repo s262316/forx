@@ -6,4 +6,6 @@ public interface FontStyles
 {
 	boolean validateFontStyle(Value v);
 	boolean validateFontVariant(Value v);
+	boolean validateFontWeight(Value v);
+	boolean validateFontSize(Value v);
 }
