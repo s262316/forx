@@ -374,6 +374,8 @@ public class Tokenizer
 				}
 				return new Token(TokenType.CR_COMMENT, "");
 			}
+			else
+				return new Token(TokenType.CR_PUNCT, "/");			
 		}
 		else if(input=='+')
 		{
@@ -391,8 +393,6 @@ public class Tokenizer
 			++begin;
 			return new Token(TokenType.CR_PUNCT, String.valueOf(input));
 		}
-
-		return new Token(TokenType.CR_END, "");
 	}
 
 	boolean tok_cd()

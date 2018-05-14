@@ -1,13 +1,12 @@
 package com.github.s262316.forx.css;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
-import org.junit.Assert;
 import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Test;
 
+import com.github.s262316.forx.style.Identifier;
 import com.github.s262316.forx.style.NumericValue;
+import com.github.s262316.forx.style.ValueBuilder;
 import com.github.s262316.forx.style.ValueList;
 
 public class TestValueParser
@@ -71,5 +70,90 @@ public class TestValueParser
 		tokenizer.advance();
 		parser.parse();
 	}
+	
+	@Test
+	public void commaSeparatedValuesiosCombinedIntoASublist1() throws Exception
+	{
+		Tokenizer tokenizer=new Tokenizer("A B,C D");
+		ValueParser parser=new ValueParser(tokenizer);
 
+		tokenizer.advance();
+		ValueList list=parser.parse();
+		Assert.assertThat(list.members, Matchers.contains(
+				new Identifier("A"),
+				new ValueBuilder().identifier("B").identifier("C").buildAsList(),
+				new Identifier("D")
+		));
+	}
+	
+	@Test
+	public void commaSeparatedValuesiosCombinedIntoASublist2() throws Exception
+	{
+		Tokenizer tokenizer=new Tokenizer("A,B C D");
+		ValueParser parser=new ValueParser(tokenizer);
+
+		tokenizer.advance();
+		ValueList list=parser.parse();
+		Assert.assertThat(list.members, Matchers.contains(
+				new ValueBuilder().identifier("A").identifier("B").buildAsList(),
+				new Identifier("C"),
+				new Identifier("D")
+		));
+	}
+	
+	@Test
+	public void commaSeparatedValuesiosCombinedIntoASublist3() throws Exception
+	{
+		Tokenizer tokenizer=new Tokenizer("A B C,D");
+		ValueParser parser=new ValueParser(tokenizer);
+
+		tokenizer.advance();
+		ValueList list=parser.parse();
+		Assert.assertThat(list.members, Matchers.contains(
+				new Identifier("A"),
+				new Identifier("B"),
+				new ValueBuilder().identifier("C").identifier("D").buildAsList()
+		));
+	}
+	
+	@Test
+	public void commaSeparatedValuesiosCombinedIntoASublist4() throws Exception
+	{
+		Tokenizer tokenizer=new Tokenizer("A,B,C,D");
+		ValueParser parser=new ValueParser(tokenizer);
+
+		tokenizer.advance();
+		ValueList list=parser.parse();
+		Assert.assertThat(list.members, Matchers.contains(
+				new ValueBuilder().identifier("A").identifier("B").identifier("C").identifier("D").buildAsList()
+		));
+	}
+	
+	@Test
+	public void commaSeparatedValuesiosCombinedIntoASublist5() throws Exception
+	{
+		Tokenizer tokenizer=new Tokenizer("A B C , D");
+		ValueParser parser=new ValueParser(tokenizer);
+
+		tokenizer.advance();
+		ValueList list=parser.parse();
+		Assert.assertThat(list.members, Matchers.contains(
+				new Identifier("A"),
+				new Identifier("B"),
+				new ValueBuilder().identifier("C").identifier("D").buildAsList()
+		));
+	}
+	
+	@Test
+	public void slashSeparatedValuesiosCombinedIntoASublist4() throws Exception
+	{
+		Tokenizer tokenizer=new Tokenizer("A/B/C/D");
+		ValueParser parser=new ValueParser(tokenizer);
+
+		tokenizer.advance();
+		ValueList list=parser.parse();
+		Assert.assertThat(list.members, Matchers.contains(
+				new ValueBuilder().identifier("A").identifier("B").identifier("C").identifier("D").buildAsList()
+		));
+	}
 }
