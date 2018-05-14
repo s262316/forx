@@ -134,4 +134,10 @@ public class ValueBuilder
         v.add(new FunctionValue(funcName, args));
         return this;
     }
+
+	public ValueBuilder length(int amount, String unit)
+	{
+        v.add(new NumericValue(amount, unit));
+        return this;
+	}
 }

@@ -42,7 +42,7 @@ public class ValueParser
                         v=new Identifier(tok.curr.syntax);
                         break;
                 case CR_NUMBER:
-                        v=new NumericValue(extractDouble(tok.curr.syntax), "px");
+                        v=new NumericValue(extractDouble(tok.curr.syntax), "");
                         break;
                 case CR_PERCENT:
                         v=extractPercentage(tok.curr.syntax);

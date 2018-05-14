@@ -63,7 +63,7 @@ public class ValuesHelper
 		}
 	}
 
-	public static ValueList newValueList(Identifier... identifiers)
+	public static ValueList newValueList(Value... identifiers)
 	{
 		ValueList valuelist=new ValueList();
 		

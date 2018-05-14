@@ -2,10 +2,17 @@ package com.github.s262316.forx.box.properties;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
+import com.github.s262316.forx.css.CSSPropertiesReference;
+import org.apache.commons.collections4.ListUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,25 +48,77 @@ p { font: normal small-caps 120%/120% fantasy }
 @Component
 public class FontStylesImpl implements FontStyles
 {
+	private final static Logger logger= LoggerFactory.getLogger(FontStylesImpl.class);
+
 	@Autowired
 	private Shorthands shorthands;
-	
+	@Autowired
+	private CSSPropertiesReference propertiesReference;
+
 	@Override
 	public List<Declaration> expand(Declaration toExpand)
 	{
-		java.util.List<Declaration> expanded = new ArrayList<>();
+		logger.info("expanding font property with values {}", toExpand.getValue());
+
+		List<Declaration> expanded = new ArrayList<>();
 		ValueList valuelist = ValuesHelper.asValueList(toExpand.getValue());
 
-		// font-style, font-variant, font-weight in any order
-		HashBasedTable<Value, String, Boolean> styleVariantWeight=shorthands.tableOfPropertyValueCombos(valuelist.members, "font-style", "font-variant", "font-weight");
-		Map<String, Value> matched= InferenceTable2.infer(styleVariantWeight);
+		// font-style, font-variant, font-weight in any orde
+		List<Value> first3=valuelist.members.subList(0, Math.min(3, valuelist.members.size()));
 
-		
-		
-		System.out.println(matched);
-				
-		
-		return null;
+		HashBasedTable<Value, String, Boolean> styleVariantWeight=shorthands.tableOfPropertyValueCombos(first3, "font-style", "font-variant", "font-weight");
+		Map<String, Value> matchedStyleVariantWeight=InferenceTable2.infer(styleVariantWeight);
+
+		matchedStyleVariantWeight.forEach((k, v) -> expanded.add(new Declaration(k, v, false)));
+
+		logger.info("matched style/variant/weight: {}", matchedStyleVariantWeight);
+
+		ValueList copy=new ValueList(valuelist);
+
+		matchedStyleVariantWeight.values().forEach(v -> copy.remove(v));
+
+		logger.info("matching font-size/line-height");
+
+		ListIterator<Value> vit=copy.members.listIterator();
+
+		try
+		{
+			Value fontSizeAndOrLineHeight=vit.next();
+			ValueList fontSizeAndOrLineHeightList=ValuesHelper.asValueList(fontSizeAndOrLineHeight);
+
+			if(propertiesReference.validate("font-size", fontSizeAndOrLineHeightList.get(0)))
+			{
+				expanded.add(new Declaration("font-size", fontSizeAndOrLineHeightList.get(0), false));
+				logger.info("matched with value {}", fontSizeAndOrLineHeightList.get(0));
+			}
+			else
+				return Collections.emptyList();
+
+			if(fontSizeAndOrLineHeightList.size()>1)
+			{
+				if (propertiesReference.validate("line-height", fontSizeAndOrLineHeightList.get(1)))
+				{
+					expanded.add(new Declaration("line-height", fontSizeAndOrLineHeightList.get(1), false));
+					logger.info("matched with value {}", fontSizeAndOrLineHeightList.get(1));
+				}
+			}
+
+			logger.info("matching font-family");
+
+			Value fontFamily=vit.next();
+			if (propertiesReference.validate("font-family", fontFamily))
+			{
+				expanded.add(new Declaration("font-family", ValuesHelper.asValueList(fontFamily), false));
+			}
+			else
+				return Collections.emptyList();
+
+			return expanded;
+		}
+		catch(NoSuchElementException nsee)
+		{
+			return Collections.emptyList();
+		}
 	}
 	
 	@Override
@@ -82,7 +141,7 @@ public class FontStylesImpl implements FontStyles
 	public boolean validateFontWeight(Value v)
 	{
 		return new ModelPropertyBinding<Integer>(MediaType.MT_SCREEN, PseudoElementType.PE_NOT_PSEUDO)
-				.when(NumericValue.class, nv -> NumericValues.absLength((NumericValue)nv, new DummyPropertyAdaptor()))
+				.when(NumericValue.class, nv ->  NumericValues.requireNoUnit((NumericValue)nv))
 				.when(Identifier.class, this::fontWeightToInt)
 				.validate(v);
 	}

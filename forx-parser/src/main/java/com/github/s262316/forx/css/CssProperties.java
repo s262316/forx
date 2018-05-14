@@ -2,6 +2,7 @@ package com.github.s262316.forx.css;
 
 import java.util.Map;
 
+import com.github.s262316.forx.css.validate.LineHeightValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,7 +19,7 @@ import com.google.common.collect.ImmutableMap;
 public class CssProperties
 {
 	@Bean
-	public Map<String, ShorthandPropertyReference> cssShorthandPropertyTable(BorderStyles borderStyles)
+	public Map<String, ShorthandPropertyReference> cssShorthandPropertyTable(BorderStyles borderStyles, FontStyles fontStyles)
 	{
 		ImmutableMap<String, ShorthandPropertyReference> shorthandPropertyTable = new ImmutableMap.Builder<String, ShorthandPropertyReference>()
 				.put("border", new ShorthandPropertyReference("border", borderStyles::expandBorder))
@@ -30,7 +31,7 @@ public class CssProperties
 				.put("border-left", new ShorthandPropertyReference("border-left", null))
 				.put("border-right", new ShorthandPropertyReference("border-right", null))
 				.put("border-width", new ShorthandPropertyReference("border-width", null))
-				.put("font", new ShorthandPropertyReference("font", null))
+				.put("font", new ShorthandPropertyReference("font", fontStyles::expand))
 				.put("list-style", new ShorthandPropertyReference("list-style", null))
 				.put("margin", new ShorthandPropertyReference("margin", null))
 				.put("outline", new ShorthandPropertyReference("outline", null))
@@ -77,7 +78,7 @@ public class CssProperties
 			.put("max-width", new PropertyReference("max-width", false, new Identifier("none"), null))
 			.put("min-height", new PropertyReference("min-height", false, new NumericValue(0, "px"), null))
 			.put("max-height", new PropertyReference("max-height", false, new Identifier("none"), null))
-			.put("line-height", new PropertyReference("line-height", true, new Identifier("normal"), null))
+			.put("line-height", new PropertyReference("line-height", true, new Identifier("normal"), new LineHeightValidator()))
 			.put("vertical-align", new PropertyReference("vertical-align", false, new Identifier("baseline"), null))
 			.put("text-indent", new PropertyReference("text-indent", true, new NumericValue(0, "px"), null))
 			.put("text-align", new PropertyReference("text-align", true, null, null))
