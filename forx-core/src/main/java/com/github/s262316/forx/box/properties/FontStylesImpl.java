@@ -1,20 +1,34 @@
 package com.github.s262316.forx.box.properties;
 
-import com.github.s262316.forx.box.properties.converters.ComputedValues;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.github.s262316.forx.box.properties.converters.EnumConverter;
 import com.github.s262316.forx.box.properties.converters.ModelPropertyBinding;
 import com.github.s262316.forx.box.util.FontStyle;
 import com.github.s262316.forx.box.util.FontVariant;
 import com.github.s262316.forx.css.DummyPropertyAdaptor;
 import com.github.s262316.forx.css.FontStyles;
+import com.github.s262316.forx.css.Shorthands;
+import com.github.s262316.forx.css.util.InferenceTable2;
+import com.github.s262316.forx.style.Declaration;
 import com.github.s262316.forx.style.Identifier;
 import com.github.s262316.forx.style.MediaType;
 import com.github.s262316.forx.style.NumericValue;
 import com.github.s262316.forx.style.Value;
+import com.github.s262316.forx.style.ValueList;
 import com.github.s262316.forx.style.selectors.PseudoElementType;
 import com.github.s262316.forx.style.selectors.util.ValuesHelper;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 
 /*
  [ [ <'font-style'> || <'font-variant'> || <'font-weight'> ]? <'font-size'> [ / <'line-height'> ]? <'font-family'> ] | caption | icon | menu | message-box | small-caption | status-bar | inherit
@@ -24,24 +38,29 @@ p { font: x-large/110% "New Century Schoolbook", serif }
 p { font: bold italic large Palatino, serif }
 p { font: normal small-caps 120%/120% fantasy }
  */
+@Component
 public class FontStylesImpl implements FontStyles
 {
-//	@Override
-//	public List<Declaration> expand(Declaration toExpand)
-//	{
-//		ValueList valuelist=ValuesHelper.asValueList(toExpand.getValue());
-//
-//		if(valuelist.size()==1 && ValuesHelper.getIdentifier(valuelist.get(0)).isPresent())
-//		{
-//			Set<String> systemFonts=Sets.newHashSet("caption", "icon", "message-box", "small-caption", "status-bar");
-//			if(systemFonts.contains(ValuesHelper.getIdentifier(valuelist.get(0)).get()))
-//			{
-//			
-//			}
-//		}
-//		
-//		return null;
-//	}
+	@Autowired
+	private Shorthands shorthands;
+	
+	@Override
+	public List<Declaration> expand(Declaration toExpand)
+	{
+		java.util.List<Declaration> expanded = new ArrayList<>();
+		ValueList valuelist = ValuesHelper.asValueList(toExpand.getValue());
+
+		// font-style, font-variant, font-weight in any order
+		HashBasedTable<Value, String, Boolean> styleVariantWeight=shorthands.tableOfPropertyValueCombos(valuelist.members, "font-style", "font-variant", "font-weight");
+		Map<String, Value> matched= InferenceTable2.infer(styleVariantWeight);
+
+		
+		
+		System.out.println(matched);
+				
+		
+		return null;
+	}
 	
 	@Override
 	public boolean validateFontStyle(Value v)

@@ -1,14 +1,28 @@
 package com.github.s262316.forx.box.properties;
 
-import com.github.s262316.forx.style.NumericValue;
-import com.github.s262316.forx.style.StringValue;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
+import com.github.s262316.forx.TestApplicationConfiguration;
+import com.github.s262316.forx.style.Declaration;
 import com.github.s262316.forx.style.Identifier;
+import com.github.s262316.forx.style.NumericValue;
+import com.github.s262316.forx.style.StringValue;
+import com.github.s262316.forx.style.selectors.util.ValuesHelper;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = TestApplicationConfiguration.class)
 public class FontStylesImplTest
 {
+	@Autowired
+	FontStylesImpl fontStyles;
+	
 	@Test
 	public void validateFontStyles()
 	{
@@ -71,4 +85,14 @@ public class FontStylesImplTest
 //		Assert.assertTrue(fontStyles.validateFontSize(new NumericValue(1, "%")));
 		Assert.assertFalse(fontStyles.validateFontSize(new StringValue("red")));
 	}
+	
+	@Test
+	public void testExpandFont()
+	{
+		Declaration d1=new Declaration("font", ValuesHelper.newValueList(new Identifier("normal"), new Identifier("smallcaps"), new Identifier("bold")), false);
+		List<Declaration> decs1=fontStyles.expand(d1);
+		
+		
+	}
+	
 }
