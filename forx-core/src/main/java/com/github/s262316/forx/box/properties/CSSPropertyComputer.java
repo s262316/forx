@@ -442,8 +442,8 @@ public class CSSPropertyComputer
         {
             nv=(NumericValue)v;
 
-            ld.lineHeight=NumericValues.absLength(nv, on);
-            subj.computed_value("line-height", new NumericValue((int)ld.lineHeight, "px"));
+            ld.lineHeight=NumericValues.relLength(nv, on);
+            subj.computed_value("line-height", new NumericValue((int)ld.lineHeight, ""));
         }
         else
             throw new BoxError(BoxExceptionType.BET_INCORRECT_PROPERTY_VALUE);
