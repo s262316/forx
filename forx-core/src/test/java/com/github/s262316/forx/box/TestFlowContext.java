@@ -265,6 +265,26 @@ public class TestFlowContext
 		// overlap top, middle, bottom flows+voids
 		assertEquals(new Rectangle(10, 60, 81, 100), fc.metricsNoClear(10, 90, 5, 80, 100));
 	}
+
+	@Test
+	public void testGetMetricsNoClear12()
+	{
+		FlowContext fc=new FlowContext();
+		RangeMap<Integer, Range<Integer>> flowAreas=(RangeMap)ReflectionTestUtils.getField(fc, "flowAreas");
+		ReflectionTestUtils.setField(fc, "_right", 381);
+		flowAreas.put(Range.atLeast(0), Range.closedOpen(0, 382));
+
+		//getMetricsNoClear(int atLeastX, int atMostX, int atLeastY, int atLeastWidth, int height)	signature reminder
+		try
+		{
+
+			 fc.metricsNoClear(16, 21, 34, 38, 23);
+		}
+		catch(IllegalArgumentException iae)
+		{
+			assertEquals("requested width (38) does not fit into least/most (16-21) constraints", iae.getMessage());
+		}
+	}
 	
 	@Test
 	public void testGetMetricsNoClearInvalidArgs()

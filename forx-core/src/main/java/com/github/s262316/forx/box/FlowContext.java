@@ -43,7 +43,7 @@ class FlowContext
         _top=y;
     }    
 
-	public Rectangle metricsNoClear(int atLeastX, int atMostX, int atLeastY, int atLeastWidth, int height)
+	public Rectangle metricsNoClear(final int atLeastX, final int atMostX, final int atLeastY, final int atLeastWidth, final int height)
     {
     	Range<Integer> vertSpaceNeeded;
     	Range<Integer> allowedHorizRange;
@@ -58,7 +58,8 @@ class FlowContext
     	Preconditions.checkArgument(atMostX>=atLeastX, "atLeastX (%s) value is greater than atMostX value (%s)", atLeastX, atMostX);
     	Preconditions.checkArgument(atLeastWidth>0, "atLeastWidth value (%s) is 0 or less", atLeastWidth);
     	Preconditions.checkArgument(height>0, "height value (%s) is 0 or less", height);
-    	
+		Preconditions.checkArgument(atMostX-atLeastX+1 >= atLeastWidth, "requested width (%s) does not fit into least/most (%s-%s) constraints", atLeastWidth, atLeastX, atMostX);
+
     	allowedHorizRange=Range.closedOpen(atLeastX, atMostX+1);
 
     	// make a copy of the working rangemap
@@ -68,7 +69,7 @@ class FlowContext
     	vertSpaceNeeded=Range.closedOpen(first.lowerEndpoint(), first.lowerEndpoint()+height);
 
 		logger.debug("vertRangeNeeded rangeToTry={},vertSpaceNeeded={}", rangeToTry.toString(), vertSpaceNeeded.toString());
-		
+
 		do
 		{
 			while(!Ranges.encloses(rangeToTry, vertSpaceNeeded) || horizDidNotFit==true)
@@ -91,8 +92,9 @@ class FlowContext
 			logger.debug("horizRangeNeeded availHorizSpace={},allowedHorizRange={},atLeastWidth={}", availHorizSpace.toString(), allowedHorizRange.toString(), atLeastWidth);	    	
 			
 			horizDidNotFit=true; // necessary for the innher while loop to peel off the first range when horiz fails
-			
-		}while(allowedHorizRange.isConnected(availHorizSpace)==false || Ranges.size(allowedHorizRange.intersection(availHorizSpace)) < atLeastWidth);
+
+		}while(allowedHorizRange.isConnected(availHorizSpace)==false ||
+				Ranges.size(allowedHorizRange.intersection(availHorizSpace)) < atLeastWidth);
 
 		// the answer
 		return new Rectangle(
