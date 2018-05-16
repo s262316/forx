@@ -15,6 +15,12 @@ public class ValueList extends Value
         super(true);
     }
 
+    public ValueList(ValueList valueList)
+    {
+        super(true);
+        members=valueList.members;
+    }
+
     public ValueList extract(int start, int end)
     {
 	ValueList vl=new ValueList();
@@ -39,17 +45,20 @@ public class ValueList extends Value
     @Override
     public boolean equals(Object v)
     {
-            boolean e=true;
-            ValueList vl=(ValueList)v;
+        if (!(v instanceof ValueList))
+            return false;
 
-            Iterator<Value> it1=members.iterator();
-            Iterator<Value> it2=members.iterator();
-            while(it1.hasNext() && it2.hasNext() && e)
-            {
-                e=it1.next().equals(it2.next());
-            }
+        boolean e=true;
+        ValueList vl=(ValueList)v;
 
-            return e;
+        Iterator<Value> it1=members.iterator();
+        Iterator<Value> it2=members.iterator();
+        while(it1.hasNext() && it2.hasNext() && e)
+        {
+            e=it1.next().equals(it2.next());
+        }
+
+        return e;
     }
 
 
@@ -59,6 +68,10 @@ public class ValueList extends Value
 		return MoreObjects.toStringHelper(this)
 				.add("members", members)
 				.toString();
-    }    
-    
+    }
+
+    public void remove(Value v)
+    {
+        members.remove(v);
+    }
 }

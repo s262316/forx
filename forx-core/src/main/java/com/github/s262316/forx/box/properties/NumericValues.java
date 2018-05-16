@@ -2,6 +2,7 @@ package com.github.s262316.forx.box.properties;
 
 import com.github.s262316.forx.style.NumericValue;
 import com.google.common.base.Preconditions;
+import org.apache.commons.lang3.StringUtils;
 
 public class NumericValues
 {
@@ -14,6 +15,7 @@ public class NumericValues
             case "ex":
                 return (int)(on.getContainer().getFont().getSize()*nv.amount);
             case "px":
+            case "":
                 return (int)nv.amount;
             case "pt":
                 return (int)nv.amount;
@@ -27,6 +29,18 @@ public class NumericValues
                 Preconditions.checkState(false, "unknown unit %s", nv.unit);
                 return 0; // never reached
         }
+    }
+
+    public static int relLength(NumericValue nv, PropertyAdaptor on)
+    {
+        return (int)(on.getContainer().getFont().getSize()*nv.amount);
+    }
+
+    public static int requireNoUnit(NumericValue nv)
+    {
+        Preconditions.checkArgument(StringUtils.isEmpty(nv.unit));
+
+        return (int)nv.amount;
     }
 
 }

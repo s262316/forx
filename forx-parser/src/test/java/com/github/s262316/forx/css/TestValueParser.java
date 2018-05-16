@@ -156,4 +156,18 @@ public class TestValueParser
 				new ValueBuilder().identifier("A").identifier("B").identifier("C").identifier("D").buildAsList()
 		));
 	}
+
+	@Test
+	public void slashSeparatedValuesiosCombinedIntoASublist5() throws Exception
+	{
+		Tokenizer tokenizer=new Tokenizer("100px/1 Ahem");
+		ValueParser parser=new ValueParser(tokenizer);
+
+		tokenizer.advance();
+		ValueList list=parser.parse();
+		Assert.assertThat(list.members, Matchers.contains(
+				new ValueBuilder().length(100, "px").identifier("1").buildAsList(),
+						new Identifier("Ahem")
+		));
+	}
 }

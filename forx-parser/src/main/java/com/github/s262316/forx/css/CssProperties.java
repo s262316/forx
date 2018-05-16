@@ -2,22 +2,24 @@ package com.github.s262316.forx.css;
 
 import java.util.Map;
 
+import com.github.s262316.forx.css.validate.LineHeightValidator;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import com.github.s262316.forx.css.validate.ColourValidator;
+import com.github.s262316.forx.css.validate.FontFamilyValidator;
 import com.github.s262316.forx.style.ColourValue;
 import com.github.s262316.forx.style.Identifier;
 import com.github.s262316.forx.style.NumericValue;
-
 import com.github.s262316.forx.style.StringValue;
 import com.github.s262316.forx.style.selectors.util.ValuesHelper;
 import com.google.common.collect.ImmutableMap;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class CssProperties
 {
 	@Bean
-	public Map<String, ShorthandPropertyReference> cssShorthandPropertyTable(BorderStyles borderStyles)
+	public Map<String, ShorthandPropertyReference> cssShorthandPropertyTable(BorderStyles borderStyles, FontStyles fontStyles)
 	{
 		ImmutableMap<String, ShorthandPropertyReference> shorthandPropertyTable = new ImmutableMap.Builder<String, ShorthandPropertyReference>()
 				.put("border", new ShorthandPropertyReference("border", borderStyles::expandBorder))
@@ -29,7 +31,7 @@ public class CssProperties
 				.put("border-left", new ShorthandPropertyReference("border-left", null))
 				.put("border-right", new ShorthandPropertyReference("border-right", null))
 				.put("border-width", new ShorthandPropertyReference("border-width", null))
-				.put("font", new ShorthandPropertyReference("font", null))
+				.put("font", new ShorthandPropertyReference("font", fontStyles::expand))
 				.put("list-style", new ShorthandPropertyReference("list-style", null))
 				.put("margin", new ShorthandPropertyReference("margin", null))
 				.put("outline", new ShorthandPropertyReference("outline", null))
@@ -40,7 +42,7 @@ public class CssProperties
 	}
 
 	@Bean
-	public Map<String, PropertyReference> cssPropertyTable(BorderStyles borderStyles, GeneratedContent generatedContent)
+	public Map<String, PropertyReference> cssPropertyTable(BorderStyles borderStyles, GeneratedContent generatedContent, FontStyles fontStyles)
 	{
 		ImmutableMap<String, PropertyReference> propertyTable = new ImmutableMap.Builder<String, PropertyReference>()
 			.put("display", new PropertyReference("display", false, new Identifier("inline"), null))
@@ -76,7 +78,7 @@ public class CssProperties
 			.put("max-width", new PropertyReference("max-width", false, new Identifier("none"), null))
 			.put("min-height", new PropertyReference("min-height", false, new NumericValue(0, "px"), null))
 			.put("max-height", new PropertyReference("max-height", false, new Identifier("none"), null))
-			.put("line-height", new PropertyReference("line-height", true, new Identifier("normal"), null))
+			.put("line-height", new PropertyReference("line-height", true, new Identifier("normal"), new LineHeightValidator()))
 			.put("vertical-align", new PropertyReference("vertical-align", false, new Identifier("baseline"), null))
 			.put("text-indent", new PropertyReference("text-indent", true, new NumericValue(0, "px"), null))
 			.put("text-align", new PropertyReference("text-align", true, null, null))
@@ -84,11 +86,11 @@ public class CssProperties
 			.put("letter-spacing", new PropertyReference("letter-spacing", true, new Identifier("normal"), null))
 			.put("word-spacing", new PropertyReference("word-spacing", true, new Identifier("normal"), null))
 			.put("direction", new PropertyReference("direction", true, new Identifier("ltr"), null))
-			.put("font-family", new PropertyReference("font-family", true, new Identifier("Times New Roman"), null))
-			.put("font-style", new PropertyReference("font-style", true, new Identifier("normal"), null))
-			.put("font-variant", new PropertyReference("font-variant", true, new Identifier("normal"), null))
-			.put("font-weight", new PropertyReference("font-weight", true, new Identifier("normal"), null))
-			.put("font-size", new PropertyReference("font-size", true, new Identifier("medium"), null))
+			.put("font-family", new PropertyReference("font-family", true, new Identifier("Times New Roman"), new FontFamilyValidator()))
+			.put("font-style", new PropertyReference("font-style", true, new Identifier("normal"), fontStyles::validateFontStyle))
+			.put("font-variant", new PropertyReference("font-variant", true, new Identifier("normal"), fontStyles::validateFontVariant))
+			.put("font-weight", new PropertyReference("font-weight", true, new Identifier("normal"), fontStyles::validateFontWeight))
+			.put("font-size", new PropertyReference("font-size", true, new Identifier("medium"), fontStyles::validateFontSize))
 			.put("content", new PropertyReference("content", false, new Identifier("normal"), generatedContent::validateContentProperty))
 			.put("quotes", new PropertyReference("quotes", true, ValuesHelper.newValueList(new StringValue("\""), new StringValue("\""), new StringValue("\'"), new StringValue("\'")), null))
 			.put("counter-reset", new PropertyReference("counter-reset", false, new Identifier("none"), null))

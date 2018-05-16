@@ -34,7 +34,7 @@ public class NumericValue extends Value
 		
 		NumericValue rhs = (NumericValue) obj;
 		return new EqualsBuilder()
-                 .append(amount, rhs.amount)
+                 .append(Double.doubleToLongBits(amount), Double.doubleToLongBits(rhs.amount))
                  .append(unit, rhs.unit)
                  .isEquals();
 	}
