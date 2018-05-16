@@ -31,8 +31,8 @@ public class HeightShrinkWrap implements RelayouterCallback
 				bottom=container.bottom();
 			else
 				bottom=last.bottom();
-				
-			container.set_dimensions(laid.width(), Sizes.length(top, bottom));
+
+			container.set_height(Sizes.length(top, bottom));
 		}
 	}	
 }
