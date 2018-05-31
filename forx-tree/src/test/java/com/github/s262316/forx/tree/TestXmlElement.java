@@ -93,7 +93,7 @@ public class TestXmlElement
 	
 }
 
-class XmlMutationEventMatcher extends ArgumentMatcher<XmlMutationEvent>
+class XmlMutationEventMatcher implements ArgumentMatcher<XmlMutationEvent>
 {
 	XmlMutationEvent ref;
 	
@@ -103,11 +103,9 @@ class XmlMutationEventMatcher extends ArgumentMatcher<XmlMutationEvent>
 	}
 	
 	@Override
-    public boolean matches(Object other)
+    public boolean matches(XmlMutationEvent other)
     {
-    	XmlMutationEvent right=(XmlMutationEvent)other;
-    	
-    	return (ref.getType()==right.getType() && ref.getSubject()==right.getSubject());
+    	return (ref.getType()==other.getType() && ref.getSubject()==other.getSubject());
     }
 }
 
