@@ -4,12 +4,11 @@ import java.util.List;
 
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
-
-import com.github.s262316.forx.box.util.IsFirstInParent;
 import com.github.s262316.forx.tree.NodeType;
 import com.github.s262316.forx.tree.XElement;
 import com.github.s262316.forx.tree.XNode;
 import com.github.s262316.forx.tree.XmlNode;
+import com.github.s262316.forx.tree.util.IsFirstInParent;
 
 public class StyleXNodes
 {
