@@ -1,5 +1,6 @@
 package com.github.s262316.forx.core.diagn;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +25,7 @@ public class BoxDrivenDiagnostics
 	
 			ObjectMapper mapper1 = new ObjectMapper();
 	
-	
-//			mapper1.writeValue(new File("c:/output111.json"), destObject);
+			mapper1.writeValue(new File("output"+System.currentTimeMillis()+".json"), destObject);
 		}
 		catch(Exception e)
 		{

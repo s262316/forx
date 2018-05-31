@@ -14,10 +14,88 @@
 	<class-a>com.github.s262316.forx.box.RootBox</class-a>
     <class-b>com.github.s262316.forx.core.diagn.MyNode</class-b>
 
+	  <field>
+		  <a is-accessible="true">id</a>
+		  <b>id</b>
+	  </field>
+
 	<field>
 		<a is-accessible="true">dimensions._left</a>
 		<b>myAtts</b>
-	</field>	
+	</field>
+
+	  <field>
+		  <a is-accessible="true">all</a>
+		  <b>members</b>
+	  </field>
+	  <field>
+		  <a is-accessible="true">dimensions._width</a>
+		  <b>width</b>
+	  </field>
+	</mapping>
+
+	<mapping wildcard="false">
+		<class-a>com.github.s262316.forx.box.BlockBox</class-a>
+		<class-b>com.github.s262316.forx.core.diagn.MyNode</class-b>
+
+		<field>
+			<a is-accessible="true">id</a>
+			<b>id</b>
+		</field>
+
+		<field>
+			<a is-accessible="true">dimensions._left</a>
+			<b>myAtts</b>
+		</field>
+
+		<field>
+			<a is-accessible="true">textAlign</a>
+			<b>myAtts</b>
+		</field>
+
+		<field>
+			<a is-accessible="true">all</a>
+			<b>members</b>
+		</field>
+
+		<field>
+			<a is-accessible="true">dimensions._width</a>
+			<b>width</b>
+		</field>
+
+		<field>
+			<a is-accessible="true">textAlign</a>
+			<b>textAlign</b>
+		</field>
+
+	</mapping>
+
+	<mapping wildcard="false">
+		<class-a>com.github.s262316.forx.box.InlineBox</class-a>
+		<class-b>com.github.s262316.forx.core.diagn.MyNode</class-b>
+
+		<field>
+			<a is-accessible="true">id</a>
+			<b>id</b>
+		</field>
+
+		<field>
+			<a is-accessible="true">dimensions._left</a>
+			<b>myAtts</b>
+		</field>
+
+		<field>
+			<a is-accessible="true">all</a>
+			<b>members</b>
+		</field>
+
+		<field>
+			<a is-accessible="true">dimensions._width</a>
+			<b>width</b>
+		</field>
+
+
+
 	</mapping>
 
 </mappings>

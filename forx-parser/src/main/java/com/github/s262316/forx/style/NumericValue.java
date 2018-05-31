@@ -2,6 +2,7 @@ package com.github.s262316.forx.style;
 
 import java.util.Objects;
 
+import com.google.common.base.MoreObjects;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 public class NumericValue extends Value
@@ -37,6 +38,15 @@ public class NumericValue extends Value
                  .append(Double.doubleToLongBits(amount), Double.doubleToLongBits(rhs.amount))
                  .append(unit, rhs.unit)
                  .isEquals();
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(this)
+				.add("amount", amount)
+				.add("unit", unit)
+				.toString();
 	}
 }
 
