@@ -16,6 +16,8 @@ import com.github.s262316.forx.tree.events2.PropagationType;
 import com.github.s262316.forx.tree.events2.XMutationListener;
 import com.github.s262316.forx.tree.events2.XmlMutationEvent;
 import com.github.s262316.forx.style.Stylesheet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * listens for elements named style
@@ -33,6 +35,8 @@ import com.github.s262316.forx.style.Stylesheet;
  */
 public class StyleElementHandler extends XMutationListener
 {
+	private final static Logger logger= LoggerFactory.getLogger(StyleElementHandler.class);
+
 	private XmlVElement styleElement;
 	private Stylesheet styleElementStylesheet;
 	private boolean connected=false;
@@ -56,6 +60,8 @@ public class StyleElementHandler extends XMutationListener
 
 			CSSParser parser=new CSSParser(text, (XmlVDocument)styleElement.getDocument(), cssPropertiesReference);
 			styleElementStylesheet=parser.parse_stylesheet();
+
+			logger.debug("processed stylesheet {}", styleElementStylesheet);
 
 			if(connected)
 			{

@@ -20,7 +20,7 @@ public class NumericValues
             case "pt":
                 return (int)nv.amount;
             case "in":
-                return (int)(nv.amount/96);
+                return (int)(nv.amount*96);
             case "cm":
                 return (int)((25.54*nv.amount)/96);
             case "mm":

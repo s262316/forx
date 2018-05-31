@@ -1,5 +1,6 @@
 package com.github.s262316.forx.diagn;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,9 +24,8 @@ public class BoxDrivenDiagnostics
 			MyNode destObject = mapper.map(rootBox, MyNode.class);
 	
 			ObjectMapper mapper1 = new ObjectMapper();
-	
-	
-//			mapper1.writeValue(new File("c:/output111.json"), destObject);
+
+			mapper1.writeValue(new File(System.currentTimeMillis()+".log"), destObject);
 		}
 		catch(Exception e)
 		{

@@ -194,7 +194,9 @@ public class ValueParser
 				return new NumericValue(amount, "ex");
 			case "pc":
 				return new NumericValue(amount, "pc");
-			default:
+			case "in":
+				return new NumericValue(amount, "in");
+			default:// TODO is px ok?
 				return new NumericValue(amount, "px");
 			}
 		}

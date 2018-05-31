@@ -345,7 +345,7 @@ public class InlineBox implements Box, Inline, HasBorders, HasWordProperties, Ha
 
                     return new LayoutResult(false, Optional.of(Layouters.moreHeight(this, layMember, resizeBy)));
                 }
-                line=new Line(r1.x, r1.y, r1.width, r1.height);
+                line=new Line(r1.x, r1.y, r1.width, r1.height, _flowspace, block().getTextAlign());
 
                 logger.debug("created line "+r1.x+","+r1.y+" ("+r1.width+","+r1.height+")");
 
@@ -435,7 +435,7 @@ public class InlineBox implements Box, Inline, HasBorders, HasWordProperties, Ha
                     return new LayoutResult(false, Optional.of(Layouters.moreHeight(this, layMember, resizeBy)));
                 }
                 // there is enough space for another line
-                line=new Line(r1.x, r1.y, r1.width, r1.height);
+                line=new Line(r1.x, r1.y, r1.width, r1.height, _flowspace, block().getTextAlign());
                 if(aligned_subtree_root() != inline_root())
                     line.set_baseline(BoxTypes.toInlineBox(container()).aligned_subtree_root(), BoxTypes.toInlineBox(container()).dummy_atomic_baseline(line, verticalAlign));
                 line.set_baseline(aligned_subtree_root(), baseline_from_bottom_for_bl(ainl, r1.y + r1.height - 1));
@@ -561,7 +561,7 @@ public class InlineBox implements Box, Inline, HasBorders, HasWordProperties, Ha
                         else
                         {
                             // there is enough space for another line
-                            line=new Line(r1.x, r1.y, r1.width, r1.height);
+                            line=new Line(r1.x, r1.y, r1.width, r1.height, _flowspace, block().getTextAlign());
                             if(aligned_subtree_root() != inline_root())
                                 line.set_baseline(BoxTypes.toInlineBox(container()).aligned_subtree_root(), BoxTypes.toInlineBox(container()).dummy_atomic_baseline(line, verticalAlign));
                             line.set_baseline(aligned_subtree_root(), baseline_from_bottom_for_bl(ainl, r1.y + r1.height - 1));
@@ -2167,11 +2167,6 @@ public class InlineBox implements Box, Inline, HasBorders, HasWordProperties, Ha
     public Flowspace flowspace()
     {
         return _flowspace;
-    }
-
-    public void set_flowspace(Flowspace sp)
-    {
-        _flowspace=sp;
     }
 
 	// currently laid object has a line of null

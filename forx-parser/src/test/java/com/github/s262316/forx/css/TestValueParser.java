@@ -1,5 +1,6 @@
 package com.github.s262316.forx.css;
 
+import com.github.s262316.forx.style.selectors.util.ValuesHelper;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,7 +20,7 @@ public class TestValueParser
 
 		tokenizer.advance();
 		ValueList list=parser.parse();
-		Assert.assertThat(list.members, Matchers.contains(new NumericValue(1, "px")));
+		Assert.assertThat(list.members, Matchers.contains(new NumericValue(1, "")));
 	}
 	
 	@Test
@@ -31,10 +32,10 @@ public class TestValueParser
 		tokenizer.advance();
 		ValueList list=parser.parse();
 		Assert.assertThat(list.members, Matchers.contains(
-				new NumericValue(1, "px"),
-				new NumericValue(2, "px"),
-				new NumericValue(3, "px"),
-				new NumericValue(4, "px")
+				new NumericValue(1, ""),
+				new NumericValue(2, ""),
+				new NumericValue(3, ""),
+				new NumericValue(4, "")
 		));
 	}
 
@@ -170,4 +171,102 @@ public class TestValueParser
 						new Identifier("Ahem")
 		));
 	}
+
+	@Test
+	public void testExtractDimensionEm() throws Exception
+	{
+		Tokenizer tokenizer=new Tokenizer("100em");
+		ValueParser parser=new ValueParser(tokenizer);
+
+		tokenizer.advance();
+		ValueList list=parser.parse();
+		Assert.assertThat(list.members, Matchers.contains(
+				new ValueBuilder().length(100, "em").build()));
+	}
+
+	@Test
+	public void testExtractDimensionEx() throws Exception
+	{
+		Tokenizer tokenizer=new Tokenizer("100ex");
+		ValueParser parser=new ValueParser(tokenizer);
+
+		tokenizer.advance();
+		ValueList list=parser.parse();
+		Assert.assertThat(list.members, Matchers.contains(
+				new ValueBuilder().length(100, "ex").build()));
+	}
+
+	@Test
+	public void testExtractDimensionIn() throws Exception
+	{
+		Tokenizer tokenizer=new Tokenizer("100in");
+		ValueParser parser=new ValueParser(tokenizer);
+
+		tokenizer.advance();
+		ValueList list=parser.parse();
+		Assert.assertThat(list.members, Matchers.contains(
+				new ValueBuilder().length(100, "in").build()));
+	}
+
+	@Test
+	public void testExtractDimensionCm() throws Exception
+	{
+		Tokenizer tokenizer=new Tokenizer("100cm");
+		ValueParser parser=new ValueParser(tokenizer);
+
+		tokenizer.advance();
+		ValueList list=parser.parse();
+		Assert.assertThat(list.members, Matchers.contains(
+				new ValueBuilder().length(100, "cm").build()));
+	}
+
+	@Test
+	public void testExtractDimensionMm() throws Exception
+	{
+		Tokenizer tokenizer=new Tokenizer("100mm");
+		ValueParser parser=new ValueParser(tokenizer);
+
+		tokenizer.advance();
+		ValueList list=parser.parse();
+		Assert.assertThat(list.members, Matchers.contains(
+				new ValueBuilder().length(100, "mm").build()));
+	}
+
+	@Test
+	public void testExtractDimensionPt() throws Exception
+	{
+		Tokenizer tokenizer=new Tokenizer("100pt");
+		ValueParser parser=new ValueParser(tokenizer);
+
+		tokenizer.advance();
+		ValueList list=parser.parse();
+		Assert.assertThat(list.members, Matchers.contains(
+				new ValueBuilder().length(100, "pt").build()));
+	}
+
+	@Test
+	public void testExtractDimensionPc() throws Exception
+	{
+		Tokenizer tokenizer=new Tokenizer("100pc");
+		ValueParser parser=new ValueParser(tokenizer);
+
+		tokenizer.advance();
+		ValueList list=parser.parse();
+		Assert.assertThat(list.members, Matchers.contains(
+				new ValueBuilder().length(100, "pc").build()));
+	}
+
+	@Test
+	public void testExtractDimensionPx() throws Exception
+	{
+		Tokenizer tokenizer=new Tokenizer("100px");
+		ValueParser parser=new ValueParser(tokenizer);
+
+		tokenizer.advance();
+		ValueList list=parser.parse();
+		Assert.assertThat(list.members, Matchers.contains(
+				new ValueBuilder().length(100, "px").build()));
+	}
+
+
 }

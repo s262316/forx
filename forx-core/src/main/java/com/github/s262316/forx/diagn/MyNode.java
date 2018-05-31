@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.github.s262316.forx.box.util.TextAlign;
 
 @JsonInclude(Include.NON_EMPTY)
 public class MyNode
@@ -15,6 +16,7 @@ public class MyNode
 	private int left, width, top, height;
 	private Collection<MyNode> members;
 	private String tag;
+	private TextAlign textAlign;
 	
 	private Map<String, Object> myAtts;
 	
@@ -98,7 +100,15 @@ public class MyNode
 		this.myAtts = myAtts;
 	}
 
-	
+	public TextAlign getTextAlign()
+	{
+		return textAlign;
+	}
+
+	public void setTextAlign(TextAlign textAlign)
+	{
+		this.textAlign = textAlign;
+	}
 }
 
 
