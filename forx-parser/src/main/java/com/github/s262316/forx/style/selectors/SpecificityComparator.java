@@ -1,7 +1,6 @@
 package com.github.s262316.forx.style.selectors;
 
-
-import com.github.s262316.forx.box.util.Objects2;
+import com.github.s262316.forx.util.Objects2;
 import com.google.common.collect.Ordering;
 
 public class SpecificityComparator extends Ordering<Specificity>
