@@ -2195,6 +2195,11 @@ public class BlockBox implements Box, HasAbsolutePosition, HasBackgroundProperti
 	{
 		this.textAlign=textAlign;
 	}
+	
+	public TextAlign getTextAlign()
+	{
+		return textAlign;
+	}
 
 	@Override
 	public void setLineHeight(int lineHeight)

@@ -62,10 +62,11 @@ public class BoxDrawer
         indent++;
         if(t.whitespace() == false)
         {
-
-            logger.debug(print_indent() + "[text " + t.getId() + "] at  " + t.text() + " at " + (t.left() - offx) + "," + (t.baseline() - offy) + " (" + t.width() + "," + t.height() +" line :" + t.line().left()+","+t.line().top()+" "+t.line().width()+","+t.line().height());
-
-            canvas.drawString(t.text(), t.left() - offx, t.baseline() - offy);
+            int horizAlignmentAdj=t.line().alignmentAdjustment(t);
+        	
+            logger.debug("{}[text{}] at {} at {},{} ({},{}) line: {},{} {},{}", print_indent(), t.getId(), t.text(), horizAlignmentAdj + t.left() - offx, t.baseline() - offy, t.width(), t.height(), t.line().left(), t.line().top(), t.line().width(), t.line().height());
+            
+            canvas.drawString(t.text(), horizAlignmentAdj + t.left() - offx, t.baseline() - offy);
             realMapping.update(t, t.left() - offx, t.baseline() - offy, t.width(), t.height());
         }
         else
