@@ -8,7 +8,8 @@ import com.github.s262316.forx.tree.XmlNode;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
-import com.sun.istack.internal.Nullable;
+
+import javax.annotation.Nullable;
 
 public class IsFirstInParent implements Predicate<XmlNode>
 {
