@@ -165,12 +165,12 @@ public class GeneratedContent
 
     public static String formatCounterAsLowerAlpha(int input)
     {
-        return NumberRep.translate_alpha_upper(input).toLowerCase();
+        return NumberRep.toAlphabeticalCount(input).toLowerCase();
     }
 
     public static String formatCounterAsUpperAlpha(int input)
     {
-        return NumberRep.translate_alpha_upper(input);
+        return NumberRep.toAlphabeticalCount(input);
     }
 
     public static String formatAsGeorgian(int input)
