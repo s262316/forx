@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -88,8 +88,6 @@ public class GeneratedContentTest
     @Test
     public void counterWithWrongNumberOfArgs()
     {
-        Mockito.when(mockLists.validateListStyleProperty(new ValueBuilder().identifier("aaaa").build())).thenReturn(false);
-
         Value invalidArg1=new ValueBuilder().identifier("invalid").build();
         Value invalidArg2=new ValueBuilder().identifier("invalid").build();
         Value invalidArg3=new ValueBuilder().identifier("invalid").build();
@@ -140,8 +138,6 @@ public class GeneratedContentTest
     @Test
     public void countersWithInvalidSeparator()
     {
-        Mockito.when(mockLists.validateListStyleProperty(new ValueBuilder().identifier("aaaa").build())).thenReturn(false);
-
         Value invalidArg1=new ValueBuilder().identifier("invalid").build();
         Value invalidArg2=new ValueBuilder().string("invalid").build();
         Value invalidArg3=new ValueBuilder().identifier("invalid").build();
@@ -272,7 +268,7 @@ public class GeneratedContentTest
     public void formatCounterAsLowerRoman()
     {
         Assert.assertEquals("i", GeneratedContent.formatCounterAsLowerRoman(1));
-        Assert.assertEquals("iv", GeneratedContent.formatCounterAsLowerRoman(3));
+        Assert.assertEquals("iv", GeneratedContent.formatCounterAsLowerRoman(4));
         Assert.assertEquals("v", GeneratedContent.formatCounterAsLowerRoman(5));
         Assert.assertEquals("xii", GeneratedContent.formatCounterAsLowerRoman(12));
     }
@@ -280,17 +276,17 @@ public class GeneratedContentTest
     @Test
     public void formatCounterAsUpperRoman()
     {
-        Assert.assertEquals("I", GeneratedContent.formatCounterAsLowerRoman(1));
-        Assert.assertEquals("IV", GeneratedContent.formatCounterAsLowerRoman(3));
-        Assert.assertEquals("V", GeneratedContent.formatCounterAsLowerRoman(5));
-        Assert.assertEquals("XII", GeneratedContent.formatCounterAsLowerRoman(12));
+        Assert.assertEquals("I", GeneratedContent.formatCounterAsUpperRoman(1));
+        Assert.assertEquals("IV", GeneratedContent.formatCounterAsUpperRoman(4));
+        Assert.assertEquals("V", GeneratedContent.formatCounterAsUpperRoman(5));
+        Assert.assertEquals("XII", GeneratedContent.formatCounterAsUpperRoman(12));
     }
 
     @Test
     public void formatCounterAsLowerAlpha()
     {
         Assert.assertEquals("a", GeneratedContent.formatCounterAsLowerAlpha(1));
-        Assert.assertEquals("k", GeneratedContent.formatCounterAsLowerAlpha(10));
+        Assert.assertEquals("k", GeneratedContent.formatCounterAsLowerAlpha(11));
         Assert.assertEquals("z", GeneratedContent.formatCounterAsLowerAlpha(26));
         Assert.assertEquals("aa", GeneratedContent.formatCounterAsLowerAlpha(27));
     }
