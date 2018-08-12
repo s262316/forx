@@ -28,36 +28,34 @@ public class Counters
 		Value v;
 		List<CounterAction> counterActions=Lists.newArrayList();
 
-		try
+		PeekingIterator<Value> it=Iterators.peekingIterator(Iterators.filter(counterValues.members.iterator(), new FilterNoneValues()));
+		while(it.hasNext())
 		{
-			PeekingIterator<Value> it=Iterators.peekingIterator(Iterators.filter(counterValues.members.iterator(), new FilterNoneValues()));
-			while(it.hasNext())
+			v=it.next();
+			counterName=ValuesHelper.getIdentifier(v);
+			if(!counterName.isPresent())
 			{
-				v=it.next();
-				counterName=ValuesHelper.getIdentifier(v);
-				
-				if(it.hasNext())
+				// there is a counter-name missing. reject whole property
+				return Collections.<CounterAction>emptyList();
+			}
+			else
+			{
+				if (it.hasNext())
 				{
-					v=it.peek();
-					counterAmount=ValuesHelper.getInt(v);
-					
-					if(counterAmount.isPresent())
+					v = it.peek();
+					counterAmount = ValuesHelper.getInt(v);
+
+					if (counterAmount.isPresent())
 						it.next();
 				}
 				else
-					counterAmount=Optional.of(missingAmount);
-				
-				
-				counterActions.add(new CounterAction(counterName.get(), counterAmount.orElse(missingAmount)));
+					counterAmount = Optional.of(missingAmount);
 			}
-			
-			return counterActions;
+
+			counterActions.add(new CounterAction(counterName.get(), counterAmount.orElse(missingAmount)));
 		}
-		catch(IllegalStateException ise)
-		{
-			// there is a counter-name missing. reject whole property
-			return Collections.<CounterAction>emptyList();
-		}
+
+		return counterActions;
 	}
 	
     public static void handleCounters(VElement visual_element)

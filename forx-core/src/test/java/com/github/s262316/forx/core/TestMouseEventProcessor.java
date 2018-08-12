@@ -39,8 +39,6 @@ public class TestMouseEventProcessor
 		when(hnode0_1_1.parentNode()).thenReturn(hnode0_1);
 		when(hnode0_1_2.parentNode()).thenReturn(hnode0_1);
 		when(hnode0_2_1.parentNode()).thenReturn(hnode0_2);
-		when(hnode0_2_2.parentNode()).thenReturn(hnode0_2);
-		when(hnode0_2_3.parentNode()).thenReturn(hnode0_2);
 	}
 	
 	@Test
