@@ -1,22 +1,34 @@
 package com.github.s262316.forx.css;
 
+/*
+1=A 1%27 = 1
+2=B 1%27 = 2
+..
+25=Y 25%27=25
+26=Z 26%27=26
+27=AA, 27%27=0, 1%27=1
+ */
 public class NumberRep
 {
-    public static String translate_alpha_upper(int decimal)
+    public static String toAlphabeticalCount(int decimal)
     {
         StringBuilder buffer=new StringBuilder();
-        int count;
         int rem;
+        String negative="";
 
-        count=(decimal / 26);
-        while(count >= 0)
+        if(decimal<0)
         {
-            rem=decimal % 26;
-            decimal=decimal / 26;
-            buffer.append((char)(64 + rem));
-            count--;
+            negative = "-";
+            decimal = Math.abs(decimal);
         }
 
-        return buffer.toString();
+        while(decimal > 0)
+        {
+            rem = (decimal-1) % 26;
+            decimal = (decimal-1) / 26;
+            buffer.insert(0, (char) (65 + rem));
+        }
+
+        return negative+buffer.toString();
     }
 }
