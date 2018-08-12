@@ -53,19 +53,8 @@ public class TestMoreWidthLayouter
 	public void setup()
 	{
 		// containers
-		when(p_1.container()).thenReturn(root);
 		when(p_2.container()).thenReturn(root);
-		when(p_3.container()).thenReturn(root);
-		when(p_1_1.container()).thenReturn(p_1);
-		when(p_1_2.container()).thenReturn(p_1);
-		when(p_2_1.container()).thenReturn(p_2);
-		when(p_2_2.container()).thenReturn(p_2);
-		when(p_2_3.container()).thenReturn(p_2);
-		when(p_3_1.container()).thenReturn(p_3);
-		when(p_3_2.container()).thenReturn(p_3);
-		when(p_3_3.container()).thenReturn(p_3);
-		when(p_2.root()).thenReturn(root);
-		
+
 		// id
 		when(root.getId()).thenReturn(0);
 		when(p_1.getId()).thenReturn(1);
@@ -79,18 +68,6 @@ public class TestMoreWidthLayouter
 		when(p_3_1.getId()).thenReturn(9);
 		when(p_3_2.getId()).thenReturn(10);
 		when(p_3_3.getId()).thenReturn(11);
-		
-		when(root.calculate_position(p_1)).thenReturn(new LayoutResult(false, Optional.<Relayouter>absent()));
-		when(p_1.calculate_position(p_1_1)).thenReturn(new LayoutResult(false, Optional.<Relayouter>absent()));
-		when(p_1.calculate_position(p_1_2)).thenReturn(new LayoutResult(false, Optional.<Relayouter>absent()));
-		when(root.calculate_position(p_2)).thenReturn(new LayoutResult(false, Optional.<Relayouter>absent()));
-		when(p_2.calculate_position(p_2_1)).thenReturn(new LayoutResult(false, Optional.<Relayouter>absent()));
-		when(p_2.calculate_position(p_2_2)).thenReturn(new LayoutResult(false, Optional.<Relayouter>absent()));		
-		when(p_2.calculate_position(p_2_3)).thenReturn(new LayoutResult(false, Optional.<Relayouter>absent()));
-		when(root.calculate_position(p_3)).thenReturn(new LayoutResult(false, Optional.<Relayouter>absent()));		
-		when(p_3.calculate_position(p_3_1)).thenReturn(new LayoutResult(false, Optional.<Relayouter>absent()));		
-		when(p_3.calculate_position(p_3_2)).thenReturn(new LayoutResult(false, Optional.<Relayouter>absent()));
-		when(p_3.calculate_position(p_3_3)).thenReturn(new LayoutResult(false, Optional.<Relayouter>absent()));		
 
 		// lists
 		when(root.getMembersAll()).thenReturn(Lists.<Layable>newArrayList(p_1, p_2, p_3));

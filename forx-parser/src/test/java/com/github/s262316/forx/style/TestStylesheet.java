@@ -154,8 +154,6 @@ public class TestStylesheet
 	@Test
 	public void testFindDeclarationFind0Of0()
 	{
-		when(pElement.getName()).thenReturn("div");
-		
 		Stylesheet toMerge=new Stylesheet(null, null);
 		
 		Declaration d1=toMerge.findDeclaration(pElement, "d1", MediaType.MT_ALL);
@@ -266,8 +264,6 @@ public class TestStylesheet
 	@Test
 	public void testMediaTypesNoMatch()
 	{
-		when(pElement.getName()).thenReturn("p");
-		
 		Stylesheet toMerge=new Stylesheet(null, null);
 		
 		StyleRule sr1=new StyleRule(Selectors.createSimpleElementNameSelector("p"), decs1, EnumSet.of(MediaType.MT_PRINT), 0);

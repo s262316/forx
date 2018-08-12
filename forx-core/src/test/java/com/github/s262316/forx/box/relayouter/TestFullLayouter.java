@@ -49,19 +49,6 @@ public class TestFullLayouter
 	@Before
 	public void setup()
 	{
-		// containers
-		when(p_1.container()).thenReturn(root);
-		when(p_2.container()).thenReturn(root);
-		when(p_3.container()).thenReturn(root);
-		when(p_1_1.container()).thenReturn(p_1);
-		when(p_1_2.container()).thenReturn(p_1);
-		when(p_2_1.container()).thenReturn(p_2);
-		when(p_2_2.container()).thenReturn(p_2);
-		when(p_2_3.container()).thenReturn(p_2);
-		when(p_3_1.container()).thenReturn(p_3);
-		when(p_3_2.container()).thenReturn(p_3);
-		when(p_3_3.container()).thenReturn(p_3);
-
 		// lists
 		when(root.getMembersAll()).thenReturn(Lists.<Layable>newArrayList(p_1, p_2, p_3));
 		when(p_1.getMembersAll()).thenReturn(Lists.<Layable>newArrayList(p_1_1, p_1_2));

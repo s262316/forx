@@ -42,23 +42,17 @@ public class TestSelector
 		when(html.parentNode()).thenReturn(doc);
 		when(body.parentNode()).thenReturn(html);
 		when(p.parentNode()).thenReturn(body);
-		when(p2.parentNode()).thenReturn(body);
-		when(p3.parentNode()).thenReturn(body);
 
-		when(doc.getName()).thenReturn("#document");
 		when(html.getName()).thenReturn("html");
 		when(body.getName()).thenReturn("body");				
 		when(p.getName()).thenReturn("p");		
 		when(p2.getName()).thenReturn("p2");		
 		when(p3.getName()).thenReturn("p3");		
 		
-		when(doc.type()).thenReturn(NodeType.X_DOCUMENT);
-		when(html.type()).thenReturn(NodeType.X_ELEMENT);
-		when(body.type()).thenReturn(NodeType.X_ELEMENT);				
+		when(body.type()).thenReturn(NodeType.X_ELEMENT);
 		when(p.type()).thenReturn(NodeType.X_ELEMENT);		
 		when(p2.type()).thenReturn(NodeType.X_ELEMENT);		
-		when(p3.type()).thenReturn(NodeType.X_ELEMENT);		
-		
+
 		when(p2.previousNode()).thenReturn(p);		
 		when(p3.previousNode()).thenReturn(p2);		
 	}

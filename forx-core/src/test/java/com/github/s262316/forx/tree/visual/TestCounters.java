@@ -84,8 +84,7 @@ public class TestCounters
 		Value incrementValue=new Identifier("none");
 		Mockito.when(velement.getPropertyValue("counter-reset", MediaType.MT_SCREEN)).thenReturn(resetValue);
 		Mockito.when(velement.getPropertyValue("counter-increment", MediaType.MT_SCREEN)).thenReturn(incrementValue);
-		Mockito.when(velement.find_counter(Matchers.anyString())).thenReturn(velement);
-		
+
 		Counters.handleCounters(velement);
 		
 		Mockito.verify(velement, Mockito.never()).reset_counter(Matchers.anyString(), Matchers.anyInt());
