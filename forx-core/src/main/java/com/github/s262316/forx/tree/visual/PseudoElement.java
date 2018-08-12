@@ -395,17 +395,17 @@ public class PseudoElement implements Visual, VElement
                 //			else if(counter_style.ident=="lower-greek")
                 //				;
                 else if(counter_style.ident.equals("lower-latin"))
-                    result=NumberRep.translate_alpha_upper(value).toLowerCase();
+                    result=NumberRep.toAlphabeticalCount(value).toLowerCase();
                 else if(counter_style.ident.equals("upper-latin"))
-                    result=NumberRep.translate_alpha_upper(value);
+                    result=NumberRep.toAlphabeticalCount(value);
                 //			else if(counter_style.ident=="armenian")
                 //				;
                 //			else if(counter_style.ident=="georgian")
                 //				;
                 else if(counter_style.ident.equals("lower-alpha"))
-                    result=NumberRep.translate_alpha_upper(value).toLowerCase();
+                    result=NumberRep.toAlphabeticalCount(value).toLowerCase();
                 else if(counter_style.ident.equals("upper-alpha"))
-                    result=NumberRep.translate_alpha_upper(value);
+                    result=NumberRep.toAlphabeticalCount(value);
                 else
                 {
                     result=String.valueOf(value);
