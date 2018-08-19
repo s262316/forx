@@ -55,6 +55,8 @@ public class CssAutomatedRefTestsIT
 	ApplicationContext applicationContext;
 	@Value("${app.version}")
 	String version;
+	@Autowired
+	CssRefTestsExclusions exclusions;
 
 	public Path refMatch(Path htmlFile) throws IOException
 	{
@@ -80,6 +82,12 @@ public class CssAutomatedRefTestsIT
 			}
 			else
 			{
+				if(exclusions.isExcluded(cssTestSuiteFolder, p))
+				{
+					logger.warn("automated test {} is excluded", p);
+					return false;
+				}
+
 				return !FilenameUtils.getBaseName(p.toString()).contains("-ref") &&
 						refMatch(p)!=null &&
 						FilenameUtils.isExtension(p.toString(), new String[] { "xht", "html" });
