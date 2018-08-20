@@ -1,7 +1,6 @@
 package com.github.s262316.forx.reftests;
 
 import com.github.s262316.forx.gui.WebView;
-import com.google.common.collect.Iterators;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -18,43 +17,44 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.AntPathMatcher;
+import org.webjars.WebJarAssetLocator;
 
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.DynamicContainer.dynamicContainer;
-import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 // VM argument -Djava.awt.headless=false
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes=CssRefTestsITConfig.class)
-public class CssAutomatedRefTestsIT extends CssAbstractRefTests
+public class CssManuallyVerifiedRefTestsIT extends CssAbstractRefTests
 {
-	private static Logger logger= LoggerFactory.getLogger(CssAutomatedRefTestsIT.class);
+	private static Logger logger= LoggerFactory.getLogger(CssManuallyVerifiedRefTestsIT.class);
 
 	@Autowired
-	CssRefTestsITConfig config;
+	CssRefTestsITConfig cssRefTestsITConfig;
 	@Value("${cssTestSuiteFolder}")
 	private Path cssTestSuiteFolder;
 	@Value("${cssTestsFilter}")
 	private String[] cssTestsFilter;
+	@Autowired
+	private ApplicationContext applicationContext;
+	@Value("${app.version}")
+	private String version;
+	@Autowired
+	private CssRefTestsExclusions exclusions;
+	@Autowired
+	private Screenshots screenshots;
+
 	private AntPathMatcher pathMatcher=new AntPathMatcher();
-	@Autowired
-	CssRefTestsExclusions exclusions;
-	@Autowired
-	Screenshots screenshots;
 
 	@Override
 	public boolean canExecuteTest(Path p)
@@ -70,15 +70,21 @@ public class CssAutomatedRefTestsIT extends CssAbstractRefTests
 			}
 			else
 			{
-				if(exclusions.isExcluded(cssTestSuiteFolder, p))
-				{
-					logger.warn("automated test {} is excluded", p);
-					return false;
-				}
+				boolean autoExcluded=exclusions.isExcluded(cssTestSuiteFolder, p);
+				boolean notRefFile=!FilenameUtils.getBaseName(p.toString()).contains("-ref");
+				boolean isHtmlFile=FilenameUtils.isExtension(p.toString(), new String[] { "xht", "html" });
+				boolean hasAutomatedRef= getAutomatedRefFile(p)!=null;
+				boolean manuallyVerifiedScreenshot=screenshots.hasManuallyVerifiedImage(p);
 
-				return !FilenameUtils.getBaseName(p.toString()).contains("-ref") &&
-						getAutomatedRefFile(p)!=null &&
-						FilenameUtils.isExtension(p.toString(), new String[] { "xht", "html" });
+				if(autoExcluded && !manuallyVerifiedScreenshot)
+					logger.warn("An auto-exclusion was found but there is no manually-verified screenshot for {}", p);
+
+				return isHtmlFile && notRefFile &&
+						manuallyVerifiedScreenshot &&
+						(
+						!hasAutomatedRef ||
+						(hasAutomatedRef && autoExcluded)
+						);
 			}
 		}
 		catch(IOException ioe)
@@ -88,12 +94,11 @@ public class CssAutomatedRefTestsIT extends CssAbstractRefTests
 	}
 
 	@TestFactory
-	public Stream<DynamicNode> automatedRefTests() throws Exception
+	public Stream<DynamicNode> verifiedManuallyRefTests() throws Exception
 	{
 		return Files.list(cssTestSuiteFolder)
 				.filter(this::canExecuteTest)
-				.map(v -> convertToDynamicTest(v))
-				;
+				.map(v -> convertToDynamicTest(v));
 	}
 
 	@Override
@@ -104,13 +109,10 @@ public class CssAutomatedRefTestsIT extends CssAbstractRefTests
 			BufferedImage b1=runTest(htmlTestFile);
 			screenshots.saveActualScreenshot(htmlTestFile, b1);
 
-			Path refHtmlFile=getAutomatedRefFile(htmlTestFile);
-			BufferedImage b2=runTest(refHtmlFile);
-			screenshots.saveRefScreenshot(htmlTestFile, b2);
+			BufferedImage b2=screenshots.getManuallyVerifiedImage(htmlTestFile);
 
 			assertTrue(ImageUtils.compareImages(b1, b2), "screenshots mismatched");
 			assertFalse(ImageUtils.isAllBackground(b1, UIManager.getColor ( "Panel.background" )), "nothing shown in screenshot");
-
 		}
 		catch(IOException ex)
 		{
