@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.s262316.forx.test.TestcaseResult;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.escape.Escapers;
+import com.google.common.net.UrlEscapers;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -11,7 +13,11 @@ import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.support.BeanDefinitionDsl;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -21,6 +27,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -29,8 +37,22 @@ import java.util.stream.Collectors;
 @Controller
 public class TestResultsController
 {
+    private static Logger logger= LoggerFactory.getLogger(TestResultsController.class);
+
     @Value("${baseTestResultsFolder}")
     private File baseTestResultsFolder;
+    @Value("${expectedResultsFolder}")
+    private File firefoxResultsFolder;
+    @Autowired
+    private CssRefTestsExclusions autoTestExclusions;
+    @Value("${cssTestSuiteFolder}")
+    private Path cssTestSuiteFolder;
+    @Autowired
+    private Screenshots screenshots;
+    @Autowired
+    private AutomatedRefTests automatedRefTests;
+    @Value("${manuallyVerifiedImagesFolder}")
+    private File manuallyVerifiedFolder;
 
     @InitBinder
     public void initBinder(WebDataBinder dataBinder)
@@ -41,14 +63,42 @@ public class TestResultsController
     @RequestMapping("/submitResults")
     public String submitTestResults(TestResultsForm resultsForm) throws IOException
     {
-        ObjectMapper mapper=new ObjectMapper();
+        for(TestResultsEntry tre : resultsForm.getValue())
+        {
+            switch(tre.getResult())
+            {
+                case "ie":
+                    Path p1=Paths.get(resultsForm.getFolderName()).resolve(tre.getTestcaseName());
+                    Path p2=p1.subpath(1, p1.getNameCount());
 
-        File resultsFolder=new File(baseTestResultsFolder, resultsForm.getFolderName());
-        File resultsFile=new File(resultsFolder, "results.json");
+                    // add the test to the ignore list
+                    autoTestExclusions.addExclusion(StringUtils.replace(p2.toString(), "\\", "/"));
+                    break;
+                case "im":
+                    Path p3=Paths.get(resultsForm.getFolderName()).resolve(tre.getTestcaseName());
+                    Path p4=p3.subpath(1, p3.getNameCount());
 
-        mapper.writeValue(resultsFile, resultsForm);
+                    // add the test to the ignore list
+                    autoTestExclusions.addExclusion(StringUtils.replace(p4.toString(), "\\", "/"));
 
-        return "redirect:/viewResults?folder="+resultsForm.getFolderName();
+                    // move the actual to manually_verified/
+
+                    Path screenshot=screenshots.getActualScreenshot(baseTestResultsFolder.toPath().resolve(p3));
+
+                    Path screenshotDestination=manuallyVerifiedFolder.toPath().resolve(p4);
+                    screenshotDestination=screenshotDestination.resolveSibling(screenshot.getName(screenshot.getNameCount()-1));
+                    Files.createDirectories(screenshotDestination.getParent());
+
+
+                    Files.copy(screenshot, screenshotDestination);
+
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return "redirect:/viewResults?folder="+UrlEscapers.urlFragmentEscaper().escape(resultsForm.getFolderName());
     }
 
     @RequestMapping("/")
@@ -74,7 +124,6 @@ public class TestResultsController
     {
         Map<String, Object> model=new HashMap<>();
         File parentFolderFile;
-        final List<String> testcaseFilenameExtensions= Lists.newArrayList("xhtml", "xht", "html");
 
         parentFolderFile=new File(baseTestResultsFolder, folder);
 
@@ -91,17 +140,19 @@ public class TestResultsController
                 .map(Path::toString)
                 .collect(Collectors.toList());
 
-        File html[]=parentFolderFile.listFiles(v -> v.isFile() && FilenameUtils.getExtension(v.getName()).equals("png"));
-        List<File> htmlTestCaseFiles=Arrays.asList(html);
+        Path relPath=Paths.get(folder);
+        Path p2;
+        if(relPath.getNameCount()==1)
+            p2=Paths.get("");
+        else
+            p2=Paths.get(folder).subpath(1, relPath.getNameCount());
 
-        List<TestcaseResult> htmlTestCaseName=htmlTestCaseFiles.stream()
-                .map(File::toPath)
-                .map(v -> pathBase.relativize(v))
-                .map(Path::toString)
-                .map(TestResultsController::mapTestcaseToResult)
+        List<TestcaseResult> htmlTestCaseName=Files.list(cssTestSuiteFolder.resolve(p2))
+                .filter(v -> v.toFile().isFile())
+                .filter(v -> v.toString().endsWith(".xht") || v.toString().endsWith(".html"))
+                .filter(v -> !v.toString().contains("-ref"))
+                .map(this::mapTestcaseToResult)
                 .collect(Collectors.toList());
-
-        mergeExistingTestResults(htmlTestCaseName, folder);
 
         model.put("thisFolder", folder);
         model.put("runFolderResults", testSubfolderNames);
@@ -111,46 +162,58 @@ public class TestResultsController
         return new ModelAndView("menu", model);
     }
 
-    public void mergeExistingTestResults(List<TestcaseResult> testResults, String folderName) throws IOException
+    /**
+     *
+     * @param testResultImageRelative first part is the version string
+     * @return
+     */
+    public TestcaseResult mapTestcaseToResult(Path testResultImageRelative)
     {
-        ObjectMapper mapper=new ObjectMapper();
-
-        File resultsFolder=new File(baseTestResultsFolder, folderName);
-        File resultsFile=new File(resultsFolder, "results.json");
-
-        if(resultsFile.exists())
+        try
         {
-            TestResultsForm existingResults = mapper.readValue(resultsFile, TestResultsForm.class);
-            Map<String, TestResultsEntry> byName = Maps.uniqueIndex(existingResults.getValue(), v -> v.getTestcaseName());
+            String actualScreenshotUrl = null;
+            String refScreenshotUrl = null;
+            String actualFirefoxUrl = null;
 
-            for (TestcaseResult testResult : testResults)
-            {
-                TestResultsEntry savedResult = byName.get(testResult.getTestcaseName());
-                if (savedResult != null)
-                    testResult.setResult(savedResult.getResult());
-            }
+            Path actualScreenshot = screenshots.getActualScreenshot(testResultImageRelative);
+            if (actualScreenshot.toFile().exists())
+                actualScreenshotUrl = convertToRelativeUrl(actualScreenshot);
+
+            Path refScreenshot = screenshots.getRefScreenshot(testResultImageRelative);
+            if (refScreenshot.toFile().exists())
+                refScreenshotUrl = convertToRelativeUrl(refScreenshot);
+
+            // firefox screenshot
+            Path firefoxScreenshot = screenshots.getThirdPartyScreenshot(testResultImageRelative);
+            if (firefoxScreenshot.toFile().exists())
+                actualFirefoxUrl = convertToRelativeUrlFirefox(firefoxScreenshot);
+
+            boolean isAutomatedRefTest = automatedRefTests.isAutomatedRefTest(testResultImageRelative);
+            boolean isAutomatedRefTestIgnored=automatedRefTests.isAutomatedRefTestIgnored(testResultImageRelative);
+            boolean isManuallyVerifiedTest=automatedRefTests.isManuallyVerifiedRefTest(testResultImageRelative);
+
+            if(isAutomatedRefTest && !isAutomatedRefTestIgnored && refScreenshotUrl==null)
+                logger.warn("automated ref test not found {}", refScreenshot);
+
+            return new TestcaseResult(actualScreenshotUrl, refScreenshotUrl, actualFirefoxUrl,
+                    testResultImageRelative.getName(testResultImageRelative.getNameCount() - 1).toString(), "",
+                    isAutomatedRefTest,isAutomatedRefTestIgnored, isManuallyVerifiedTest);
+        }
+        catch(IOException ioe)
+        {
+            throw new RuntimeException(ioe);
         }
     }
 
-    public static TestcaseResult mapTestcaseToResult(String htmlTestcaseName)
+    public String convertToRelativeUrlFirefox(Path p)
     {
-        String actualScreenshotUrl=formulateActualFilename(htmlTestcaseName);
-        String expectedScreenshotUrl=formulateExpectedFilename(htmlTestcaseName);
-
-        return new TestcaseResult(actualScreenshotUrl, expectedScreenshotUrl, FilenameUtils.getName(htmlTestcaseName), "");
+        Path relative=Paths.get("expected").resolve(firefoxResultsFolder.toPath().relativize(p));
+        return StringUtils.replace(relative.toString(), "\\", "/");
     }
 
-    public static String formulateExpectedFilename(String testcaseHtmlFilename)
+    public String convertToRelativeUrl(Path p)
     {
-        return StringUtils.replace(testcaseHtmlFilename, "\\", "/");
+        Path relative=baseTestResultsFolder.toPath().relativize(p);
+        return StringUtils.replace(relative.toString(), "\\", "/");
     }
-
-    public static String formulateActualFilename(String testcaseHtmlFilename)
-    {
-        String runName=StringUtils.substringBefore(testcaseHtmlFilename, "\\");
-        String newName=StringUtils.replace(testcaseHtmlFilename, runName, "expected");
-
-        return StringUtils.replace(newName, "\\", "/");
-    }
-
 }
