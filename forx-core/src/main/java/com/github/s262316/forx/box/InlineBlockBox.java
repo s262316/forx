@@ -33,7 +33,7 @@ import com.github.s262316.forx.box.util.SpecialLength;
 import com.github.s262316.forx.box.util.TextAlign;
 import com.github.s262316.forx.box.util.VerticalAlignment;
 import com.github.s262316.forx.graphics.Triangle;
-
+import com.github.s262316.forx.tree.visual.AnonReason;
 import com.google.common.base.Optional;
 
 public class InlineBlockBox extends AtomicInline implements Box, HasFontProperties, HasBorders,
@@ -76,7 +76,7 @@ HasTextProperties, HasWordProperties, HasLineProperties,
 	{
 		InlineBlockRootBox ibrb;
 
-		ibrb = visual.createAnonInlineBlockRootBox();
+		ibrb = visual.createAnonInlineBlockRootBox(AnonReason.INLINE_BLOCK_ROOT_CONTAINER);
 
 		all.add(ibrb);
 		ibrb.set_container(this);

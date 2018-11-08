@@ -10,10 +10,10 @@ import com.github.s262316.forx.box.InlineBox;
 import com.github.s262316.forx.box.TableBox;
 import com.github.s262316.forx.box.TableRow;
 import com.github.s262316.forx.graphics.GraphicsContext;
+import com.github.s262316.forx.tree.visual.AnonReason;
 
 public interface Visual
 {
-//    public Graphics2D get_canvas();
     public GraphicsContext getGraphicsContext();
     public void calculateBorders(PropertyAdaptor on, BorderDescriptor borderdesc);
     public void computeMarginProperties(PropertyAdaptor on, MarginDescriptor margindesc);
@@ -27,11 +27,12 @@ public interface Visual
     public Font workOutFontProperties(PropertyAdaptor on);
     public void workOutFloatProperties(PropertyAdaptor on, FloatProperties fp);
     public void workoutColours(PropertyAdaptor on, ColourDescriptor coldesc);
-    public InlineBox createAnonInlineBox();
-    public BlockBox createAnonBlockBox();
-    public InlineBlockRootBox createAnonInlineBlockRootBox();
-    public TableRow createAnonRowBox();
-    public Column createAnonColBox();
-    public TableBox createAnonTableBox();
-    public CellBox createAnonCellBox();
+    
+    public InlineBox createAnonInlineBox(AnonReason anonReason);
+    public BlockBox createAnonBlockBox(AnonReason anonReason);
+    public InlineBlockRootBox createAnonInlineBlockRootBox(AnonReason anonReason);
+    public TableRow createAnonRowBox(AnonReason anonReason);
+    public Column createAnonColBox(AnonReason anonReason);
+    public TableBox createAnonTableBox(AnonReason anonReason);
+    public CellBox createAnonCellBox(AnonReason anonReason);
 }

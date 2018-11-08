@@ -14,7 +14,7 @@ import com.github.s262316.forx.box.relayouter.util.LayoutUtils;
 import com.github.s262316.forx.box.util.SizeResult;
 import com.github.s262316.forx.box.util.SpaceFlag;
 import com.github.s262316.forx.box.util.SpecialLength;
-
+import com.github.s262316.forx.tree.visual.AnonReason;
 import com.google.common.base.Optional;
 
 public class TableBox extends BlockBox
@@ -41,14 +41,14 @@ public class TableBox extends BlockBox
                 last=BoxTypes.toCellBox(cells.getLast());
             else
             {
-                last=visual.createAnonCellBox();
+                last=visual.createAnonCellBox(AnonReason.CELL);
 
                 table_back(null, last);
             }
         }
         else
         {
-            last=visual.createAnonCellBox();
+            last=visual.createAnonCellBox(AnonReason.CELL);
             table_back(null, last);
         }
         return last;
@@ -153,7 +153,7 @@ public class TableBox extends BlockBox
                         cont_row=rows.getLast();
                     else
                     {
-                        cont_row=visual.createAnonRowBox();
+                        cont_row=visual.createAnonRowBox(AnonReason.ROW);
 
                         table_back(null, cont_row);
 
@@ -161,7 +161,7 @@ public class TableBox extends BlockBox
                 }
                 else
                 {
-                    cont_row=visual.createAnonRowBox();
+                    cont_row=visual.createAnonRowBox(AnonReason.ROW);
 
                     table_back(null, cont_row);
                 }
@@ -186,7 +186,7 @@ public class TableBox extends BlockBox
             {
                 Column anon_column;
                 // create anon column
-                anon_column=visual.createAnonColBox();
+                anon_column=visual.createAnonColBox(AnonReason.COLUMN);
                 table_back(null, anon_column);
             }
             c.set_origin(where_col, where_row);

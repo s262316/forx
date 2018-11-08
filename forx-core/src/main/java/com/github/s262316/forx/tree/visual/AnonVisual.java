@@ -41,13 +41,15 @@ public class AnonVisual implements Visual, VElement
     private String style_lang;
     private VElement container;
     private CSSPropertiesReference ref;
+    private AnonReason anonReason;
 
-    public AnonVisual(VElement container, GraphicsContext gfxCtx, String sl, CSSPropertiesReference ref)
+    public AnonVisual(VElement container, GraphicsContext gfxCtx, String sl, CSSPropertiesReference ref, AnonReason anonReason)
     {
         graphics_context=gfxCtx;
         style_lang=sl;
         this.container=container;
         this.ref=ref;
+        this.anonReason=anonReason;
     }
 
     @Override
@@ -129,71 +131,71 @@ public class AnonVisual implements Visual, VElement
     }
 
     @Override
-    public InlineBox createAnonInlineBox()
+    public InlineBox createAnonInlineBox(AnonReason anonReason)
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref);
+        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
 
         return BoxFactory.createAnonymousInlineFlowBox(anon);
     }
 
     @Override
-    public BlockBox createAnonBlockBox()
+    public BlockBox createAnonBlockBox(AnonReason anonReason)
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref);
+        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
 
         return BoxFactory.createAnonymousBlockFlowBox(anon);
     }
 
     @Override
-    public InlineBlockRootBox createAnonInlineBlockRootBox()
+    public InlineBlockRootBox createAnonInlineBlockRootBox(AnonReason anonReason)
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref);
+        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
 
         return BoxFactory.createAnonInlineBlockRootBox(anon);
     }
 
     @Override
-    public TableRow createAnonRowBox()
+    public TableRow createAnonRowBox(AnonReason anonReason)
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref);
+        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
 
         return BoxFactory.createAnonRowBox(anon);
     }
 
     @Override
-    public Column createAnonColBox()
+    public Column createAnonColBox(AnonReason anonReason)
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref);
+        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
 
         return BoxFactory.createAnonColBox(anon);
     }
 
     @Override
-    public TableBox createAnonTableBox()
+    public TableBox createAnonTableBox(AnonReason anonReason)
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref);
+        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
 
         return BoxFactory.createAnonTableBox(anon);
     }
 
     @Override
-    public CellBox createAnonCellBox()
+    public CellBox createAnonCellBox(AnonReason anonReason)
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref);
+        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
 
         return BoxFactory.createAnonCellBox(anon);
     }

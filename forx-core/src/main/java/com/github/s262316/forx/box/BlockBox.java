@@ -51,6 +51,7 @@ import com.github.s262316.forx.box.util.SpecialLength;
 import com.github.s262316.forx.box.util.TextAlign;
 import com.github.s262316.forx.box.util.VerticalAlignment;
 import com.github.s262316.forx.graphics.Triangle;
+import com.github.s262316.forx.tree.visual.AnonReason;
 import com.github.s262316.forx.util.ZIndexComparator;
 
 import com.google.common.base.Objects;
@@ -143,7 +144,7 @@ public class BlockBox implements Box, HasAbsolutePosition, HasBackgroundProperti
 
 			if (dummy == null)
 			{
-				dummy = visual.createAnonInlineBox();
+				dummy = visual.createAnonInlineBox(AnonReason.INLINE_CONTAINER);
 				flowing.add(dummy);
 				all.add(dummy);
 
@@ -184,7 +185,7 @@ public class BlockBox implements Box, HasAbsolutePosition, HasBackgroundProperti
 
 		if (dummy == null)
 		{
-			dummy = visual.createAnonInlineBox();
+			dummy = visual.createAnonInlineBox(AnonReason.INLINE_CONTAINER);
 			flowing.add(dummy);
 			all.add(dummy);
 
@@ -223,7 +224,7 @@ public class BlockBox implements Box, HasAbsolutePosition, HasBackgroundProperti
 
 			if (dummy == null)
 			{
-				dummy = visual.createAnonInlineBox();
+				dummy = visual.createAnonInlineBox(AnonReason.INLINE_CONTAINER);
 				flowing.add(dummy);
 				all.add(dummy);
 
@@ -269,7 +270,7 @@ public class BlockBox implements Box, HasAbsolutePosition, HasBackgroundProperti
 
 			if (dummy == null)
 			{
-				dummy = visual.createAnonInlineBox();
+				dummy = visual.createAnonInlineBox(AnonReason.INLINE_CONTAINER);
 				flowing.add(dummy);
 				all.add(dummy);
 
@@ -305,7 +306,7 @@ public class BlockBox implements Box, HasAbsolutePosition, HasBackgroundProperti
 
 		if (dummy == null)
 		{
-			dummy = visual.createAnonInlineBox();
+			dummy = visual.createAnonInlineBox(AnonReason.INLINE_CONTAINER);
 			flowing.add(dummy);
 			all.add(dummy);
 
@@ -381,19 +382,19 @@ public class BlockBox implements Box, HasAbsolutePosition, HasBackgroundProperti
 					anon_table = BoxTypes.toTableBox(last);
 				else
 				{
-					anon_table = visual.createAnonTableBox();
+					anon_table = visual.createAnonTableBox(AnonReason.TABLE_CONTAINER);
 					flow_back(anon_table);
 				}
 			}
 			else
 			{
-				anon_table = visual.createAnonTableBox();
+				anon_table = visual.createAnonTableBox(AnonReason.TABLE_CONTAINER);
 				flow_back(anon_table);
 			}
 		}
 		else
 		{
-			anon_table = visual.createAnonTableBox();
+			anon_table = visual.createAnonTableBox(AnonReason.TABLE_CONTAINER);
 			flow_back(anon_table);
 		}
 
