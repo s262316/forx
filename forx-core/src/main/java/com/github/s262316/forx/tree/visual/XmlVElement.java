@@ -9,9 +9,13 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 
+import com.github.s262316.forx.box.BlockBoxRelations;
+import com.github.s262316.forx.box.ReplacedInline;
+import com.github.s262316.forx.box.mediator.BoxRelation;
 import com.github.s262316.forx.css.PropertyReference;
 import com.github.s262316.forx.tree.XmlElement;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +72,6 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 
-
 public class XmlVElement extends XmlElement implements Visual, VElement
 {
 	private final static Logger logger=LoggerFactory.getLogger(XmlVElement.class);
@@ -82,6 +85,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
     private Map<String, Value> computedValues=new HashMap<String, Value>();
 	private Map<String, Integer> counters=new HashMap<String, Integer>();
 	private CSSPropertiesReference cssPropertiesReference;
+	private BoxRelation boxRelation;
 
     public XmlVElement(String name, XmlVDocument doc, int id, GraphicsContext gfxCtx, EventDispatcher eventDispatcher, CSSPropertiesReference cssPropertiesReference)
     {
@@ -178,6 +182,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 		return v;
     }
 
+    @Override
     public Value getPropertyValue(String property, MediaType mediaType)
     {
         return getPropertyValue(property, mediaType, PseudoElementType.PE_NOT_PSEUDO);
@@ -247,32 +252,30 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 							{
 								if(replaced_plugin==null)
 								{
-									nodeBox=BoxFactory.createInlineFlowBox(this);
+									InlineBox inlineBox=BoxFactory.createInlineFlowBox(this);
+									nodeBox=inlineBox;
+
 									if(position.ident.equals("relative"))
 										nodeBox.set_relative(true);
 
-									if(visualParentNode().visualBox()!=null)
-										visualParentNode().visualBox().flow_back(nodeBox);
-									else if(visualParentNode().tableVisual()!=null)
-										visualParentNode().tableVisual().table().flow_back(nodeBox);
+									visualParentNode().getBoxRelation().add(inlineBox);
 								}
 								else
 								{
-									inlineMember=BoxFactory.createReplacedInlineFlowBox(this, replaced_plugin);
+									ReplacedInline replacedInline=BoxFactory.createReplacedInlineFlowBox(this, replaced_plugin);
+									inlineMember=replacedInline;
+
 									if(position.ident.equals("relative"))
 										inlineMember.set_relative(true);
 
-									if(visualParentNode().visualBox()!=null)
-										visualParentNode().visualBox().flow_back(inlineMember);
-									else if(visualParentNode().tableVisual()!=null)
-										visualParentNode().tableVisual().table().flow_back(inlineMember);
+									boxAdder.add(visualParentNode(), replacedInline);
 								}
 							}
 							else if(display.ident.equals("block"))
 							{
 								nodeBox=BoxFactory.createBlockFlowBox(this, replaced_plugin);
 								if(position.ident.equals("relative"))
-								nodeBox.set_relative(true);
+									nodeBox.set_relative(true);
 
 								if(visualParentNode().visualBox()!=null)
 									visualParentNode().visualBox().flow_back(nodeBox);
@@ -388,6 +391,8 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 						// the after pseudo element comes later
 						create_generated_content(PseudoElementType.PE_BEFORE);
 					}
+
+					Validate.notNull(nodeBox);
 				}
 			}
 		}
@@ -855,5 +860,10 @@ public class XmlVElement extends XmlElement implements Visual, VElement
     public Value computed_value(String property)
     {
 		return computedValues.get(property);
+	}
+
+	public BoxRelation getBoxRelation()
+	{
+		return boxRelation;
 	}
 }

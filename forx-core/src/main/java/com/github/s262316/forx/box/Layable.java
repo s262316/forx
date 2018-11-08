@@ -6,6 +6,7 @@ package com.github.s262316.forx.box;
 
 import java.util.List;
 
+import com.github.s262316.forx.box.mediator.BoxRelation;
 import com.github.s262316.forx.box.relayouter.LayoutResult;
 import com.github.s262316.forx.box.util.SizeResult;
 
@@ -87,5 +88,7 @@ public interface Layable
 	/** may only be called on auto widths */
 	public void setFutureWidth(int futureWidth);
 	/** may only be called on auto heights */
-	public void setFutureHeight(int futureHeight);    
+	public void setFutureHeight(int futureHeight);
+
+	BoxRelation getRelations();
 }

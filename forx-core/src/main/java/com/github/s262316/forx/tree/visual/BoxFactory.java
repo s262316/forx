@@ -1,5 +1,6 @@
 package com.github.s262316.forx.tree.visual;
 
+import com.github.s262316.forx.box.BlockBoxRelations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,21 +56,15 @@ public class BoxFactory
 		return box;
 	}
 
-	public static Box createBlockFlowBox(Visual element, ReplaceableBoxPlugin plugin)
+	public static BlockBoxRelations createBlockFlowBox(XmlVElement element, ReplaceableBoxPlugin plugin)
 	{
-	//	ContentDrawer *cd=new ContentDrawer;
-	//	BorderDrawer *bd=new BorderDrawer(cd);
-	  //  FillDrawer *fd=new FillDrawer(bd);
-
 		BlockBox box=new BlockBox(element, null, plugin);
+		BlockBoxRelations blockBoxRelations=new BlockBoxRelations(element, box);
 
-//		System.out.println("newblock " + box.id);
-
-
-		return box;
+		return blockBoxRelations;
 	}
 
-	public static Box createInlineFlowBox(Visual element)
+	public static InlineBox createInlineFlowBox(Visual element)
 	{
 		InlineBox box=new InlineBox(element, null, null, null);
 
@@ -79,7 +74,7 @@ public class BoxFactory
 		return box;
 	}
 
-	public static Inline createReplacedInlineFlowBox(Visual element, ReplaceableBoxPlugin p)
+	public static ReplacedInline createReplacedInlineFlowBox(Visual element, ReplaceableBoxPlugin p)
 	{
 		ReplacedInline ri=new ReplacedInline(element, p);
 
