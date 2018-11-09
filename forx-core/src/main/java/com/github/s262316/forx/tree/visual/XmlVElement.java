@@ -84,7 +84,8 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 	private CSSPropertiesReference cssPropertiesReference;
 	// set after a box has been populated
 	private ParentLocator parentLocator;
-
+    private InlineBox postSplitInlineBox;
+    
     public XmlVElement(String name, XmlVDocument doc, int id, GraphicsContext gfxCtx, EventDispatcher eventDispatcher, CSSPropertiesReference cssPropertiesReference)
     {
 		super(name, doc, id, eventDispatcher);
@@ -569,7 +570,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
     {
 		logger.debug("parse_and_add_text {} {}", value, normalParentBox.getId());
 
-		List<String> wordsAsList=Splitter.on(CharMatcher.WHITESPACE).omitEmptyStrings().splitToList(value);
+		List<String> wordsAsList=Splitter.on(CharMatcher.whitespace()).omitEmptyStrings().splitToList(value);
 		String words[]=Iterables.toArray(wordsAsList, String.class);
 		
 		PseudoElement firstLinePseudo=null, firstLetterPseudo=null;
@@ -879,5 +880,15 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 		return parentLocator;
 	}
 	
-	
+	@Override
+	public void setPostSplit(InlineBox postSplitInlineBox)
+	{
+		this.postSplitInlineBox=postSplitInlineBox;
+	}
+
+	@Override
+	public InlineBox getPostSplit()
+	{
+		return postSplitInlineBox;
+	}
 }

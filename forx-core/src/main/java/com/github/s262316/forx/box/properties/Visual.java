@@ -3,6 +3,7 @@ package com.github.s262316.forx.box.properties;
 import java.awt.Font;
 
 import com.github.s262316.forx.box.BlockBox;
+import com.github.s262316.forx.box.Box;
 import com.github.s262316.forx.box.CellBox;
 import com.github.s262316.forx.box.Column;
 import com.github.s262316.forx.box.InlineBlockRootBox;
@@ -37,4 +38,6 @@ public interface Visual
     public CellBox createAnonCellBox(AnonReason anonReason);
     
     public AnonReason getAnonReason();
+	public void setPostSplit(InlineBox postSplitInlineBox);
+	public Box getPostSplit();
 }

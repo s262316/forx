@@ -41,7 +41,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>19.0</version>
+            <version>27.0-jre</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -175,7 +175,11 @@
             <artifactId>romannumerals4j</artifactId>
             <version>0.0.1</version>
         </dependency>
-
+		<dependency>
+		    <groupId>com.codepoetics</groupId>
+		    <artifactId>protonpack</artifactId>
+		    <version>1.13</version>
+		</dependency>
     </dependencies>
     
 </project>

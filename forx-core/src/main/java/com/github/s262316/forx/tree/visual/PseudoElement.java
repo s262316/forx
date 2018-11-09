@@ -60,7 +60,8 @@ public class PseudoElement implements Visual, VElement
     private Box visualPart;
     private Map<String, Integer> counters=new HashMap<>();
     private CSSPropertiesReference cssPropertiesReference;
-
+    private InlineBox postSplitInlineBox;
+    
     private static final Map<String, Function<Integer, String>> LIST_STYLE_FORMATTERS=ImmutableMap.<String, Function<Integer, String>>builder()
             .put("decimal" , GeneratedContent::formatCounterAsDecimal)
             .put("decimal-leading-zero" , GeneratedContent::formatCounterAsDecimalLeadingZero)
@@ -597,4 +598,16 @@ public class PseudoElement implements Visual, VElement
 	{
 		return null;
 	}    
+	
+	@Override
+	public void setPostSplit(InlineBox postSplitInlineBox)
+	{
+		this.postSplitInlineBox=postSplitInlineBox;
+	}
+
+	@Override
+	public InlineBox getPostSplit()
+	{
+		return postSplitInlineBox;
+	}	
 }

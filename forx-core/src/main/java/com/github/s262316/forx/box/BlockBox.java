@@ -318,6 +318,16 @@ public class BlockBox implements Box, HasAbsolutePosition, HasBackgroundProperti
 
 		LayoutUtils.doLoadingLayout(b);
 	}
+	
+	public void remove(Box removeThis)
+	{
+		flowing.remove(removeThis);
+		floating.remove(removeThis);
+		positionedBoxes.remove(removeThis);
+		all.remove(removeThis);
+		
+		removeThis.set_container(null);
+	}	
 
 	@Override
 	public void table_back(TableMember cont, TableMember memb)

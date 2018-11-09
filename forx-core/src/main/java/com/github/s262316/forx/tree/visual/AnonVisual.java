@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.github.s262316.forx.box.BlockBox;
+import com.github.s262316.forx.box.Box;
 import com.github.s262316.forx.box.CellBox;
 import com.github.s262316.forx.box.Column;
 import com.github.s262316.forx.box.InlineBlockRootBox;
@@ -42,6 +43,7 @@ public class AnonVisual implements Visual, VElement
     private VElement container;
     private CSSPropertiesReference ref;
     private AnonReason anonReason;
+    private InlineBox postSplitInlineBox;
 
     public AnonVisual(VElement container, GraphicsContext gfxCtx, String sl, CSSPropertiesReference ref, AnonReason anonReason)
     {
@@ -277,5 +279,17 @@ public class AnonVisual implements Visual, VElement
 	public AnonReason getAnonReason()
 	{
 		return anonReason;
+	}
+
+	@Override
+	public void setPostSplit(InlineBox postSplitInlineBox)
+	{
+		this.postSplitInlineBox=postSplitInlineBox;
+	}
+
+	@Override
+	public InlineBox getPostSplit()
+	{
+		return postSplitInlineBox;
 	}
 }
