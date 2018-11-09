@@ -35,4 +35,6 @@ public interface Visual
     public Column createAnonColBox(AnonReason anonReason);
     public TableBox createAnonTableBox(AnonReason anonReason);
     public CellBox createAnonCellBox(AnonReason anonReason);
+    
+    public AnonReason getAnonReason();
 }

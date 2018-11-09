@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.TreeSet;
 
 import com.google.common.base.MoreObjects;
+
+import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -130,71 +132,21 @@ public class BlockBox implements Box, HasAbsolutePosition, HasBackgroundProperti
 	@Override
 	public void flow_back(Box b)
 	{
-		if (BoxTypes.isInlineBox(b) == true)
-		{
-			// need to add this inline to a dummy inline
+		if(BoxTypes.isInlineBox(b))
+			Validate.validState(Boxes.getLastFlowMemberAnAnonInlineContainer(this).isPresent());
+		
+		flowing.add(b);
+		all.add(b);
 
-			Box dummy = null;
-
-			if (flowing.size() > 0)
-			{
-				if (BoxTypes.isInlineBox(flowing.getLast()) == true)
-					dummy = BoxTypes.toInlineBox(flowing.getLast());
-			}
-
-			if (dummy == null)
-			{
-				dummy = visual.createAnonInlineBox(AnonReason.INLINE_CONTAINER);
-				flowing.add(dummy);
-				all.add(dummy);
-
-				dummy.set_container(this);
-				dummy.computeProperties();
-				Boxes.renumber(this.root());
-
-				LayoutUtils.doLoadingLayout(dummy);
-
-				b.setId(BoxCounter.count++);
-			}
-
-			dummy.flow_back(b);
-		}
-		else
-		{
-			flowing.add(b);
-			all.add(b);
-
-			b.set_container(this);
-			b.computeProperties();
-			LayoutUtils.doLoadingLayout(b);
-		}
+		b.set_container(this);
+		b.computeProperties();
+		LayoutUtils.doLoadingLayout(b);
 	}
 
 	@Override
 	public void flow_back(Inline il)
 	{
-		// need to add this inline to a dummy inline
-
-		Box dummy = null;
-
-		if (flowing.size() > 0)
-		{
-			if (BoxTypes.isInlineBox(flowing.getLast()) == true)
-				dummy = BoxTypes.toInlineBox(flowing.getLast());
-		}
-
-		if (dummy == null)
-		{
-			dummy = visual.createAnonInlineBox(AnonReason.INLINE_CONTAINER);
-			flowing.add(dummy);
-			all.add(dummy);
-
-			dummy.set_container(this);
-			dummy.computeProperties();
-			LayoutUtils.doLoadingLayout(dummy);
-		}
-
-		dummy.flow_back(il);
+		throw new IllegalStateException("an inline should be added to an anonymous inlinebox");
 	}
 
 	@Override

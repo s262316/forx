@@ -15,6 +15,7 @@ import com.github.s262316.forx.box.TableRow;
 import com.github.s262316.forx.box.properties.BackgroundProperties;
 import com.github.s262316.forx.box.properties.BlockProperties;
 import com.github.s262316.forx.box.properties.BorderDescriptor;
+import com.github.s262316.forx.box.properties.BorderStylesImpl;
 import com.github.s262316.forx.box.properties.CSSPropertyComputer;
 import com.github.s262316.forx.box.properties.ColourDescriptor;
 import com.github.s262316.forx.box.properties.DimensionsDescriptor;
@@ -26,7 +27,6 @@ import com.github.s262316.forx.box.properties.PropertyAdaptor;
 import com.github.s262316.forx.box.properties.TextProperties;
 import com.github.s262316.forx.box.properties.Visual;
 import com.github.s262316.forx.box.properties.WordProperties;
-import com.github.s262316.forx.box.properties.BorderStylesImpl;
 import com.github.s262316.forx.css.CSSPropertiesReference;
 import com.github.s262316.forx.css.PropertyReference;
 import com.github.s262316.forx.graphics.GraphicsContext;
@@ -273,6 +273,9 @@ public class AnonVisual implements Visual, VElement
         return "";
     }
 
+	@Override
+	public AnonReason getAnonReason()
+	{
+		return anonReason;
+	}
 }
-
-

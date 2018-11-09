@@ -591,4 +591,10 @@ public class PseudoElement implements Visual, VElement
     {
         subject.computed_value(property, value);
     }
+    
+	@Override
+	public AnonReason getAnonReason()
+	{
+		return null;
+	}    
 }

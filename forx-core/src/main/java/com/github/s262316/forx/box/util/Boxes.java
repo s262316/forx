@@ -3,16 +3,17 @@ package com.github.s262316.forx.box.util;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
-import com.github.s262316.forx.box.BlockBox;
 import com.github.s262316.forx.box.Box;
 import com.github.s262316.forx.box.BoxCounter;
+import com.github.s262316.forx.box.InlineBox;
 import com.github.s262316.forx.box.Layable;
 import com.github.s262316.forx.box.RootBox;
 import com.github.s262316.forx.box.cast.BoxTypes;
 import com.github.s262316.forx.box.relayouter.LayableTreeTraverser;
+import com.github.s262316.forx.tree.visual.AnonReason;
 import com.github.s262316.forx.util.ExtractBoxId;
-
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
 
@@ -98,7 +99,23 @@ public class Boxes
 		return route;
 	}
 
-	
+	public static Optional<InlineBox> getLastFlowMemberAnAnonInlineContainer(Box box)
+	{
+		List<Box> flowing=box.getMembersFlowing();
+		Box lastFlow;
 
+		if (!flowing.isEmpty())
+		{
+			lastFlow=Iterables.getLast(flowing);
+			
+			if(BoxTypes.isInlineBox(lastFlow) &&
+					lastFlow.getVisual().getAnonReason()==AnonReason.INLINE_CONTAINER)
+			{
+				return Optional.of((InlineBox)lastFlow);
+			}
+		}
+		
+		return Optional.empty();
+	}
 }
 
