@@ -1,7 +1,17 @@
 package com.github.s262316.forx.tree.visual;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
+import com.github.s262316.forx.box.Layable;
+import com.google.common.base.Predicates;
+import com.google.common.collect.FluentIterable;
+import com.google.common.graph.Traverser;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,62 +51,60 @@ public class InlineBoxParentLocator implements ParentLocator
 			
 			int blockPosition=Iterables.indexOf(toRoot, v -> BoxTypes.isBlockBox(v));
 			Validate.isTrue(blockPosition > 0);
-			
+
 			BlockBox firstBlock=(BlockBox)toRoot.get(blockPosition);
-			InlineBox lastInline=(InlineBox)toRoot.get(blockPosition-1);
+			// this should be the anon inline container
+			InlineBox anonInlineContainer=(InlineBox)toRoot.get(blockPosition-1);
 
 			// remove last-inline
-			firstBlock.remove(lastInline);
+			firstBlock.remove(anonInlineContainer);
 
 			BlockBox anonBlockContainer=firstBlock.getVisual().createAnonBlockBox(AnonReason.BLOCK_INSIDE_INLINE_SPLIT_CONTAINER);
 			
 			firstBlock.flow_back(anonBlockContainer);
-			anonBlockContainer.flow_back((Box)lastInline); // put back the removed inline
+			anonBlockContainer.flow_back((Box)anonInlineContainer); // put back the removed inline
 			
 			// *******
-			// new box goes AFTER lastInline inside anonBlockContainer - we must derive this position later
+			// new box goes AFTER anonInlineContainer inside anonBlockContainer - we must derive this position later
 			// *******
 			
 			// last-inline structure must be duplicated and added to anonBlockContainer
-			
-			List<Box> postSplitBoxes=new LayableTreeTraverser()
-					.preOrderTraversal(lastInline)
-					.filter(new AfterOrEqualsLayable(lastInline))
-					.filter(Box.class)
-					.toList();
+
+			Predicate<Layable> isAncestor=toRoot::contains;
+			Predicate<Layable> isAfter=v -> v.getId() > inlineBox.getId();
+
+			List<Box> preSplitBoxes=StreamSupport.stream(Traverser.<Layable>forTree(v -> v.getMembersAll())
+				.depthFirstPreOrder(anonInlineContainer).spliterator(), false)
+				.filter(Predicates.instanceOf(Box.class))
+				.map(v -> BoxTypes.toBox(v))
+				.filter(isAncestor.or(isAfter))
+				.collect(Collectors.toList());
+
+//		List<Box> preSplitBoxes=new LayableTreeTraverser()
+//					.preOrderTraversal(anonInlineContainer)
+//					.filter(new AfterOrEqualsLayable(anonInlineContainer))
+//					.filter(Box.class)
+//					.toList();
 
 			// first Visual is the anon-block-container
-			Visual visualToUse=anonBlockContainer.getVisual();
-			Box parentBoxToUse=anonBlockContainer;
-			for(Box b : postSplitBoxes)
+			Map<Box, Box> prePostParents=new HashMap<>();
+			prePostParents.put(anonBlockContainer, anonBlockContainer);
+
+			for(Box preSplit : preSplitBoxes)
 			{
-				Box newBox=cloneStructureAndLink(b, visualToUse);
-				parentBoxToUse.flow_back(newBox);
-				
-				// subsequent Visual's is the previous box that was created
-				parentBoxToUse=newBox;
-				visualToUse=newBox.getVisual();
+				Box postParent=prePostParents.get(preSplit.getContainer());
+				Box postSplit=postParent.getVisual().createAnonInlineBox(AnonReason.BLOCK_INSIDE_INLINE_POST_SPLIT_STRUCTURE);
+				postParent.flow_back(postSplit);
+
+				preSplit.getVisual().setPostSplit((InlineBox)postSplit);
+
+				prePostParents.put(preSplit, postSplit);
 			}
 
 			return anonBlockContainer;
 		}
 		else
 			return inlineBox;
-	}
-	
-	public Box cloneStructureAndLink(Box inPreSplit, Visual visual)
-	{
-		logger.debug("cloneStructureAndLink {}", inPreSplit);
-
-		// think we will only ever have InlineBox's in here(?)
-		Preconditions.checkArgument(inPreSplit instanceof InlineBox);
-
-		InlineBox postSplitInlineBox=visual.createAnonInlineBox(AnonReason.BLOCK_INSIDE_INLINE_POST_SPLIT_STRUCTURE);
-		inPreSplit.getVisual().setPostSplit(postSplitInlineBox);
-
-		Validate.notNull(postSplitInlineBox);
-		
-		return postSplitInlineBox;
 	}
 
 	@Override
