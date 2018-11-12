@@ -1,12 +1,10 @@
-package com.github.s262316.forx.tree.visual;
+package com.github.s262316.forx.box.mockbox;
 
 import com.github.s262316.forx.box.Box;
-import com.github.s262316.forx.tree.visual.mockbox.MockBlockBox;
-import com.github.s262316.forx.tree.visual.mockbox.MockInlineBox;
 
 public class SemiMockedBoxTree
 {
-	public static MockBlockBox f(Node node)
+	public static MockBlockBox map(Node node)
 	{
 		MockBlockBox thisBox;
 		
@@ -16,12 +14,12 @@ public class SemiMockedBoxTree
 		thisBox=new MockBlockBox();
 
 		for(Node n : node.nodes)
-			f(thisBox, n);
+			map(thisBox, n);
 		
 		return thisBox;
 	}
 	
-	public static void f(Box parent, Node child)
+	private static void map(Box parent, Node child)
 	{
 		Box thisBox;
 		
@@ -41,6 +39,6 @@ public class SemiMockedBoxTree
 		thisBox.set_container(parent);
 		
 		for(Node n : child.nodes)
-			f(thisBox, n);
+			map(thisBox, n);
 	}
 }

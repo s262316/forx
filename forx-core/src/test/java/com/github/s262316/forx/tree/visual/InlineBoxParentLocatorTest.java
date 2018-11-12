@@ -8,6 +8,8 @@ import java.io.InputStream;
 
 import javax.xml.bind.JAXB;
 
+import com.github.s262316.forx.box.mockbox.RootNode;
+import com.github.s262316.forx.box.mockbox.SemiMockedBoxTree;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -16,8 +18,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.github.s262316.forx.box.properties.Visual;
-import com.github.s262316.forx.tree.visual.mockbox.MockBlockBox;
-import com.github.s262316.forx.tree.visual.mockbox.MockInlineBox;
+import com.github.s262316.forx.box.mockbox.MockBlockBox;
+import com.github.s262316.forx.box.mockbox.MockInlineBox;
 import org.springframework.core.io.ClassPathResource;
 
 /**
@@ -72,7 +74,7 @@ public class InlineBoxParentLocatorTest
 			InputStream is=new ClassPathResource("com/github/s262316/forx/tree/visual/a.xml").getInputStream();
     		RootNode r = JAXB.unmarshal(is, RootNode.class);
 			
-			root=SemiMockedBoxTree.f(r);
+			root= SemiMockedBoxTree.map(r);
 			div=(MockBlockBox)root.select(new int[]{0});
 			p=(MockBlockBox)root.select(new int[]{0, 0});
 			b=(MockInlineBox)root.select(new int[]{0, 0, 0});
@@ -204,7 +206,7 @@ transforms to this:
 			InputStream is=new ClassPathResource("com/github/s262316/forx/tree/visual/b.xml").getInputStream();
 			RootNode r = JAXB.unmarshal(is, RootNode.class);
 			
-			root=SemiMockedBoxTree.f(r);
+			root=SemiMockedBoxTree.map(r);
 			div=(MockBlockBox)root.select(new int[]{0});
 			p=(MockBlockBox)root.select(new int[]{0, 0});
 			span1=(MockInlineBox)root.select(new int[]{0, 0, 0});
@@ -364,7 +366,7 @@ transforms to this:
 			InputStream is=new ClassPathResource("com/github/s262316/forx/tree/visual/c.xml").getInputStream();
 			RootNode r = JAXB.unmarshal(is, RootNode.class);
 			
-			root=SemiMockedBoxTree.f(r);
+			root=SemiMockedBoxTree.map(r);
 			div=(MockBlockBox)root.select(new int[]{0});
 			p=(MockBlockBox)root.select(new int[]{0, 0});
 			span=(MockInlineBox)root.select(new int[]{0, 0, 0});
@@ -515,7 +517,7 @@ transforms to this:
 			InputStream is=new ClassPathResource("com/github/s262316/forx/tree/visual/d.xml").getInputStream();
 			RootNode r = JAXB.unmarshal(is, RootNode.class);
 
-			root=SemiMockedBoxTree.f(r);
+			root=SemiMockedBoxTree.map(r);
 			div=(MockBlockBox)root.select(new int[]{0});
 			inlineContainer=(MockInlineBox)root.select(new int[]{0, 0});
 			span1=(MockInlineBox)root.select(new int[]{0, 0, 0});
