@@ -437,6 +437,185 @@ transforms to this:
 			InlineBoxParentLocator locator=new InlineBoxParentLocator(b, bVis);
 			locator.locate(newChild);
 			verify(bVis).setPostSplit(bPostSplit);
+			verify(spanVis).setPostSplit(spanPostSplit);
+		}
+	}
+
+	/**
+	 <root>
+		 <div>
+			 <inlinecontainer> (span)
+	 			<span><i></i></span>
+				<span><i></i></span>
+	 			<span>
+					 <i></i>
+					 <u></u>
+					 <b>
+						 <-- insert newbox here
+					 </b>
+	 			</span>
+	 		</inlinecontainer> (span)
+		 </div>
+	 </root>
+
+	 is tranformed into:
+	 <root>
+		 <div>
+	         <dummycontainer>
+				 <inlinecontainer> (span)
+						 <span><i></i></span>
+						 <span><i></i></span>
+						 <span>
+							 <i></i>
+							 <u></u>
+							 <b>
+							 <-- insert newbox here
+							 </b>
+						 </span>
+				 </inlinecontainer> (span)
+				 <inlinecontainer> (span)
+						<span>
+							<b></b>
+						</span>
+				 </inlinecontainer>
+	 		</dummycontainer>
+		 </div>
+	 </root>
+	*/
+	@Nested
+	class PreviousAncestor
+	{
+		@Mock
+		Visual rootVis, divVis, inlineContainerVis, span1Vis, span2Vis, span3Vis, i1Vis, i2Vis, i3Vis, bVis, uVis;
+		@Mock
+		Visual dummyBlockContainerVis, inlineContainerPostSplitVis, span1PostSplitVis, span2PostSplitVis, span3PostSplitVis, bPostSplitVis;
+
+		MockBlockBox root;
+		MockBlockBox div;
+		MockInlineBox inlineContainer;
+		MockInlineBox span1;
+		MockInlineBox i1;
+		MockInlineBox span2;
+		MockInlineBox i2;
+		MockInlineBox span3;
+		MockInlineBox i3;
+		MockInlineBox u;
+		MockInlineBox b;
+		MockBlockBox newChild=new MockBlockBox();
+		MockBlockBox dummyBlockContainer=new MockBlockBox();
+		MockInlineBox inlineContainerPostSplit=new MockInlineBox();
+		MockInlineBox span1PostSplit=new MockInlineBox();
+		MockInlineBox span2PostSplit=new MockInlineBox();
+		MockInlineBox span3PostSplit=new MockInlineBox();
+		MockInlineBox bPostSplit=new MockInlineBox();
+
+		@BeforeEach
+		public void setup() throws Exception
+		{
+			InputStream is=new ClassPathResource("com/github/s262316/forx/tree/visual/d.xml").getInputStream();
+			RootNode r = JAXB.unmarshal(is, RootNode.class);
+
+			root=SemiMockedBoxTree.f(r);
+			div=(MockBlockBox)root.select(new int[]{0});
+			inlineContainer=(MockInlineBox)root.select(new int[]{0, 0});
+			span1=(MockInlineBox)root.select(new int[]{0, 0, 0});
+			i1=(MockInlineBox)root.select(new int[]{0, 0, 0, 0});
+			span2=(MockInlineBox)root.select(new int[]{0, 0, 1});
+			i2=(MockInlineBox)root.select(new int[]{0, 0, 1, 0});
+			span3=(MockInlineBox)root.select(new int[]{0, 0, 2});
+			i3=(MockInlineBox)root.select(new int[]{0, 0, 2, 0});
+			u=(MockInlineBox)root.select(new int[]{0, 0, 2, 1});
+			b=(MockInlineBox)root.select(new int[]{0, 0, 2, 2});
+
+			root.setVisual(rootVis);
+			div.setVisual(divVis);
+			dummyBlockContainer.setVisual(dummyBlockContainerVis);
+			inlineContainer.setVisual(inlineContainerVis);
+			span1.setVisual(span1Vis);
+			i1.setVisual(i1Vis);
+			span2.setVisual(span2Vis);
+			i2.setVisual(i2Vis);
+			span3.setVisual(span3Vis);
+			i3.setVisual(i3Vis);
+			b.setVisual(bVis);
+			u.setVisual(uVis);
+			inlineContainerPostSplit.setVisual(inlineContainerPostSplitVis);
+			span1PostSplit.setVisual(span1PostSplitVis);
+			span2PostSplit.setVisual(span2PostSplitVis);
+			span3PostSplit.setVisual(span3PostSplitVis);
+			bPostSplit.setVisual(bPostSplitVis);
+
+			when(divVis.createAnonBlockBox(AnonReason.BLOCK_INSIDE_INLINE_SPLIT_CONTAINER)).thenReturn(dummyBlockContainer);
+			when(dummyBlockContainerVis.createAnonInlineBox(AnonReason.BLOCK_INSIDE_INLINE_POST_SPLIT_STRUCTURE)).thenReturn(inlineContainerPostSplit);
+			when(inlineContainerPostSplitVis.createAnonInlineBox(AnonReason.BLOCK_INSIDE_INLINE_POST_SPLIT_STRUCTURE)).thenReturn(span3PostSplit);
+			when(span3PostSplitVis.createAnonInlineBox(AnonReason.BLOCK_INSIDE_INLINE_POST_SPLIT_STRUCTURE)).thenReturn(bPostSplit);
+		}
+
+		@Test
+		public void parentIsNewDummyContainer()
+		{
+			InlineBoxParentLocator locator=new InlineBoxParentLocator(b, bVis);
+			assertThat(dummyBlockContainer).isEqualTo(locator.locate(newChild));
+		}
+
+		@Test
+		public void structureMatches()
+		{
+			InlineBoxParentLocator locator=new InlineBoxParentLocator(b, bVis);
+			locator.locate(newChild);
+
+			assertThat(root.getMembersAll())
+					.containsExactly(div).inOrder();
+
+			assertThat(div.getMembersAll())
+					.containsExactly(dummyBlockContainer).inOrder();
+
+			assertThat(dummyBlockContainer.getMembersAll())
+					.containsExactly(inlineContainer, inlineContainerPostSplit).inOrder();
+
+			assertThat(inlineContainer.getMembersAll())
+					.containsExactly(span1, span2, span3).inOrder();
+
+			assertThat(span1.getMembersAll())
+					.containsExactly(i1).inOrder();
+
+			assertThat(span2.getMembersAll())
+					.containsExactly(i2).inOrder();
+
+			assertThat(span3.getMembersAll())
+					.containsExactly(i3, u, b).inOrder();
+
+			assertThat(inlineContainerPostSplit.getMembersAll())
+					.containsExactly(span3PostSplit).inOrder();
+
+			assertThat(span3PostSplit.getMembersAll())
+					.containsExactly(bPostSplit).inOrder();
+
+			assertThat(root.getContainer()).isNull();
+			assertThat(div.getContainer()).isEqualTo(root);
+			assertThat(dummyBlockContainer.getContainer()).isEqualTo(div);
+			assertThat(inlineContainer.getContainer()).isEqualTo(dummyBlockContainer);
+			assertThat(span1.getContainer()).isEqualTo(inlineContainer);
+			assertThat(i1.getContainer()).isEqualTo(span1);
+			assertThat(span2.getContainer()).isEqualTo(inlineContainer);
+			assertThat(i2.getContainer()).isEqualTo(span2);
+			assertThat(span3.getContainer()).isEqualTo(inlineContainer);
+			assertThat(i3.getContainer()).isEqualTo(span3);
+			assertThat(u.getContainer()).isEqualTo(span3);
+			assertThat(b.getContainer()).isEqualTo(span3);
+			assertThat(inlineContainerPostSplit.getContainer()).isEqualTo(dummyBlockContainer);
+			assertThat(span3PostSplit.getContainer()).isEqualTo(inlineContainerPostSplit);
+			assertThat(bPostSplit.getContainer()).isEqualTo(span3PostSplit);
+		}
+
+		@Test
+		public void isPostSplitPopulated()
+		{
+			InlineBoxParentLocator locator=new InlineBoxParentLocator(b, bVis);
+			locator.locate(newChild);
+			verify(bVis).setPostSplit(bPostSplit);
+			verify(span3Vis).setPostSplit(span3PostSplit);
+			verify(inlineContainerVis).setPostSplit(inlineContainerPostSplit);
 		}
 	}
 }
