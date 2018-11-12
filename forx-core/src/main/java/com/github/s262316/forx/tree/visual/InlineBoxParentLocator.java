@@ -3,6 +3,8 @@ package com.github.s262316.forx.tree.visual;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.s262316.forx.box.BlockBox;
 import com.github.s262316.forx.box.Box;
@@ -18,6 +20,8 @@ import com.google.common.collect.Iterables;
 
 public class InlineBoxParentLocator implements ParentLocator
 {
+	private final static Logger logger=LoggerFactory.getLogger(InlineBoxParentLocator.class);
+	
 	private InlineBox inlineBox;
 	private Visual visual;
 
@@ -41,29 +45,37 @@ public class InlineBoxParentLocator implements ParentLocator
 			BlockBox firstBlock=(BlockBox)toRoot.get(blockPosition);
 			InlineBox lastInline=(InlineBox)toRoot.get(blockPosition-1);
 
-			// last-inline structure must be duplicated and added to anonBlockContainer
-			List<Box> postSplitBoxes=new LayableTreeTraverser()
-					.preOrderTraversal(lastInline)
-					.filter(new AfterOrEqualsLayable(lastInline))
-					.filter(Box.class)
-					.transform(v -> cloneStructureAndLink(v))
-					.toList();
-
 			// remove last-inline
 			firstBlock.remove(lastInline);
-						
+
 			BlockBox anonBlockContainer=firstBlock.getVisual().createAnonBlockBox(AnonReason.BLOCK_INSIDE_INLINE_SPLIT_CONTAINER);
 			
 			firstBlock.flow_back(anonBlockContainer);
 			anonBlockContainer.flow_back((Box)lastInline); // put back the removed inline
 			
+			// *******
 			// new box goes AFTER lastInline inside anonBlockContainer - we must derive this position later
+			// *******
 			
-			// add each post-structure box
-			anonBlockContainer.flow_back(Iterables.getLast(postSplitBoxes));
-			for(int i=postSplitBoxes.size()-1; i>0; i--)
+			// last-inline structure must be duplicated and added to anonBlockContainer
+			
+			List<Box> postSplitBoxes=new LayableTreeTraverser()
+					.preOrderTraversal(lastInline)
+					.filter(new AfterOrEqualsLayable(lastInline))
+					.filter(Box.class)
+					.toList();
+
+			// first Visual is the anon-block-container
+			Visual visualToUse=anonBlockContainer.getVisual();
+			Box parentBoxToUse=anonBlockContainer;
+			for(Box b : postSplitBoxes)
 			{
-				postSplitBoxes.get(i+1).flow_back(postSplitBoxes.get(i));
+				Box newBox=cloneStructureAndLink(b, visualToUse);
+				parentBoxToUse.flow_back(newBox);
+				
+				// subsequent Visual's is the previous box that was created
+				parentBoxToUse=newBox;
+				visualToUse=newBox.getVisual();
 			}
 
 			return anonBlockContainer;
@@ -72,16 +84,18 @@ public class InlineBoxParentLocator implements ParentLocator
 			return inlineBox;
 	}
 	
-	public Box cloneStructureAndLink(Box inPreSplit)
+	public Box cloneStructureAndLink(Box inPreSplit, Visual visual)
 	{
+		logger.debug("cloneStructureAndLink {}", inPreSplit);
+
 		// think we will only ever have InlineBox's in here(?)
 		Preconditions.checkArgument(inPreSplit instanceof InlineBox);
 
-		InlineBox postSplitInlineBox=inPreSplit.getContainer().getVisual().createAnonInlineBox(AnonReason.BLOCK_INSIDE_INLINE_POST_SPLIT_STRUCTURE);
-		postSplitInlineBox.set_container(inPreSplit.getContainer().getVisual().getPostSplit());
-
+		InlineBox postSplitInlineBox=visual.createAnonInlineBox(AnonReason.BLOCK_INSIDE_INLINE_POST_SPLIT_STRUCTURE);
 		inPreSplit.getVisual().setPostSplit(postSplitInlineBox);
 
+		Validate.notNull(postSplitInlineBox);
+		
 		return postSplitInlineBox;
 	}
 

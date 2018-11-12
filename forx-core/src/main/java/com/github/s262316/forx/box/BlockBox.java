@@ -325,8 +325,6 @@ public class BlockBox implements Box, HasAbsolutePosition, HasBackgroundProperti
 		floating.remove(removeThis);
 		positionedBoxes.remove(removeThis);
 		all.remove(removeThis);
-		
-		removeThis.set_container(null);
 	}	
 
 	@Override

@@ -2110,6 +2110,8 @@ public class InlineBox implements Box, Inline, HasBorders, HasWordProperties, Ha
     @Override
     public void set_container(Box cont)
     {
+    	Preconditions.checkNotNull(cont);
+    	
         _container=cont;
 
         if(BoxTypes.isBlockBox(cont))
