@@ -132,8 +132,8 @@ public class BlockBox implements Box, HasAbsolutePosition, HasBackgroundProperti
 	@Override
 	public void flow_back(Box b)
 	{
-		if(BoxTypes.isInlineBox(b))
-			Validate.validState(Boxes.getLastFlowMemberAnAnonInlineContainer(this).isPresent());
+//		if(BoxTypes.isInlineBox(b))
+//			Validate.validState(Boxes.getLastFlowMemberAnAnonInlineContainer(this).isPresent());
 		
 		flowing.add(b);
 		all.add(b);
