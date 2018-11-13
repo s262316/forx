@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
     <head>
         <title th:text="${thisFolder}"></title>
-        <link rel="stylesheet" type="text/com.github.s262316.forx.css" href="/test_results.com.github.s262316.forx.css"/>
-        <script src="/jquery-1.11.1.min.js"/>
-        <script src="/test_results.js"/>
+        <link rel="stylesheet" type="text/css" href="/test_results.css"/>
+        <script src="/jquery-1.11.1.min.js"></script>
+        <script src="/test_results.js"></script>
     </head>
     <body>
 
@@ -23,16 +23,23 @@
             <div th:each="testcaseResult : ${testcaseResults}" th:id="${#ids.seq('testResultArea_')}" th:classappend="${testcaseResultStat.first}? 'active'">
                 <div class="testname">
                     <span th:text="${testcaseResult.testcaseName}"></span>
+                    <span th:if="${testcaseResult.auto}">A</span>
+                    <span th:if="${testcaseResult.autoIgnored}">I</span>
+                    <span th:if="${testcaseResult.manual}">M</span>
                     <span class="result" th:classappend="${testcaseResult.result}">____________</span>
+                    <span>(Firefox/Ref/Actual)</span>
                 </div>
 
                 <div class="testDetail">
-                    <img th:src="@{${testcaseResult.expectedScreenshotUrl}}"></img>
-                    <img th:src="@{${testcaseResult.actualScreenshotUrl}}" border="1"></img>
+                    <img th:if="${not #strings.isEmpty(testcaseResult.firefoxScreenshotUrl)}" th:src="@{${testcaseResult.firefoxScreenshotUrl}}" border="1"></img>
+                    <span class="noFirefoxScreenshot" th:if="${#strings.isEmpty(testcaseResult.firefoxScreenshotUrl)}">firefox screenshot not found</span>
+                    <img th:if="${not #strings.isEmpty(testcaseResult.refScreenshotUrl)}" th:src="@{${testcaseResult.refScreenshotUrl}}" border="1"></img>
+                    <span class="noAutoRef" th:if="${#strings.isEmpty(testcaseResult.refScreenshotUrl)}">auto-ref screenshot not found</span>
+                    <img th:if="${not #strings.isEmpty(testcaseResult.actualScreenshotUrl)}" th:src="@{${testcaseResult.actualScreenshotUrl}}" border="1"></img>
+                    <span class="noActual" th:if="${#strings.isEmpty(testcaseResult.actualScreenshotUrl)}">actual screenshot not found</span>
 
-                    <input type="button" th:onclick="'setStatus(\''+${#ids.prev('testResultArea_')}+'\', \'pass\');'" value="pass"/>
-                    <input type="button" th:onclick="'setStatus(\''+${#ids.prev('testResultArea_')}+'\', \'fail\');'" value="fail"/>
-                    <input type="button" th:onclick="'setStatus(\''+${#ids.prev('testResultArea_')}+'\', \'nottested\');'" value="nottested"/>
+                    <input type="button" th:onclick="'setStatus(\''+${#ids.prev('testResultArea_')}+'\', \'ie\');'" value="ignore - error"/>
+                    <input type="button" th:onclick="'setStatus(\''+${#ids.prev('testResultArea_')}+'\', \'im\');'" value="ignore - make manual"/>
 
                     <input type="hidden" th:field="*{value[__${testcaseResultStat.index}__].result}"/>
                     <input type="hidden" th:field="*{value[__${testcaseResultStat.index}__].testcaseName}"/>

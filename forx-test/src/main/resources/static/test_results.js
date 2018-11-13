@@ -8,7 +8,7 @@ function setStatus(idOfSelected, newStatus)
     var underscorePos=idOfSelected.lastIndexOf("_");
     var index=idOfSelected.substring(underscorePos+1);
 
-    $('#'+idOfSelected+' .testname .result').removeClass("pass fail nottested");
+    $('#'+idOfSelected+' .testname .result').removeClass("ie im");
     $('#'+idOfSelected+' .testname .result').addClass(newStatus);
     $('#'+idOfSelected+' .testDetail [name=\'value['+(parseInt(index)-1)+'].result\']').val(newStatus);
 }
@@ -75,17 +75,13 @@ $(function()
             scrollUp();
             e.preventDefault();
         }
-        else if(e.which==80) // p
+        else if(e.which==69) // e
         {
-            setStatusAndMoveActive("pass");
+            setStatusAndMoveActive("ie");
         }
-        else if(e.which==70) // f
+        else if(e.which==73) // i
         {
-            setStatusAndMoveActive("fail");
-        }
-        else if(e.which==78) // n
-        {
-            setStatusAndMoveActive("nottested");
+            setStatusAndMoveActive("im");
         }
     });
 });

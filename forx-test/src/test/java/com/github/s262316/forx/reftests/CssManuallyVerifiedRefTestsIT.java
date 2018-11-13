@@ -1,10 +1,8 @@
 package com.github.s262316.forx.reftests;
 
-import com.github.s262316.forx.gui.WebView;
+import com.github.s262316.forx.test.controller.CssRefTestsExclusions;
+import com.github.s262316.forx.test.controller.Screenshots;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,14 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.propertyeditors.PathEditor;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.AntPathMatcher;
-import org.webjars.WebJarAssetLocator;
 
-import javax.swing.JFrame;
 import javax.swing.UIManager;
 import java.awt.image.BufferedImage;
 import java.io.IOException;

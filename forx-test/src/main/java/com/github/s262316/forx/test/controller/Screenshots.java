@@ -1,7 +1,9 @@
-package com.github.s262316.forx.reftests;
+package com.github.s262316.forx.test.controller;
 
+import com.github.s262316.forx.test.controller.ActualResultsLocation;
 import com.google.common.collect.Iterators;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,14 +15,17 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Component
 public class Screenshots
 {
 	@Value("${cssTestSuiteFolder}")
 	private Path cssTestSuiteFolder;
+	@Value("${expectedResultsFolder}")
+	private File thirdPartyResultsFolder;
 	@Autowired
-	private CssRefTestsITConfig config;
+	private ActualResultsLocation config;
 	private WebJarAssetLocator webJarLocator = new WebJarAssetLocator();
 
 	public void saveActualScreenshot(Path htmlInputFile, BufferedImage image) throws IOException
@@ -30,11 +35,26 @@ public class Screenshots
 		ImageIO.write(image, "png", screenshot.toFile());
 	}
 
+	public Path getActualScreenshot(Path htmlInputFile)
+	{
+		Path screenshot=generateActualScreenshotFilename(htmlInputFile);
+		return screenshot;
+	}
+
 	public void saveRefScreenshot(Path htmlInputFile, BufferedImage image) throws IOException
 	{
 		Path screenshot=generateRefScreenshotFilename(htmlInputFile);
 		Files.createDirectories(screenshot.getParent());
 		ImageIO.write(image, "png", screenshot.toFile());
+	}
+
+	public Path getRefScreenshot(Path htmlInputFile)
+	{
+		Path actualScreenshot=getActualScreenshot(htmlInputFile);
+		String originalFilename=actualScreenshot.getName(actualScreenshot.getNameCount()-1).toString();
+
+		String refFilename=FilenameUtils.getBaseName(originalFilename)+"_ref."+FilenameUtils.getExtension(originalFilename);
+		return actualScreenshot.resolveSibling(refFilename);
 	}
 
 	private Path generateActualScreenshotFilename(Path htmlTestFile)
@@ -74,8 +94,14 @@ public class Screenshots
 	{
 		try
 		{
-			Path relativePath = htmlTestFile.relativize(cssTestSuiteFolder);
-			webJarLocator.getFullPath("forx-test-ref-images", "manually-verified/" + relativePath.toString());
+			Path relativePath = cssTestSuiteFolder.relativize(htmlTestFile);
+			// change extension to png
+			String lastPart=relativePath.getName(relativePath.getNameCount()-1).toString();
+			relativePath=relativePath.resolveSibling(FilenameUtils.getBaseName(lastPart)+".png");
+
+			webJarLocator.getFullPath("forx-test-ref-images", "manually-verified/" +
+					StringUtils.replace(relativePath.toString(), "\\", "/"));
+
 			return true;
 		}
 		catch(IllegalArgumentException iae)
@@ -85,4 +111,14 @@ public class Screenshots
 
 	}
 
+	public Path getThirdPartyScreenshot(Path testResultImageRelative)
+	{
+		Path relativeTestName=cssTestSuiteFolder.relativize(testResultImageRelative);
+		String screenshotName=FilenameUtils.getBaseName(relativeTestName.toString())+".png";
+		Path relativeScreenshot= relativeTestName.resolveSibling(screenshotName);
+
+		Path absFirefoxscreenshot1=thirdPartyResultsFolder.toPath().resolve(relativeScreenshot);
+
+		return absFirefoxscreenshot1;
+	}
 }
