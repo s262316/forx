@@ -10,17 +10,17 @@ import com.github.s262316.forx.box.cast.BoxTypes;
 import com.github.s262316.forx.box.util.Boxes;
 import com.github.s262316.forx.tree.visual.AnonReason;
 
-public class BlockBoxParentLocator implements Adder
+public class BlockBoxParentAdder implements Adder
 {
 	private BlockBox blockBox;
 
-	public BlockBoxParentLocator(BlockBox blockBox)
+	public BlockBoxParentAdder(BlockBox blockBox)
 	{
 		this.blockBox=blockBox;
 	}
 	
 	@Override
-	public Box locate(Box newChild)
+	public void add(Box newChild)
 	{
 		if (BoxTypes.isInline(newChild) == true)
 		{
@@ -32,21 +32,17 @@ public class BlockBoxParentLocator implements Adder
 				// need to add this inline to a dummy inline
 				InlineBox dummy = blockBox.getVisual().createAnonInlineBox(AnonReason.INLINE_CONTAINER);
 				blockBox.flow_back((Box)dummy);
-	
-				return dummy;
+				dummy.flow_back(newChild);
 			}
 			else
-			{
-				return last.get();
-			}
+				last.get().flow_back(newChild);
 		}
-
-		// any other box use this as the parent
-		return blockBox;
+		else
+			blockBox.flow_back(newChild);
 	}
 	
 	@Override
-	public Box locate(Inline newChild)
+	public void add(Inline newChild)
 	{
 		if (BoxTypes.isAtomic(newChild) == true)
 		{
@@ -58,16 +54,15 @@ public class BlockBoxParentLocator implements Adder
 				// need to add this inline to a dummy inline
 				InlineBox dummy = blockBox.getVisual().createAnonInlineBox(AnonReason.INLINE_CONTAINER);
 				blockBox.flow_back((Box)dummy);
-	
-				return dummy;
+				dummy.flow_back(newChild);
 			}
 			else
-			{
-				return last.get();
-			}			
+				last.get().flow_back(newChild);
 		}
-		
-		// must be InlineBox which is not allowed here
-		throw new IllegalArgumentException();
+		else
+		{
+			// must be an InlineBox which is not allowed here
+			throw new IllegalArgumentException();
+		}
 	}
 }

@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ClassPathResource;
 
 import com.github.s262316.forx.box.Box;
+import com.github.s262316.forx.box.Inline;
 import com.github.s262316.forx.box.InlineBox;
 import com.github.s262316.forx.box.mockbox.MockBlockBox;
 import com.github.s262316.forx.box.mockbox.MockInlineBox;
@@ -26,10 +27,10 @@ import com.github.s262316.forx.box.properties.Visual;
 import com.github.s262316.forx.tree.visual.AnonReason;
 
 @ExtendWith(MockitoExtension.class)
-public class InlineBoxParentLocatorTest
+public class InlineBoxParentAdderTest
 {
 	@Nested
-	class Inline
+	class InlineTest
 	{
 		@Mock
 		InlineBox inlineBox;
@@ -39,18 +40,11 @@ public class InlineBoxParentLocatorTest
 		InlineBox newChild;
 		
 		@Test
-		public void parentIsThisWhenInlineBox()
-		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(inlineBox);
-			assertThat(inlineBox).isEqualTo(locator.locate((Box)newChild));
-		}
-		
-		@Test
 		public void newBoxIsAddedToInlineBox()
 		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(inlineBox);
-			locator.locate((Box)newChild);
-			verify(inlineBox).flow_back((Box)newChild);
+			InlineBoxParentAdder locator=new InlineBoxParentAdder(inlineBox);
+			locator.add((Inline)newChild);
+			verify(inlineBox).flow_back((Inline)newChild);
 		}
 	}
 
@@ -120,17 +114,10 @@ public class InlineBoxParentLocatorTest
 		}
 	
 		@Test
-		public void parentIsNewDummyContainer()
-		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
-			assertThat(dummyContainer).isEqualTo(locator.locate(newChild));
-		}
-		
-		@Test
 		public void structureMatches()
 		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
-			locator.locate(newChild);
+			InlineBoxParentAdder locator=new InlineBoxParentAdder(b);
+			locator.add(newChild);
 					
 			assertThat(root.getMembersAll())
 				.containsExactly(div).inOrder();
@@ -155,8 +142,8 @@ public class InlineBoxParentLocatorTest
 		@Test
 		public void isPostSplitPopulated()
 		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
-			locator.locate(newChild);
+			InlineBoxParentAdder locator=new InlineBoxParentAdder(b);
+			locator.add(newChild);
 			verify(bVis).setPostSplit(bPostSplit);
 		}
 	}
@@ -262,19 +249,12 @@ transforms to this:
 			when(span2PostSplitVis.createAnonInlineBox(AnonReason.BLOCK_INSIDE_INLINE_POST_SPLIT_STRUCTURE)).thenReturn(span3PostSplit);
 			when(span3PostSplitVis.createAnonInlineBox(AnonReason.BLOCK_INSIDE_INLINE_POST_SPLIT_STRUCTURE)).thenReturn(bPostSplit);
 		}
-	
-		@Test
-		public void parentIsNewDummyContainer()
-		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
-			assertThat(dummyContainer).isEqualTo(locator.locate(newChild));
-		}
 		
 		@Test
 		public void structureMatches()
 		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
-			locator.locate(newChild);
+			InlineBoxParentAdder locator=new InlineBoxParentAdder(b);
+			locator.add(newChild);
 					
 			assertThat(root.getMembersAll())
 				.containsExactly(div).inOrder();
@@ -325,8 +305,8 @@ transforms to this:
 		@Test
 		public void isPostSplitPopulated()
 		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
-			locator.locate(newChild);
+			InlineBoxParentAdder locator=new InlineBoxParentAdder(b);
+			locator.add(newChild);
 
 			verify(span1Vis).setPostSplit(span1PostSplit);
 			verify(span2Vis).setPostSplit(span2PostSplit);
@@ -418,19 +398,12 @@ transforms to this:
 			when(dummyContainerVis.createAnonInlineBox(AnonReason.BLOCK_INSIDE_INLINE_POST_SPLIT_STRUCTURE)).thenReturn(spanPostSplit);
 			when(spanPostVis.createAnonInlineBox(AnonReason.BLOCK_INSIDE_INLINE_POST_SPLIT_STRUCTURE)).thenReturn(bPostSplit);
 		}
-	
-		@Test
-		public void parentIsNewDummyContainer()
-		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
-			assertThat(divContainer).isEqualTo(locator.locate(newChild));
-		}
-		
+
 		@Test
 		public void structureMatches()
 		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
-			locator.locate(newChild);
+			InlineBoxParentAdder locator=new InlineBoxParentAdder(b);
+			locator.add(newChild);
 					
 			assertThat(root.getMembersAll())
 				.containsExactly(div).inOrder();
@@ -465,8 +438,8 @@ transforms to this:
 		@Test
 		public void isPostSplitPopulated()
 		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
-			locator.locate(newChild);
+			InlineBoxParentAdder locator=new InlineBoxParentAdder(b);
+			locator.add(newChild);
 			verify(bVis).setPostSplit(bPostSplit);
 			verify(spanVis).setPostSplit(spanPostSplit);
 		}
@@ -583,17 +556,10 @@ transforms to this:
 		}
 
 		@Test
-		public void parentIsNewDummyContainer()
-		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
-			assertThat(dummyBlockContainer).isEqualTo(locator.locate(newChild));
-		}
-
-		@Test
 		public void structureMatches()
 		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
-			locator.locate(newChild);
+			InlineBoxParentAdder locator=new InlineBoxParentAdder(b);
+			locator.add(newChild);
 
 			assertThat(root.getMembersAll())
 					.containsExactly(div).inOrder();
@@ -642,8 +608,8 @@ transforms to this:
 		@Test
 		public void isPostSplitPopulated()
 		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
-			locator.locate(newChild);
+			InlineBoxParentAdder locator=new InlineBoxParentAdder(b);
+			locator.add(newChild);
 			verify(bVis).setPostSplit(bPostSplit);
 			verify(span3Vis).setPostSplit(span3PostSplit);
 			verify(inlineContainerVis).setPostSplit(inlineContainerPostSplit);
@@ -711,8 +677,8 @@ transforms to this:
 		@Test
 		public void newBoxIsAddedAfterSplitTransformation()
 		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
-			locator.locate(newChild);
+			InlineBoxParentAdder locator=new InlineBoxParentAdder(b);
+			locator.add(newChild);
 			
 			assertThat(p.getMembersAll())
 				.containsExactly(dummyInlineContainer1, newBox1, newChild, dummyInlineContainer2).inOrder();

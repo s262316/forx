@@ -29,8 +29,9 @@ import com.github.s262316.forx.box.TableBox;
 import com.github.s262316.forx.box.TableMember;
 import com.github.s262316.forx.box.TableRow;
 import com.github.s262316.forx.box.adders.Adder;
-import com.github.s262316.forx.box.adders.BlockBoxParentLocator;
-import com.github.s262316.forx.box.adders.InlineBoxParentLocator;
+import com.github.s262316.forx.box.adders.BlockBoxParentAdder;
+import com.github.s262316.forx.box.adders.DefaultAdder;
+import com.github.s262316.forx.box.adders.InlineBoxParentAdder;
 import com.github.s262316.forx.box.cast.BoxTypes;
 import com.github.s262316.forx.box.properties.BackgroundProperties;
 import com.github.s262316.forx.box.properties.BlockProperties;
@@ -254,23 +255,11 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 								if(replaced_plugin==null)
 								{
 									nodeBox=BoxFactory.createInlineFlowBox(this);
-									parentLocator=new InlineBoxParentLocator((InlineBox)nodeBox);
+									parentLocator=new InlineBoxParentAdder((InlineBox)nodeBox);
 									if(position.ident.equals("relative"))
 										nodeBox.set_relative(true);
 
-									// this is because not all boxes have parent-locators yet
-									if(visualParentNode().getParentLocator()!=null)
-									{
-										Box parent=visualParentNode().getParentLocator().locate(nodeBox);
-										parent.flow_back(nodeBox);
-									}
-									else
-									{
-										if(visualParentNode().visualBox()!=null)
-											visualParentNode().visualBox().flow_back(nodeBox);
-										else if(visualParentNode().tableVisual()!=null)
-											visualParentNode().tableVisual().table().flow_back(nodeBox);
-									}
+									visualParentNode().getParentLocator().add(nodeBox);
 								}
 								else
 								{
@@ -278,21 +267,17 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 									if(position.ident.equals("relative"))
 										inlineMember.set_relative(true);
 
-									if(visualParentNode().visualBox()!=null)
-										visualParentNode().visualBox().flow_back(inlineMember);
-									else if(visualParentNode().tableVisual()!=null)
-										visualParentNode().tableVisual().table().flow_back(inlineMember);
+									visualParentNode().getParentLocator().add(nodeBox);
 								}
 							}
 							else if(display.ident.equals("block"))
 							{
 								nodeBox=BoxFactory.createBlockFlowBox(this, replaced_plugin);
-								parentLocator=new BlockBoxParentLocator((BlockBox)nodeBox);
+								parentLocator=new BlockBoxParentAdder((BlockBox)nodeBox);
 								if(position.ident.equals("relative"))
 									nodeBox.set_relative(true);
 
-								Box parent=visualParentNode().getParentLocator().locate(nodeBox);
-								parent.flow_back(nodeBox);
+								visualParentNode().getParentLocator().add(nodeBox);
 							}
 							else if(display.ident.equals("list-item"))
 							{}
@@ -303,38 +288,35 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 								if(replaced_plugin==null)
 								{
 									nodeBox=BoxFactory.createInlineBlockFlowBox(this);
+									parentLocator=new DefaultAdder(nodeBox);
 									if(position.ident.equals("relative"))
 										nodeBox.set_relative(true);
-									visualParentNode().visualBox().flow_back(nodeBox);
+									visualParentNode().getParentLocator().add(nodeBox);
 								}
 								else
 								{
 									inlineMember=BoxFactory.createReplacedInlineFlowBox(this, replaced_plugin);
+									parentLocator=new DefaultAdder(nodeBox);
 									if(position.ident.equals("relative"))
 										inlineMember.set_relative(true);
-
-									visualParentNode().visualBox().flow_back(inlineMember);
+									visualParentNode().getParentLocator().add(nodeBox);
 								}
 							}
 							else if(display.ident.equals("table"))
 							{
 								nodeBox=BoxFactory.createTableBox(this);
+								parentLocator=new DefaultAdder(nodeBox);
 								if(position.ident.equals("relative"))
 									nodeBox.set_relative(true);
-								visualParentNode().visualBox().flow_back(nodeBox);
+								visualParentNode().getParentLocator().add(nodeBox);
 							}
 							else if(display.ident.equals("inline-table"))
 							{}
 							else if(display.ident.equals("table-row-group"))
 							{
 								tableMember=BoxFactory.createTableRowGroup(this);
-
-								if(visualParentNode().tableVisual()!=null)
-									visualParentNode().tableVisual().table().table_back(visualParentNode().tableVisual(), tableMember);
-								else if(visualParentNode().visualBox()!=null)
-									visualParentNode().visualBox().table_back(null, tableMember);
-								else
-									throw new BoxError(BoxExceptionType.BET_UNKNOWN);
+								parentLocator=new DefaultAdder(null); // TODO not null
+								visualParentNode().getParentLocator().add(nodeBox); // TODO not nodeBox
 							}
 							else if(display.ident.equals("table-header-group"))
 							{}
@@ -343,35 +325,20 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 							else if(display.ident.equals("table-row"))
 							{
 								tableMember=BoxFactory.createTableRow(this);
-
-								if(visualParentNode().tableVisual()!=null)
-									visualParentNode().tableVisual().table().table_back(visualParentNode().tableVisual(), tableMember);
-								else if(visualParentNode().visualBox()!=null)
-									visualParentNode().visualBox().table_back(null, tableMember);
-								else
-									throw new BoxError(BoxExceptionType.BET_UNKNOWN);
+								parentLocator=new DefaultAdder(null); // TODO not null
+								visualParentNode().getParentLocator().add(nodeBox);
 							}
 							else if(display.ident.equals("table-column-group"))
 							{
 								tableMember=BoxFactory.createTableColGroup(this);
-
-								if(visualParentNode().tableVisual()!=null)
-									visualParentNode().tableVisual().table().table_back(visualParentNode().tableVisual(), tableMember);
-								else if(visualParentNode().visualBox()!=null)
-									visualParentNode().visualBox().table_back(null, tableMember);
-								else
-									throw new BoxError(BoxExceptionType.BET_UNKNOWN);
+								parentLocator=new DefaultAdder(null); // TODO not null
+								visualParentNode().getParentLocator().add(nodeBox); // TODO not nodeBox
 							}
 							else if(display.ident.equals("table-column"))
 							{
 								tableMember=BoxFactory.createTableColumn(this);
-
-								if(visualParentNode().tableVisual()!=null)
-									visualParentNode().tableVisual().table().table_back(visualParentNode().tableVisual(), tableMember);
-								else if(visualParentNode().visualBox()!=null)
-									visualParentNode().visualBox().table_back(null, tableMember);
-								else
-									throw new BoxError(BoxExceptionType.BET_UNKNOWN);
+								parentLocator=new DefaultAdder(null); // TODO not null
+								visualParentNode().getParentLocator().add(nodeBox); // TODO not nodeBox
 							}
 							else if(display.ident.equals("table-cell"))
 							{
@@ -379,13 +346,9 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 								tableMember=(TableMember)nodeBox;
 								if(position.ident.equals("relative"))
 									nodeBox.set_relative(true);
-
-								if(visualParentNode().tableVisual()!=null)
-									visualParentNode().tableVisual().table().table_back(visualParentNode().tableVisual(), tableMember);
-								else if(visualParentNode().visualBox()!=null)
-									visualParentNode().visualBox().table_back(null, tableMember);
-								else
-									throw new BoxError(BoxExceptionType.BET_UNKNOWN);
+								
+								parentLocator=new DefaultAdder(nodeBox);
+								visualParentNode().getParentLocator().add(nodeBox);
 							}
 							else if(display.ident.equals("table-caption"))
 							{}
@@ -397,7 +360,8 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 							nodeBox=BoxFactory.createFloatBox(this, replaced_plugin);
 							if(position.ident.equals("relative"))
 								nodeBox.set_relative(true);
-							visualParentNode().visualBox().float_back((FloatBox)nodeBox);
+							parentLocator=new DefaultAdder(nodeBox);
+							visualParentNode().getParentLocator().add(nodeBox);
 						}
 
 						// the after pseudo element comes later
@@ -423,7 +387,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
     public void plant_root()
     {
 		nodeBox=BoxFactory.createRootBox(this);
-		parentLocator=new BlockBoxParentLocator((BlockBox)nodeBox);
+		parentLocator=new BlockBoxParentAdder((BlockBox)nodeBox);
     }
 
     public void unplant_root()

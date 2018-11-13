@@ -19,7 +19,7 @@ import com.github.s262316.forx.box.properties.Visual;
 import com.github.s262316.forx.tree.visual.AnonReason;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BlockBoxParentLocatorTest
+public class BlockBoxParentAdderTest
 {
 	@Mock
 	BlockBox subject;
@@ -39,8 +39,9 @@ public class BlockBoxParentLocatorTest
 	@Test
 	public void locateWhenAddingBlockBoxReturnsSubject()
 	{
-		BlockBoxParentLocator locator=new BlockBoxParentLocator(subject);
-		assertEquals(subject, locator.locate(childBlock));
+		BlockBoxParentAdder locator=new BlockBoxParentAdder(subject);
+		locator.add(childBlock);
+		verify(subject).flow_back(childBlock);
 	}
 	
 	@Test
@@ -50,8 +51,9 @@ public class BlockBoxParentLocatorTest
 		when(anonInlineContainer.getVisual()).thenReturn(visual2);
 		when(visual2.getAnonReason()).thenReturn(AnonReason.INLINE_CONTAINER);
 
-		BlockBoxParentLocator locator=new BlockBoxParentLocator(subject);
-		assertEquals(anonInlineContainer, locator.locate((Box)childInlineBox));
+		BlockBoxParentAdder locator=new BlockBoxParentAdder(subject);
+		locator.add((Box)childInlineBox);
+		verify(anonInlineContainer).flow_back((Box)childInlineBox);
 	}
 	
 	@Test
@@ -61,9 +63,10 @@ public class BlockBoxParentLocatorTest
 		when(subject.getVisual()).thenReturn(visual1);
 		when(visual1.createAnonInlineBox(AnonReason.INLINE_CONTAINER)).thenReturn(anonInlineContainer);
 		
-		BlockBoxParentLocator locator=new BlockBoxParentLocator(subject);
-		assertEquals(anonInlineContainer, locator.locate((Box)childInlineBox));
+		BlockBoxParentAdder locator=new BlockBoxParentAdder(subject);
+		locator.add((Box)childInlineBox);
 		verify(subject).flow_back((Box)anonInlineContainer);
+		verify(anonInlineContainer).flow_back((Box)childInlineBox);
 	}
 	
 	@Test
@@ -73,8 +76,9 @@ public class BlockBoxParentLocatorTest
 		when(anonInlineContainer.getVisual()).thenReturn(visual2);
 		when(visual2.getAnonReason()).thenReturn(AnonReason.INLINE_CONTAINER);
 
-		BlockBoxParentLocator locator=new BlockBoxParentLocator(subject);
-		assertEquals(anonInlineContainer, locator.locate(atomicInline));
+		BlockBoxParentAdder locator=new BlockBoxParentAdder(subject);
+		locator.add(atomicInline);
+		verify(anonInlineContainer).flow_back((Inline)atomicInline);
 	}	
 	
 	@Test
@@ -84,16 +88,17 @@ public class BlockBoxParentLocatorTest
 		when(subject.getVisual()).thenReturn(visual1);
 		when(visual1.createAnonInlineBox(AnonReason.INLINE_CONTAINER)).thenReturn(anonInlineContainer);
 		
-		BlockBoxParentLocator locator=new BlockBoxParentLocator(subject);
-		assertEquals(anonInlineContainer, locator.locate(atomicInline));
+		BlockBoxParentAdder locator=new BlockBoxParentAdder(subject);
+		locator.add(atomicInline);
 		verify(subject).flow_back((Box)anonInlineContainer);
+		verify(anonInlineContainer).flow_back((Inline)atomicInline);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void locateWhenAddingInlineBoxThrowsException()
 	{
-		BlockBoxParentLocator locator=new BlockBoxParentLocator(subject);
-		locator.locate((Inline)childInlineBox);
+		BlockBoxParentAdder locator=new BlockBoxParentAdder(subject);
+		locator.add((Inline)childInlineBox);
 	}
 }
 

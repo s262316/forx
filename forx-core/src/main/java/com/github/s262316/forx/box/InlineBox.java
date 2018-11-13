@@ -857,9 +857,9 @@ public class InlineBox implements Box, Inline, HasBorders, HasWordProperties, Ha
     @Override
     public void flow_back(Box b)
     {
-        if(BoxTypes.isBlockBox(b) == true)
-            throw new BoxError(BoxExceptionType.BET_WRONGTYPE);
-        else if(BoxTypes.isAtomic(b) == true)//for inline blocks
+    	Preconditions.checkArgument(BoxTypes.isInline(b));
+    	
+        if(BoxTypes.isAtomic(b) == true)//for inline blocks
             flow_back(BoxTypes.toInline(b));
         else
         {

@@ -29,19 +29,19 @@ import com.github.s262316.forx.tree.visual.AnonReason;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 
-public class InlineBoxParentLocator implements Adder
+public class InlineBoxParentAdder implements Adder
 {
-	private final static Logger logger=LoggerFactory.getLogger(InlineBoxParentLocator.class);
+	private final static Logger logger=LoggerFactory.getLogger(InlineBoxParentAdder.class);
 	
 	private InlineBox inlineBox;
 
-	public InlineBoxParentLocator(InlineBox inlineBox)
+	public InlineBoxParentAdder(InlineBox inlineBox)
 	{
 		this.inlineBox=inlineBox;
 	}
 	
 	@Override
-	public Box locate(Box newChild)
+	public void add(Box newChild)
 	{
 		if(BoxTypes.isBlockBox(newChild) == true &&
 				inlineBox.getVisual().getPostSplit()==null)
@@ -93,8 +93,6 @@ public class InlineBoxParentLocator implements Adder
 
 				prePostParents.put(preSplit, postSplit);
 			}
-
-			return anonBlockContainer;
 		}
 		else if(BoxTypes.isBlockBox(newChild) == true)
 		{
@@ -115,19 +113,17 @@ public class InlineBoxParentLocator implements Adder
 				.findFirst().get();
 
 			anonBlockContainer.flow_insert(newChild, insertBefore);
-			
-			return anonBlockContainer;
 		}
 		else
 		{
 			inlineBox.flow_back(newChild);
-			return inlineBox;
 		}
 	}
 
 	@Override
-	public Box locate(Inline newChild)
+	public void add(Inline newChild)
 	{
-		return inlineBox;
+		inlineBox.flow_back(newChild);
 	}
 }
+
