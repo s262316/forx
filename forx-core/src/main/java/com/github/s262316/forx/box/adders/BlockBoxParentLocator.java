@@ -1,4 +1,4 @@
-package com.github.s262316.forx.tree.visual;
+package com.github.s262316.forx.box.adders;
 
 import java.util.Optional;
 
@@ -7,18 +7,16 @@ import com.github.s262316.forx.box.Box;
 import com.github.s262316.forx.box.Inline;
 import com.github.s262316.forx.box.InlineBox;
 import com.github.s262316.forx.box.cast.BoxTypes;
-import com.github.s262316.forx.box.properties.Visual;
 import com.github.s262316.forx.box.util.Boxes;
+import com.github.s262316.forx.tree.visual.AnonReason;
 
-public class BlockBoxParentLocator implements ParentLocator
+public class BlockBoxParentLocator implements Adder
 {
 	private BlockBox blockBox;
-	private Visual visual;
 
-	public BlockBoxParentLocator(BlockBox blockBox, Visual visual)
+	public BlockBoxParentLocator(BlockBox blockBox)
 	{
 		this.blockBox=blockBox;
-		this.visual=visual;
 	}
 	
 	@Override
@@ -32,7 +30,7 @@ public class BlockBoxParentLocator implements ParentLocator
 			if(!last.isPresent())
 			{
 				// need to add this inline to a dummy inline
-				InlineBox dummy = visual.createAnonInlineBox(AnonReason.INLINE_CONTAINER);
+				InlineBox dummy = blockBox.getVisual().createAnonInlineBox(AnonReason.INLINE_CONTAINER);
 				blockBox.flow_back((Box)dummy);
 	
 				return dummy;
@@ -58,7 +56,7 @@ public class BlockBoxParentLocator implements ParentLocator
 			if(!last.isPresent())
 			{
 				// need to add this inline to a dummy inline
-				InlineBox dummy = visual.createAnonInlineBox(AnonReason.INLINE_CONTAINER);
+				InlineBox dummy = blockBox.getVisual().createAnonInlineBox(AnonReason.INLINE_CONTAINER);
 				blockBox.flow_back((Box)dummy);
 	
 				return dummy;

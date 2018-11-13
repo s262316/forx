@@ -21,6 +21,7 @@ import com.github.s262316.forx.box.TableBox;
 import com.github.s262316.forx.box.TableMember;
 import com.github.s262316.forx.box.properties.Visual;
 import com.github.s262316.forx.box.relayouter.LayoutResult;
+import com.github.s262316.forx.box.relayouter.util.LayoutUtils;
 import com.github.s262316.forx.box.util.Border;
 import com.github.s262316.forx.box.util.Clearance;
 import com.github.s262316.forx.box.util.Direction;
@@ -110,6 +111,19 @@ public class MockBlockBox extends BlockBox
 	public List<Layable> getMembersAll()
 	{
 		return all;
+	}
+	
+	@Override
+	public void flow_insert(Box newChild, Box insertBefore)
+	{
+		// find position of "before"
+		int allBeforePosition=all.indexOf(insertBefore);
+		int flowingBeforePosition=flowing.indexOf(insertBefore);
+		
+		flowing.add(allBeforePosition, newChild);
+		all.add(flowingBeforePosition, newChild);
+
+		newChild.set_container(this);
 	}
 
 	@Override

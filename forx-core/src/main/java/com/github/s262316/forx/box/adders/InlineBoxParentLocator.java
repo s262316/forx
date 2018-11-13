@@ -1,4 +1,4 @@
-package com.github.s262316.forx.tree.visual;
+package com.github.s262316.forx.box.adders;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,26 +25,26 @@ import com.github.s262316.forx.box.properties.Visual;
 import com.github.s262316.forx.box.relayouter.LayableTreeTraverser;
 import com.github.s262316.forx.box.relayouter.util.AfterOrEqualsLayable;
 import com.github.s262316.forx.box.util.Boxes;
+import com.github.s262316.forx.tree.visual.AnonReason;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 
-public class InlineBoxParentLocator implements ParentLocator
+public class InlineBoxParentLocator implements Adder
 {
 	private final static Logger logger=LoggerFactory.getLogger(InlineBoxParentLocator.class);
 	
 	private InlineBox inlineBox;
-	private Visual visual;
 
-	public InlineBoxParentLocator(InlineBox inlineBox, Visual visual)
+	public InlineBoxParentLocator(InlineBox inlineBox)
 	{
 		this.inlineBox=inlineBox;
-		this.visual=visual;
 	}
 	
 	@Override
 	public Box locate(Box newChild)
 	{
-		if(BoxTypes.isBlockBox(newChild) == true)
+		if(BoxTypes.isBlockBox(newChild) == true &&
+				inlineBox.getVisual().getPostSplit()==null)
 		{
 			// adding a BlockBox to an InlineBox
 			List<Box> toRoot=Boxes.routeToRoot(inlineBox);
@@ -64,9 +64,8 @@ public class InlineBoxParentLocator implements ParentLocator
 			firstBlock.flow_back(anonBlockContainer);
 			anonBlockContainer.flow_back((Box)anonInlineContainer); // put back the removed inline
 			
-			// *******
-			// new box goes AFTER anonInlineContainer inside anonBlockContainer - we must derive this position later
-			// *******
+			// new box goes AFTER anonInlineContainer inside anonBlockContainer
+			anonBlockContainer.flow_back(newChild);			
 			
 			// last-inline structure must be duplicated and added to anonBlockContainer
 
@@ -97,8 +96,33 @@ public class InlineBoxParentLocator implements ParentLocator
 
 			return anonBlockContainer;
 		}
+		else if(BoxTypes.isBlockBox(newChild) == true)
+		{
+			// the split structure has already been created - locate the insert position
+			
+			List<Box> toRoot=Boxes.routeToRoot(inlineBox);
+			
+			int blockPosition=Iterables.indexOf(toRoot, v -> BoxTypes.isBlockBox(v));
+			Validate.isTrue(blockPosition > 0);
+
+			BlockBox anonBlockContainer=(BlockBox)toRoot.get(blockPosition);
+
+			// get the position before the post-split-inline-container
+			Box insertBefore=anonBlockContainer.getMembersAll().stream()
+				.filter(v -> BoxTypes.isBox(v))
+				.map(v -> BoxTypes.toBox(v))
+				.filter(v -> v.getVisual().getAnonReason()==AnonReason.BLOCK_INSIDE_INLINE_POST_SPLIT_STRUCTURE)
+				.findFirst().get();
+
+			anonBlockContainer.flow_insert(newChild, insertBefore);
+			
+			return anonBlockContainer;
+		}
 		else
+		{
+			inlineBox.flow_back(newChild);
 			return inlineBox;
+		}
 	}
 
 	@Override

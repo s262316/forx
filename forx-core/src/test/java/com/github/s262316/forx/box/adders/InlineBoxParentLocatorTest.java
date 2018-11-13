@@ -1,4 +1,4 @@
-package com.github.s262316.forx.tree.visual;
+package com.github.s262316.forx.box.adders;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.verify;
@@ -8,50 +8,79 @@ import java.io.InputStream;
 
 import javax.xml.bind.JAXB;
 
-import com.github.s262316.forx.box.mockbox.RootNode;
-import com.github.s262316.forx.box.mockbox.SemiMockedBoxTree;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import com.github.s262316.forx.box.properties.Visual;
-import com.github.s262316.forx.box.mockbox.MockBlockBox;
-import com.github.s262316.forx.box.mockbox.MockInlineBox;
 import org.springframework.core.io.ClassPathResource;
 
-/**
-<root>
-	<div>
-		<p>
-		    <b>
-		        <-- insert newbox here
-		    </b>
-		</p>
-	</div>
-</root>
+import com.github.s262316.forx.box.Box;
+import com.github.s262316.forx.box.InlineBox;
+import com.github.s262316.forx.box.mockbox.MockBlockBox;
+import com.github.s262316.forx.box.mockbox.MockInlineBox;
+import com.github.s262316.forx.box.mockbox.RootNode;
+import com.github.s262316.forx.box.mockbox.SemiMockedBoxTree;
+import com.github.s262316.forx.box.properties.Visual;
+import com.github.s262316.forx.tree.visual.AnonReason;
 
-transforms to this:
-
-<root>
-	<div>
-		<p>
-		    <dummydiv>
-		        <b>
-		        </b>
-		            <generateddiv> <newbox/>  </generateddiv>
-		        <b>
-		        </b>
-		    </dummydiv>
-		</p>
-	</div>
-</root>
- */
 @ExtendWith(MockitoExtension.class)
 public class InlineBoxParentLocatorTest
 {
+	@Nested
+	class Inline
+	{
+		@Mock
+		InlineBox inlineBox;
+		@Mock
+		Visual mockVisual;
+		@Mock
+		InlineBox newChild;
+		
+		@Test
+		public void parentIsThisWhenInlineBox()
+		{
+			InlineBoxParentLocator locator=new InlineBoxParentLocator(inlineBox);
+			assertThat(inlineBox).isEqualTo(locator.locate((Box)newChild));
+		}
+		
+		@Test
+		public void newBoxIsAddedToInlineBox()
+		{
+			InlineBoxParentLocator locator=new InlineBoxParentLocator(inlineBox);
+			locator.locate((Box)newChild);
+			verify(inlineBox).flow_back((Box)newChild);
+		}
+	}
+
+	/**
+	<root>
+		<div>
+			<p>
+			    <b>
+			        <-- insert newbox here
+			    </b>
+			</p>
+		</div>
+	</root>
+
+	transforms to this:
+
+	<root>
+		<div>
+			<p>
+			    <dummydiv>
+			        <b>
+			        </b>
+			            <generateddiv> <newbox/>  </generateddiv>
+			        <b>
+			        </b>
+			    </dummydiv>
+			</p>
+		</div>
+	</root>
+	 */
 	@Nested
 	class Simple
 	{
@@ -71,7 +100,7 @@ public class InlineBoxParentLocatorTest
 		@BeforeEach
 		public void setup() throws Exception
 		{
-			InputStream is=new ClassPathResource("com/github/s262316/forx/tree/visual/a.xml").getInputStream();
+			InputStream is=new ClassPathResource("com/github/s262316/forx/box/adders/a.xml").getInputStream();
     		RootNode r = JAXB.unmarshal(is, RootNode.class);
 			
 			root= SemiMockedBoxTree.map(r);
@@ -93,14 +122,14 @@ public class InlineBoxParentLocatorTest
 		@Test
 		public void parentIsNewDummyContainer()
 		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b, bVis);
+			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
 			assertThat(dummyContainer).isEqualTo(locator.locate(newChild));
 		}
 		
 		@Test
 		public void structureMatches()
 		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b, bVis);
+			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
 			locator.locate(newChild);
 					
 			assertThat(root.getMembersAll())
@@ -113,7 +142,7 @@ public class InlineBoxParentLocatorTest
 				.containsExactly(dummyContainer).inOrder();
 			
 			assertThat(dummyContainer.getMembersAll())
-				.containsExactly(b, bPostSplit).inOrder();
+				.containsExactly(b, newChild, bPostSplit).inOrder();
 			
 			assertThat(root.getContainer()).isNull();
 			assertThat(div.getContainer()).isEqualTo(root);
@@ -126,7 +155,7 @@ public class InlineBoxParentLocatorTest
 		@Test
 		public void isPostSplitPopulated()
 		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b, bVis);
+			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
 			locator.locate(newChild);
 			verify(bVis).setPostSplit(bPostSplit);
 		}
@@ -203,7 +232,7 @@ transforms to this:
 		@BeforeEach
 		public void setup() throws Exception
 		{
-			InputStream is=new ClassPathResource("com/github/s262316/forx/tree/visual/b.xml").getInputStream();
+			InputStream is=new ClassPathResource("com/github/s262316/forx/box/adders/b.xml").getInputStream();
 			RootNode r = JAXB.unmarshal(is, RootNode.class);
 			
 			root=SemiMockedBoxTree.map(r);
@@ -237,14 +266,14 @@ transforms to this:
 		@Test
 		public void parentIsNewDummyContainer()
 		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b, bVis);
+			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
 			assertThat(dummyContainer).isEqualTo(locator.locate(newChild));
 		}
 		
 		@Test
 		public void structureMatches()
 		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b, bVis);
+			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
 			locator.locate(newChild);
 					
 			assertThat(root.getMembersAll())
@@ -257,7 +286,7 @@ transforms to this:
 				.containsExactly(dummyContainer).inOrder();
 			
 			assertThat(dummyContainer.getMembersAll())
-				.containsExactly(span1, span1PostSplit).inOrder();
+				.containsExactly(span1, newChild, span1PostSplit).inOrder();
 
 			assertThat(span1.getMembersAll())
 				.containsExactly(span2).inOrder();
@@ -296,7 +325,7 @@ transforms to this:
 		@Test
 		public void isPostSplitPopulated()
 		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b, bVis);
+			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
 			locator.locate(newChild);
 
 			verify(span1Vis).setPostSplit(span1PostSplit);
@@ -363,7 +392,7 @@ transforms to this:
 		@BeforeEach
 		public void setup() throws Exception
 		{
-			InputStream is=new ClassPathResource("com/github/s262316/forx/tree/visual/c.xml").getInputStream();
+			InputStream is=new ClassPathResource("com/github/s262316/forx/box/adders/c.xml").getInputStream();
 			RootNode r = JAXB.unmarshal(is, RootNode.class);
 			
 			root=SemiMockedBoxTree.map(r);
@@ -393,14 +422,14 @@ transforms to this:
 		@Test
 		public void parentIsNewDummyContainer()
 		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b, bVis);
+			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
 			assertThat(divContainer).isEqualTo(locator.locate(newChild));
 		}
 		
 		@Test
 		public void structureMatches()
 		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b, bVis);
+			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
 			locator.locate(newChild);
 					
 			assertThat(root.getMembersAll())
@@ -413,7 +442,7 @@ transforms to this:
 				.containsExactly(divContainer).inOrder();
 
 			assertThat(divContainer.getMembersAll())
-					.containsExactly(span, spanPostSplit).inOrder();
+					.containsExactly(span, newChild, spanPostSplit).inOrder();
 
 			assertThat(span.getMembersAll())
 				.containsExactly(i, u, b).inOrder();
@@ -436,7 +465,7 @@ transforms to this:
 		@Test
 		public void isPostSplitPopulated()
 		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b, bVis);
+			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
 			locator.locate(newChild);
 			verify(bVis).setPostSplit(bPostSplit);
 			verify(spanVis).setPostSplit(spanPostSplit);
@@ -471,7 +500,7 @@ transforms to this:
 							 <i></i>
 							 <u></u>
 							 <b>
-							 <-- insert newbox here
+							 <-- try insert newbox here
 							 </b>
 						 </span>
 				 </inlinecontainer> (span)
@@ -514,7 +543,7 @@ transforms to this:
 		@BeforeEach
 		public void setup() throws Exception
 		{
-			InputStream is=new ClassPathResource("com/github/s262316/forx/tree/visual/d.xml").getInputStream();
+			InputStream is=new ClassPathResource("com/github/s262316/forx/box/adders/d.xml").getInputStream();
 			RootNode r = JAXB.unmarshal(is, RootNode.class);
 
 			root=SemiMockedBoxTree.map(r);
@@ -556,14 +585,14 @@ transforms to this:
 		@Test
 		public void parentIsNewDummyContainer()
 		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b, bVis);
+			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
 			assertThat(dummyBlockContainer).isEqualTo(locator.locate(newChild));
 		}
 
 		@Test
 		public void structureMatches()
 		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b, bVis);
+			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
 			locator.locate(newChild);
 
 			assertThat(root.getMembersAll())
@@ -573,7 +602,7 @@ transforms to this:
 					.containsExactly(dummyBlockContainer).inOrder();
 
 			assertThat(dummyBlockContainer.getMembersAll())
-					.containsExactly(inlineContainer, inlineContainerPostSplit).inOrder();
+					.containsExactly(inlineContainer, newChild, inlineContainerPostSplit).inOrder();
 
 			assertThat(inlineContainer.getMembersAll())
 					.containsExactly(span1, span2, span3).inOrder();
@@ -613,12 +642,80 @@ transforms to this:
 		@Test
 		public void isPostSplitPopulated()
 		{
-			InlineBoxParentLocator locator=new InlineBoxParentLocator(b, bVis);
+			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
 			locator.locate(newChild);
 			verify(bVis).setPostSplit(bPostSplit);
 			verify(span3Vis).setPostSplit(span3PostSplit);
 			verify(inlineContainerVis).setPostSplit(inlineContainerPostSplit);
 		}
 	}
-}
+	
+	/**
+	<root>
+		<div>
+			<p> <--- anon block
+			    <dummyinlinecontainer>
+			        <b>
+			        	<--- try to insert here
+			        </b>
+			    </dummyinlinecontainer>
+	            <newbox></newbox>
+	            <newbox2></newbox2> <--- but actually inserted here
+			    <dummyinlinecontainer>
+			        <b>
+			        </b>
+			    </dummyinlinecontainer>
+			</p>
+		</div>
+	</root>
+	 */
+	@Nested
+	class PostTransformAdd
+	{
+		@Mock
+		Visual newChildVisual, bVisual, dummyInlineContainer1Visual, newBox1Visual, dummyInlineContainer2Visual;
+		
+		MockBlockBox root;
+		MockBlockBox p;
+		MockInlineBox b;
+		MockInlineBox dummyInlineContainer1;
+		MockInlineBox dummyInlineContainer2;
+		MockBlockBox newBox1;
+		MockInlineBox bPostSplit;
+		MockBlockBox newChild=new MockBlockBox();
+		
+		@BeforeEach
+		public void setup() throws Exception
+		{
+			InputStream is=new ClassPathResource("com/github/s262316/forx/box/adders/e.xml").getInputStream();
+			RootNode r = JAXB.unmarshal(is, RootNode.class);
 
+			root=SemiMockedBoxTree.map(r);
+			p=(MockBlockBox)root.select(new int[]{0, 0});
+			b=(MockInlineBox)root.select(new int[]{0, 0, 0, 0});
+			bPostSplit=(MockInlineBox)root.select(new int[]{0, 0, 2, 0});
+			dummyInlineContainer1=(MockInlineBox)root.select(new int[]{0, 0, 0});
+			newBox1=(MockBlockBox)root.select(new int[]{0, 0, 1});
+			dummyInlineContainer2=(MockInlineBox)root.select(new int[]{0, 0, 2});
+			
+			b.setVisual(bVisual);
+			newChild.setVisual(newChildVisual);
+			dummyInlineContainer1.setVisual(dummyInlineContainer1Visual);
+			newBox1.setVisual(newBox1Visual);
+			dummyInlineContainer2.setVisual(dummyInlineContainer2Visual);
+
+			when(bVisual.getPostSplit()).thenReturn(bPostSplit);
+			when(dummyInlineContainer2Visual.getAnonReason()).thenReturn(AnonReason.BLOCK_INSIDE_INLINE_POST_SPLIT_STRUCTURE);
+		}
+		
+		@Test
+		public void newBoxIsAddedAfterSplitTransformation()
+		{
+			InlineBoxParentLocator locator=new InlineBoxParentLocator(b);
+			locator.locate(newChild);
+			
+			assertThat(p.getMembersAll())
+				.containsExactly(dummyInlineContainer1, newBox1, newChild, dummyInlineContainer2).inOrder();
+		}
+	}
+}

@@ -11,10 +11,11 @@ import com.github.s262316.forx.tree.XmlAttribute;
 import com.github.s262316.forx.tree.XmlComment;
 import com.github.s262316.forx.tree.XmlElement;
 import com.github.s262316.forx.tree.XmlText;
-import com.github.s262316.forx.tree.visual.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.s262316.forx.box.adders.*;
 import com.github.s262316.forx.common.ApplicationConfigException;
 import com.github.s262316.forx.core.real.BoxRealMapping;
 import com.github.s262316.forx.graphics.GraphicsContext;
@@ -24,6 +25,15 @@ import com.github.s262316.forx.tree.build.ElementKey;
 import com.github.s262316.forx.tree.build.TextKey;
 import com.github.s262316.forx.tree.build.XmlDocumentBuilder;
 import com.github.s262316.forx.tree.events2.EventDispatcher;
+import com.github.s262316.forx.tree.visual.BoxBuilder;
+import com.github.s262316.forx.tree.visual.LinkElementHandler;
+import com.github.s262316.forx.tree.visual.MetaTagHandler;
+import com.github.s262316.forx.tree.visual.StyleAttributeHandler;
+import com.github.s262316.forx.tree.visual.StyleElementHandler;
+import com.github.s262316.forx.tree.visual.TextBuilder;
+import com.github.s262316.forx.tree.visual.XmlVDocument;
+import com.github.s262316.forx.tree.visual.XmlVElement;
+import com.github.s262316.forx.tree.visual.XmlVText;
 
 public class XmlVDocumentBuilder implements XmlDocumentBuilder
 {

@@ -1,4 +1,4 @@
-package com.github.s262316.forx.tree.visual;
+package com.github.s262316.forx.box.adders;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -16,6 +16,7 @@ import com.github.s262316.forx.box.Box;
 import com.github.s262316.forx.box.Inline;
 import com.github.s262316.forx.box.InlineBox;
 import com.github.s262316.forx.box.properties.Visual;
+import com.github.s262316.forx.tree.visual.AnonReason;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BlockBoxParentLocatorTest
@@ -38,7 +39,7 @@ public class BlockBoxParentLocatorTest
 	@Test
 	public void locateWhenAddingBlockBoxReturnsSubject()
 	{
-		BlockBoxParentLocator locator=new BlockBoxParentLocator(subject, visual1);
+		BlockBoxParentLocator locator=new BlockBoxParentLocator(subject);
 		assertEquals(subject, locator.locate(childBlock));
 	}
 	
@@ -49,7 +50,7 @@ public class BlockBoxParentLocatorTest
 		when(anonInlineContainer.getVisual()).thenReturn(visual2);
 		when(visual2.getAnonReason()).thenReturn(AnonReason.INLINE_CONTAINER);
 
-		BlockBoxParentLocator locator=new BlockBoxParentLocator(subject, visual1);
+		BlockBoxParentLocator locator=new BlockBoxParentLocator(subject);
 		assertEquals(anonInlineContainer, locator.locate((Box)childInlineBox));
 	}
 	
@@ -57,9 +58,10 @@ public class BlockBoxParentLocatorTest
 	public void locateWhenAddingInlineBoxWhenSubjectIsEmptyReturnsNewBox()
 	{
 		when(subject.getMembersFlowing()).thenReturn(Lists.newArrayList());
+		when(subject.getVisual()).thenReturn(visual1);
 		when(visual1.createAnonInlineBox(AnonReason.INLINE_CONTAINER)).thenReturn(anonInlineContainer);
 		
-		BlockBoxParentLocator locator=new BlockBoxParentLocator(subject, visual1);
+		BlockBoxParentLocator locator=new BlockBoxParentLocator(subject);
 		assertEquals(anonInlineContainer, locator.locate((Box)childInlineBox));
 		verify(subject).flow_back((Box)anonInlineContainer);
 	}
@@ -71,7 +73,7 @@ public class BlockBoxParentLocatorTest
 		when(anonInlineContainer.getVisual()).thenReturn(visual2);
 		when(visual2.getAnonReason()).thenReturn(AnonReason.INLINE_CONTAINER);
 
-		BlockBoxParentLocator locator=new BlockBoxParentLocator(subject, visual1);
+		BlockBoxParentLocator locator=new BlockBoxParentLocator(subject);
 		assertEquals(anonInlineContainer, locator.locate(atomicInline));
 	}	
 	
@@ -79,9 +81,10 @@ public class BlockBoxParentLocatorTest
 	public void locateWhenAddingAtomicInlineReturnsNewAnonInlineContainer()
 	{
 		when(subject.getMembersFlowing()).thenReturn(Lists.newArrayList());
+		when(subject.getVisual()).thenReturn(visual1);
 		when(visual1.createAnonInlineBox(AnonReason.INLINE_CONTAINER)).thenReturn(anonInlineContainer);
 		
-		BlockBoxParentLocator locator=new BlockBoxParentLocator(subject, visual1);
+		BlockBoxParentLocator locator=new BlockBoxParentLocator(subject);
 		assertEquals(anonInlineContainer, locator.locate(atomicInline));
 		verify(subject).flow_back((Box)anonInlineContainer);
 	}
@@ -89,7 +92,7 @@ public class BlockBoxParentLocatorTest
 	@Test(expected=IllegalArgumentException.class)
 	public void locateWhenAddingInlineBoxThrowsException()
 	{
-		BlockBoxParentLocator locator=new BlockBoxParentLocator(subject, visual1);
+		BlockBoxParentLocator locator=new BlockBoxParentLocator(subject);
 		locator.locate((Inline)childInlineBox);
 	}
 }

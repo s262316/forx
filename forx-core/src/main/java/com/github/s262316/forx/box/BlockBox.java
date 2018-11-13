@@ -189,6 +189,20 @@ public class BlockBox implements Box, HasAbsolutePosition, HasBackgroundProperti
 			dummy.flow_back(str, space);
 		}
 	}
+	
+	public void flow_insert(Box newChild, Box insertBefore)
+	{
+		// find position of "before"
+		int allBeforePosition=all.indexOf(insertBefore);
+		int flowingBeforePosition=flowing.indexOf(insertBefore);
+		
+		flowing.add(allBeforePosition, newChild);
+		all.add(flowingBeforePosition, newChild);
+
+		newChild.set_container(this);
+		newChild.computeProperties();
+		LayoutUtils.doLoadingLayout(newChild);
+	}
 
 	@Override
 	public void flow_insert(Box b, int before)
@@ -2257,5 +2271,5 @@ public class BlockBox implements Box, HasAbsolutePosition, HasBackgroundProperti
 	public String toString()
 	{
 		return MoreObjects.toStringHelper(this).add("id", id).toString();
-	}	
+	}
 }
