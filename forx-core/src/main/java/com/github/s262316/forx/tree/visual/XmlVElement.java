@@ -181,6 +181,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 		return v;
     }
 
+    @Override
     public Value getPropertyValue(String property, MediaType mediaType)
     {
         return getPropertyValue(property, mediaType, PseudoElementType.PE_NOT_PSEUDO);
@@ -251,6 +252,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 								if(replaced_plugin==null)
 								{
 									nodeBox=BoxFactory.createInlineFlowBox(this);
+									parentLocator=new InlineBoxParentLocator((InlineBox)nodeBox, this);
 									if(position.ident.equals("relative"))
 										nodeBox.set_relative(true);
 

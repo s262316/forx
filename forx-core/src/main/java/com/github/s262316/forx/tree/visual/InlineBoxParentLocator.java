@@ -80,12 +80,6 @@ public class InlineBoxParentLocator implements ParentLocator
 				.filter(isAncestor.or(isAfter))
 				.collect(Collectors.toList());
 
-//		List<Box> preSplitBoxes=new LayableTreeTraverser()
-//					.preOrderTraversal(anonInlineContainer)
-//					.filter(new AfterOrEqualsLayable(anonInlineContainer))
-//					.filter(Box.class)
-//					.toList();
-
 			// first Visual is the anon-block-container
 			Map<Box, Box> prePostParents=new HashMap<>();
 			prePostParents.put(anonBlockContainer, anonBlockContainer);
