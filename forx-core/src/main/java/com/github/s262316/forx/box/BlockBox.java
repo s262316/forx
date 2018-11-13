@@ -176,13 +176,14 @@ public class BlockBox implements Box, HasAbsolutePosition, HasBackgroundProperti
 
 			if (dummy == null)
 			{
+				// TODO replace this with an Adder
+
 				dummy = visual.createAnonInlineBox(AnonReason.INLINE_CONTAINER);
 				flowing.add(dummy);
 				all.add(dummy);
 
 				dummy.set_container(this);
 				dummy.computeProperties();
-				Boxes.renumber(this.root());
 				LayoutUtils.doLoadingLayout(dummy);
 			}
 

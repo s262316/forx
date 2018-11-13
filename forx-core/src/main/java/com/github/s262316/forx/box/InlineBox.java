@@ -1068,8 +1068,6 @@ public class InlineBox implements Box, Inline, HasBorders, HasWordProperties, Ha
  			else
 				logger.debug(" - next :"+text.next_atomic().id+" "+((Text)text.next_atomic()).text());
 
-
-
             inlines.add(text);
             all.add(text);
             if(table_root() != null)
@@ -2076,9 +2074,9 @@ public class InlineBox implements Box, Inline, HasBorders, HasWordProperties, Ha
 
     public BlockBox block()
     {
-        Box b=container();
+        Box b=getContainer();
         while(BoxTypes.isBlockBox(b) == false)
-            b=BoxTypes.toBlockBox(b);
+            b=b.getContainer();
         return BoxTypes.toBlockBox(b);
     }
 

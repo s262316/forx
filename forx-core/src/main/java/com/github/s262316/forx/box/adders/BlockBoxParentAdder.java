@@ -9,9 +9,13 @@ import com.github.s262316.forx.box.InlineBox;
 import com.github.s262316.forx.box.cast.BoxTypes;
 import com.github.s262316.forx.box.util.Boxes;
 import com.github.s262316.forx.tree.visual.AnonReason;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BlockBoxParentAdder implements Adder
 {
+	private final static Logger logger= LoggerFactory.getLogger(BlockBoxParentAdder.class);
+
 	private BlockBox blockBox;
 
 	public BlockBoxParentAdder(BlockBox blockBox)
@@ -22,6 +26,8 @@ public class BlockBoxParentAdder implements Adder
 	@Override
 	public void add(Box newChild)
 	{
+		logger.debug("add {} -> {}", blockBox, newChild);
+
 		if (BoxTypes.isInline(newChild) == true)
 		{
 			// InlineBox, InlineBlockBox
@@ -44,6 +50,8 @@ public class BlockBoxParentAdder implements Adder
 	@Override
 	public void add(Inline newChild)
 	{
+		logger.debug("add {} -> {}", blockBox, newChild);
+
 		if (BoxTypes.isAtomic(newChild) == true)
 		{
 			// InlineBox, InlineBlockBox

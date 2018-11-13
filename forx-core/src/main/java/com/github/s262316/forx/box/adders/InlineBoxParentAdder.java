@@ -43,6 +43,8 @@ public class InlineBoxParentAdder implements Adder
 	@Override
 	public void add(Box newChild)
 	{
+		logger.debug("add {} -> {}", inlineBox, newChild);
+
 		if(BoxTypes.isBlockBox(newChild) == true &&
 				inlineBox.getVisual().getPostSplit()==null)
 		{
@@ -123,6 +125,8 @@ public class InlineBoxParentAdder implements Adder
 	@Override
 	public void add(Inline newChild)
 	{
+		logger.debug("add {} -> {}", inlineBox, newChild);
+
 		inlineBox.flow_back(newChild);
 	}
 }
