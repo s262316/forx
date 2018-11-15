@@ -1,6 +1,7 @@
 package com.github.s262316.forx.newbox;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.github.s262316.forx.newbox.relayouter.LayoutResult;
 import com.google.common.base.Preconditions;
@@ -20,13 +21,12 @@ public class BlockBox implements Box, PropertiesEndPoint
 	{
 		blockMembers.add(newMember);
 		interBoxOps.memberWasAdded(this);
-		if(newMember.isPropertiesEndpoint())
-			((PropertiesEndPoint)newMember).computeProperties();
-		interBoxOps.doLoadingLayout(newMember);		
+		newMember.propertiesEndpoint().ifPresent(PropertiesEndPoint::computeProperties);
+		interBoxOps.doLoadingLayout(newMember);
 	}
 	
 	@Override
-	public void flow(InlineHeadless newMember)
+	public void flow(Inline newMember)
 	{
 		throw new IllegalArgumentException("inline boxes cannot be added directly to a blockbox");
 	}
@@ -62,8 +62,8 @@ public class BlockBox implements Box, PropertiesEndPoint
 	}
 
 	@Override
-	public boolean isPropertiesEndpoint()
+	public Optional<PropertiesEndPoint> propertiesEndpoint()
 	{
-		return true;
+		return Optional.of(this);
 	}
 }

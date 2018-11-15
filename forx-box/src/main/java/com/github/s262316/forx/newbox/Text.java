@@ -2,6 +2,7 @@ package com.github.s262316.forx.newbox;
 
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.util.Optional;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
@@ -10,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.github.s262316.forx.newbox.relayouter.LayoutResult;
 import com.google.common.base.MoreObjects;
 
-public class Text implements Box
+public class Text implements Box, Inline
 {
 	private static final Logger logger=LoggerFactory.getLogger(Text.class);
 
@@ -93,8 +94,14 @@ public class Text implements Box
 	}
 
 	@Override
-	public boolean isPropertiesEndpoint()
+	public Optional<PropertiesEndPoint> propertiesEndpoint()
 	{
-		return false;
+		return Optional.empty();
+	}
+
+	@Override
+	public Optional<Box> layable()
+	{
+		return Optional.of(this);
 	}
 }

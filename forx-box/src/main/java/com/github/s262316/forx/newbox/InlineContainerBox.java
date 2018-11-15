@@ -1,6 +1,7 @@
 package com.github.s262316.forx.newbox;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.github.s262316.forx.newbox.relayouter.LayoutResult;
 
@@ -32,9 +33,8 @@ public class InlineContainerBox implements Box
 	}
 
 	@Override
-	public boolean isPropertiesEndpoint()
+	public Optional<PropertiesEndPoint> propertiesEndpoint()
 	{
-		return false;
+		return Optional.empty();
 	}
-
 }

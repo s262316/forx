@@ -1,13 +1,14 @@
 package com.github.s262316.forx.newbox;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.google.common.base.Preconditions;
 
-public class InlineHeadless implements PropertiesEndPoint
+public class InlineHeadless implements PropertiesEndPoint, Inline
 {
 	private InterBoxOps interBoxOps;
-	private List<Object> inlineMembers;
+	private List<Inline> inlineMembers;
 
 	@Override
 	public void computeProperties()
@@ -15,21 +16,31 @@ public class InlineHeadless implements PropertiesEndPoint
 
 	}
 
+	@Override
 	public void flow(Box newMember)
 	{
-		Preconditions.checkArgument(newMember instanceof Text);
-		
-		inlineMembers.add(newMember);
-		interBoxOps.memberWasAdded(newMember);
-		interBoxOps.doLoadingLayout(newMember);
+		throw new IllegalArgumentException("boxes cannot be added directly to a blockbox");
 	}
 
-	public void flow(InlineHeadless newMember)
+	@Override
+	public void flow(Inline newMember)
 	{
 		inlineMembers.add(newMember);
 		interBoxOps.memberWasAdded(newMember);
-		
-		newMember.computeProperties();
+		newMember.propertiesEndpoint().ifPresent(PropertiesEndPoint::computeProperties);
+		newMember.layable().ifPresent(interBoxOps::doLoadingLayout);
+	}
+
+	@Override
+	public Optional<PropertiesEndPoint> propertiesEndpoint()
+	{
+		return Optional.of(this);
+	}
+
+	@Override
+	public Optional<Box> layable()
+	{
+		return Optional.empty();
 	}
 }
 

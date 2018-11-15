@@ -8,5 +8,5 @@ public interface InterBoxOps
 	Font containerFont();
 	void doLoadingLayout(Box child);
 	void memberWasAdded(Box newMember);
-	void memberWasAdded(InlineHeadless newMember);
+	void memberWasAdded(Inline newMember);
 }
