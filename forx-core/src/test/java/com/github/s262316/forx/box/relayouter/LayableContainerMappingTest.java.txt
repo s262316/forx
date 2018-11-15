@@ -1,0 +1,90 @@
+package com.github.s262316.forx.box.relayouter;
+
+import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import com.github.s262316.forx.box.AbsoluteBox;
+import com.github.s262316.forx.box.BlockBox;
+import com.github.s262316.forx.box.CellBox;
+import com.github.s262316.forx.box.FloatBox;
+import com.github.s262316.forx.box.InlineBlockBox;
+import com.github.s262316.forx.box.InlineBlockRootBox;
+import com.github.s262316.forx.box.InlineBox;
+import com.github.s262316.forx.box.RootBox;
+import com.github.s262316.forx.box.TableBox;
+import com.github.s262316.forx.box.Text;
+
+public class LayableContainerMappingTest
+{
+	@Test
+	public void blockBoxGetContainer()
+	{
+		assertThat(LayableContainerMapping.getContainer(new BlockBox(null, null, null)))
+			.isInstanceOf(DefaultLayableContainer.class);
+	}
+	
+	@Test
+	public void absoluteBoxGetContainer()
+	{
+		assertThat(LayableContainerMapping.getContainer(new AbsoluteBox(null)))
+			.isInstanceOf(DefaultLayableContainer.class);
+	}
+
+	@Test
+	public void cellBoxGetContainer()
+	{
+		assertThrows(IllegalStateException.class, () -> LayableContainerMapping.getContainer(new CellBox(null, null, 0, 0, false)));
+	}
+
+	@Test
+	public void floatBoxGetContainer()
+	{
+		assertThat(LayableContainerMapping.getContainer(new FloatBox(null, null)))
+			.isInstanceOf(DefaultLayableContainer.class);
+	}
+
+	@Test
+	public void inlineBlockRootGetContainer()
+	{
+		assertThat(LayableContainerMapping.getContainer(new InlineBlockRootBox(null)))
+			.isInstanceOf(DefaultLayableContainer.class);
+	}
+
+	@Test
+	public void rootBoxGetContainer()
+	{
+		assertThat(LayableContainerMapping.getContainer(new RootBox(null, null)))
+			.isInstanceOf(RootBoxContainer.class);
+	}
+
+	@Test
+	public void tableBoxGetContainer()
+	{
+		assertThrows(IllegalStateException.class, () -> LayableContainerMapping.getContainer(new TableBox(null, null, false)));
+	}
+
+	@Test
+	public void inlineBlockBoxGetContainer()
+	{
+		assertThat(LayableContainerMapping.getContainer(new InlineBlockBox(null)))
+			.isInstanceOf(DefaultLayableContainer.class);
+	}
+
+	@Test
+	public void inlineBoxGetContainer()
+	{
+		assertThat(LayableContainerMapping.getContainer(new InlineBox(null, null, null, null)))
+			.isInstanceOf(DefaultLayableContainer.class);
+	}
+
+	@Test
+	public void textGetContainer()
+	{
+		assertThat(LayableContainerMapping.getContainer(new Text(null, 0, null, 0)))
+			.isInstanceOf(DefaultLayableContainer.class);
+	}
+}
+

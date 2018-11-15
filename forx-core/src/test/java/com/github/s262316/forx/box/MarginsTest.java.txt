@@ -1,0 +1,97 @@
+package com.github.s262316.forx.box;
+
+import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.github.s262316.forx.box.util.Overflow;
+
+@ExtendWith(MockitoExtension.class)
+public class MarginsTest
+{
+	@Mock
+	BlockBox parentBox;
+	@Mock
+	BlockBox subjectBox;
+	@Mock
+	RootBox rootBox;
+
+	@BeforeEach
+	public void setup()
+	{
+		when(subjectBox.getContainer()).thenReturn(parentBox);
+	}
+	
+	@Test
+	public void topDoesNotCollapseWithParentIsRoot()
+	{
+		assertThat(Margins.doesTopMarginCollapseWithParent(rootBox))
+			.isEqualTo(false);
+	}
+	
+	@Test
+	public void topDoesNotCollapseWithParentWhenParentIsRoot()
+	{
+		when(subjectBox.getContainer()).thenReturn(rootBox);
+		
+		assertThat(Margins.doesTopMarginCollapseWithParent(subjectBox))
+			.isEqualTo(false);
+	}
+	
+	@Test
+	public void topDoesNotCollapseWithParentWhenChildIsNotFirst()
+	{
+		assertThat(Margins.doesTopMarginCollapseWithParent(subjectBox))
+			.isEqualTo(1);
+	}
+	
+	@Test
+	public void topDoesNotCollapseWithParentWhenParentHasDifferentFlowContext()
+	{
+		assertThat(Margins.doesTopMarginCollapseWithParent(subjectBox))
+			.isEqualTo(1);
+	}
+	
+	@Test
+	public void topDoesNotCollapseWithParentWhenSubjectHasTopPadding()
+	{
+		assertThat(Margins.doesTopMarginCollapseWithParent(subjectBox))
+			.isEqualTo(1);
+	}
+	
+	@Test
+	public void topDoesNotCollapseWithParentWhenSubjectHasTopBorder()
+	{
+		assertThat(Margins.doesTopMarginCollapseWithParent(subjectBox))
+			.isEqualTo(1);
+	}
+
+	@Test
+	public void topDoesNotCollapseWithParentWhenParentHasTopPadding()
+	{
+		assertThat(Margins.doesTopMarginCollapseWithParent(subjectBox))
+			.isEqualTo(1);
+	}
+	
+	@Test
+	public void topDoesNotCollapseWithParentWhenParentHasTopBorder()
+	{
+		assertThat(Margins.doesTopMarginCollapseWithParent(subjectBox))
+			.isEqualTo(1);
+	}
+	
+	@Test
+	public void topDoesNotCollapseWithParentWhenSubjectAndParentHasOverflowVisible()
+	{
+		when(subjectBox.getOverflow()).thenReturn(Overflow.OF_VISIBLE);
+		when(parentBox.getOverflow()).thenReturn(Overflow.OF_VISIBLE);
+		
+		assertThat(Margins.doesTopMarginCollapseWithParent(subjectBox))
+			.isEqualTo(false);
+	}
+}

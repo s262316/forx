@@ -16,8 +16,10 @@
     </parent>
     
     <modules>
+    	<module>forx-graphics</module>
     	<module>forx-parser</module>
     	<module>forx-tree</module>
+    	<module>forx-box</module>
     	<module>forx-core</module>
     	<module>forx-test</module>
         <module>forx-test-ref-images</module>
