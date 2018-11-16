@@ -1,6 +1,6 @@
 package com.github.s262316.forx.newbox.relayouter;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 public class LayoutResult
 {

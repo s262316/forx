@@ -12,4 +12,13 @@ public interface Box
     void uncalculatePosition(Box member);
 	int getId();
 	Optional<PropertiesEndPoint> propertiesEndpoint();
+	
+	int height();
+	int width();
+	int left();
+	int right();
+	int bottom();
+	int top();
+	void setDimensions(int width, int height);
+	void setPosition(int x, int y);
 }

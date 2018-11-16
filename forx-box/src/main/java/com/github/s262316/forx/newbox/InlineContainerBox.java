@@ -37,4 +37,52 @@ public class InlineContainerBox implements Box
 	{
 		return Optional.empty();
 	}
+
+	@Override
+	public int height() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int width() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int left() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int right() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int bottom() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int top() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setDimensions(int width, int height) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setPosition(int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
 }
