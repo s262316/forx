@@ -1,4 +1,4 @@
-package com.github.s262316.forx.box.adders;
+package com.github.s262316.forx.newbox.adders;
 
 import com.github.s262316.forx.box.Box;
 import com.github.s262316.forx.box.Inline;

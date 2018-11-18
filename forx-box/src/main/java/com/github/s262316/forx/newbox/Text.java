@@ -15,6 +15,7 @@ public class Text implements Box, Inline
 {
 	private static final Logger logger=LoggerFactory.getLogger(Text.class);
 
+	private Dimensionable dimensions;
     private String text;
     private SpaceFlag space;
 	private InterBoxOps boxRelations;
@@ -33,7 +34,8 @@ public class Text implements Box, Inline
     {
         return text;
     }
-    
+
+    @Override
     public SizeResult computeDimensions()
     {
         int width;
@@ -104,4 +106,54 @@ public class Text implements Box, Inline
 	{
 		return Optional.of(this);
 	}
+
+	@Override
+	public int height()
+	{
+		return dimensions.height();
+	}
+
+	@Override
+	public int width()
+	{
+		return dimensions.width();
+	}
+
+	@Override
+	public int left()
+	{
+		return dimensions.left();
+	}
+
+	@Override
+	public int right()
+	{
+		return dimensions.right();
+	}
+
+	@Override
+	public int bottom()
+	{
+		return dimensions.top();
+	}
+
+	@Override
+	public int top()
+	{
+		return dimensions.top();
+	}
+
+	@Override
+	public void setDimensions(int width, int height)
+	{
+		dimensions.setWidth(width);
+		dimensions.setHeight(height);
+	}
+
+	@Override
+	public void setPosition(int x, int y)
+	{
+		dimensions.setPosition(x, y);
+	}
+
 }

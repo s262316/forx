@@ -1,33 +1,26 @@
-package com.github.s262316.forx.box.adders;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import com.github.s262316.forx.box.Layable;
-import com.google.common.base.Predicates;
-import com.google.common.collect.FluentIterable;
-import com.google.common.graph.Traverser;
-import org.apache.commons.lang3.Validate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package com.github.s262316.forx.newbox.adders;
 
 import com.github.s262316.forx.box.BlockBox;
 import com.github.s262316.forx.box.Box;
 import com.github.s262316.forx.box.Inline;
 import com.github.s262316.forx.box.InlineBox;
+import com.github.s262316.forx.box.Layable;
 import com.github.s262316.forx.box.cast.BoxTypes;
-import com.github.s262316.forx.box.properties.Visual;
-import com.github.s262316.forx.box.relayouter.LayableTreeTraverser;
-import com.github.s262316.forx.box.relayouter.util.AfterOrEqualsLayable;
 import com.github.s262316.forx.box.util.Boxes;
 import com.github.s262316.forx.tree.visual.AnonReason;
-import com.google.common.base.Preconditions;
+import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
+import com.google.common.graph.Traverser;
+import org.apache.commons.lang3.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class InlineBoxParentAdder implements Adder
 {

@@ -1,16 +1,12 @@
-package com.github.s262316.forx.box.adders;
+package com.github.s262316.forx.newbox.adders;
 
-import java.util.Optional;
-
-import com.github.s262316.forx.box.BlockBox;
-import com.github.s262316.forx.box.Box;
-import com.github.s262316.forx.box.Inline;
-import com.github.s262316.forx.box.InlineBox;
-import com.github.s262316.forx.box.cast.BoxTypes;
-import com.github.s262316.forx.box.util.Boxes;
-import com.github.s262316.forx.tree.visual.AnonReason;
+import com.github.s262316.forx.newbox.BlockBox;
+import com.github.s262316.forx.newbox.Box;
+import com.github.s262316.forx.newbox.Inline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
 
 public class BlockBoxParentAdder implements Adder
 {

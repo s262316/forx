@@ -9,6 +9,7 @@ import com.google.common.collect.Iterables;
 
 public class BlockBox implements Box, PropertiesEndPoint
 {
+	private Dimensionable dimensions;
 	private InterBoxOps interBoxOps;
 	private List<Box> blockMembers;
 
@@ -108,4 +109,54 @@ public class BlockBox implements Box, PropertiesEndPoint
 	{
 		return Optional.of(this);
 	}
+
+	@Override
+	public int height()
+	{
+		return dimensions.height();
+	}
+
+	@Override
+	public int width()
+	{
+		return dimensions.width();
+	}
+
+	@Override
+	public int left()
+	{
+		return dimensions.left();
+	}
+
+	@Override
+	public int right()
+	{
+		return dimensions.right();
+	}
+
+	@Override
+	public int bottom()
+	{
+		return dimensions.top();
+	}
+
+	@Override
+	public int top()
+	{
+		return dimensions.top();
+	}
+
+	@Override
+	public void setDimensions(int width, int height)
+	{
+		dimensions.setWidth(width);
+		dimensions.setHeight(height);
+	}
+
+	@Override
+	public void setPosition(int x, int y)
+	{
+		dimensions.setPosition(x, y);
+	}
+
 }

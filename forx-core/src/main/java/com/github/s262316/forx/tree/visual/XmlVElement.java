@@ -9,46 +9,17 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 
+import com.github.s262316.forx.newbox.PropertiesEndPoint;
+import com.github.s262316.forx.newbox.ReplaceableBoxPlugin;
+import com.github.s262316.forx.newbox.Visual;
+import com.github.s262316.forx.newbox.adders.Adder;
+import com.github.s262316.forx.newbox.adders.DefaultAdder;
+import com.github.s262316.forx.newbox.adders.InlineBoxParentAdder;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.s262316.forx.box.BlockBox;
-import com.github.s262316.forx.box.Box;
-import com.github.s262316.forx.box.BoxError;
-import com.github.s262316.forx.box.BoxExceptionType;
-import com.github.s262316.forx.box.CellBox;
-import com.github.s262316.forx.box.Column;
-import com.github.s262316.forx.box.FloatBox;
-import com.github.s262316.forx.box.Inline;
-import com.github.s262316.forx.box.InlineBlockRootBox;
-import com.github.s262316.forx.box.InlineBox;
-import com.github.s262316.forx.box.ReplaceableBoxPlugin;
-import com.github.s262316.forx.box.TableBox;
-import com.github.s262316.forx.box.TableMember;
-import com.github.s262316.forx.box.TableRow;
-import com.github.s262316.forx.box.adders.Adder;
-import com.github.s262316.forx.box.adders.BlockBoxParentAdder;
-import com.github.s262316.forx.box.adders.DefaultAdder;
-import com.github.s262316.forx.box.adders.InlineBoxParentAdder;
-import com.github.s262316.forx.box.cast.BoxTypes;
-import com.github.s262316.forx.box.properties.BackgroundProperties;
-import com.github.s262316.forx.box.properties.BlockProperties;
-import com.github.s262316.forx.box.properties.BorderDescriptor;
-import com.github.s262316.forx.box.properties.BorderStylesImpl;
-import com.github.s262316.forx.box.properties.CSSPropertyComputer;
-import com.github.s262316.forx.box.properties.ColourDescriptor;
-import com.github.s262316.forx.box.properties.DimensionsDescriptor;
-import com.github.s262316.forx.box.properties.FloatProperties;
-import com.github.s262316.forx.box.properties.LineDescriptor;
-import com.github.s262316.forx.box.properties.MarginDescriptor;
-import com.github.s262316.forx.box.properties.PositionDescriptor;
-import com.github.s262316.forx.box.properties.PropertyAdaptor;
-import com.github.s262316.forx.box.properties.TextProperties;
-import com.github.s262316.forx.box.properties.Visual;
-import com.github.s262316.forx.box.properties.WordProperties;
-import com.github.s262316.forx.box.util.SpaceFlag;
 import com.github.s262316.forx.css.CSSPropertiesReference;
 import com.github.s262316.forx.css.PropertyReference;
 import com.github.s262316.forx.css.StyleXNodes;
@@ -75,9 +46,7 @@ import com.google.common.collect.Iterables;
 public class XmlVElement extends XmlElement implements Visual, VElement
 {
 	private final static Logger logger=LoggerFactory.getLogger(XmlVElement.class);
-    private Box nodeBox;
-    private TableMember tableMember;
-    private Inline inlineMember;
+    private PropertiesEndPoint nodeBox;
     private GraphicsContext graphics_context;
     private int ql;
     private ReplaceableBoxPlugin replaced_plugin;
@@ -87,15 +56,13 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 	private CSSPropertiesReference cssPropertiesReference;
 	// set after a box has been populated
 	private Adder parentLocator;
-    private InlineBox postSplitInlineBox;
+    private PropertiesEndPoint postSplitInlineBox;
     
     public XmlVElement(String name, XmlVDocument doc, int id, GraphicsContext gfxCtx, EventDispatcher eventDispatcher, CSSPropertiesReference cssPropertiesReference)
     {
 		super(name, doc, id, eventDispatcher);
 
 		nodeBox=null;
-		inlineMember=null;
-		tableMember=null;
 		graphics_context=gfxCtx;
 		ql=0;
 		replaced_plugin=null;
@@ -239,7 +206,8 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 					else if(position.ident.equals("absolute"))
 					{
 						nodeBox=BoxFactory.createAbsoluteBox(this);
-						visualParentNode().visualBox().absBackStatic(BoxTypes.toAbsoluteBox(nodeBox));
+						parentLocator=new AbsoluteBoxParentAdder();
+						visualParentNode().getParentLocator().add(nodeBox);
 					}
 					else
 					{
@@ -255,17 +223,17 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 								if(replaced_plugin==null)
 								{
 									nodeBox=BoxFactory.createInlineFlowBox(this);
-									parentLocator=new InlineBoxParentAdder((InlineBox)nodeBox);
-									if(position.ident.equals("relative"))
-										nodeBox.set_relative(true);
+									parentLocator=new InlineBoxParentAdder(nodeBox);
+//									if(position.ident.equals("relative"))
+//										nodeBox.set_relative(true);
 
 									visualParentNode().getParentLocator().add(nodeBox);
 								}
 								else
 								{
 									inlineMember=BoxFactory.createReplacedInlineFlowBox(this, replaced_plugin);
-									if(position.ident.equals("relative"))
-										inlineMember.set_relative(true);
+//									if(position.ident.equals("relative"))
+//										inlineMember.set_relative(true);
 
 									visualParentNode().getParentLocator().add(nodeBox);
 								}
@@ -274,8 +242,8 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 							{
 								nodeBox=BoxFactory.createBlockFlowBox(this, replaced_plugin);
 								parentLocator=new BlockBoxParentAdder((BlockBox)nodeBox);
-								if(position.ident.equals("relative"))
-									nodeBox.set_relative(true);
+//								if(position.ident.equals("relative"))
+//									nodeBox.set_relative(true);
 
 								visualParentNode().getParentLocator().add(nodeBox);
 							}
@@ -289,16 +257,16 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 								{
 									nodeBox=BoxFactory.createInlineBlockFlowBox(this);
 									parentLocator=new DefaultAdder(nodeBox);
-									if(position.ident.equals("relative"))
-										nodeBox.set_relative(true);
+//									if(position.ident.equals("relative"))
+//										nodeBox.set_relative(true);
 									visualParentNode().getParentLocator().add(nodeBox);
 								}
 								else
 								{
 									inlineMember=BoxFactory.createReplacedInlineFlowBox(this, replaced_plugin);
 									parentLocator=new DefaultAdder(nodeBox);
-									if(position.ident.equals("relative"))
-										inlineMember.set_relative(true);
+//									if(position.ident.equals("relative"))
+//										inlineMember.set_relative(true);
 									visualParentNode().getParentLocator().add(nodeBox);
 								}
 							}
@@ -306,8 +274,8 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 							{
 								nodeBox=BoxFactory.createTableBox(this);
 								parentLocator=new DefaultAdder(nodeBox);
-								if(position.ident.equals("relative"))
-									nodeBox.set_relative(true);
+//								if(position.ident.equals("relative"))
+//									nodeBox.set_relative(true);
 								visualParentNode().getParentLocator().add(nodeBox);
 							}
 							else if(display.ident.equals("inline-table"))
