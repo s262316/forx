@@ -9,9 +9,38 @@ import com.google.common.collect.Iterables;
 
 public class InlineContainerBox implements Box
 {
+	private Dimensionable dimensions=new Dimensionable();
 	private List<Line> lines=new ArrayList<>();
+	private InterBoxOps interBoxOps;
+	private List<InlineHeadless> inlines=new ArrayList<>();
 
-	public void flow(Box box, InlineHeadless parent)
+	public InlineContainerBox(InterBoxOps interBoxOps)
+	{
+		this.interBoxOps = interBoxOps;
+	}
+
+	public void flow(Box inlineContent)
+	{
+		interBoxOps.memberWasAdded(this);
+		inlineContent.propertiesEndpoint().ifPresent(PropertiesEndPoint::computeProperties);
+		interBoxOps.doLoadingLayout(inlineContent);
+	}
+
+	public void flow(InlineHeadless inlineContent)
+	{
+		inlines.add(inlineContent);
+		interBoxOps.memberWasAdded(this);
+		inlineContent.propertiesEndpoint().ifPresent(PropertiesEndPoint::computeProperties);
+	}
+
+	@Override
+	public SizeResult computeDimensions()
+	{
+		return new SizeResult(width(), 0);
+	}
+
+	@Override
+	public LayoutResult calculatePosition(Box box)
 	{
 		int width=box.width();
 		int height=box.height();
@@ -21,7 +50,7 @@ public class InlineContainerBox implements Box
 			lines.add(new Line(left(), top(), width, height));
 
 		currentLine=Iterables.getLast(lines);
-		int rightOfLastInline=currentLine.lastBox().map(v -> v.right()).orElse(currentLine.right());
+		int rightOfLastInline=currentLine.lastBox().map(Box::right).orElse(currentLine.right());
 
 		int proposedLeft=rightOfLastInline+1;
 		int proposedTop=currentLine.top();
@@ -37,23 +66,14 @@ public class InlineContainerBox implements Box
 		}
 
 		box.setPosition(proposedLeft, proposedTop);
-	}
 
-	@Override
-	public SizeResult computeDimensions()
-	{
-		return null;
-	}
-
-	@Override
-	public LayoutResult calculatePosition(Box member)
-	{
-		return null;
+		return new LayoutResult(true, Optional.empty());
 	}
 
 	@Override
 	public void uncalculatePosition(Box member)
 	{
+		interBoxOps.invalidatePosition(member);
 	}
 
 	@Override
@@ -69,50 +89,61 @@ public class InlineContainerBox implements Box
 	}
 
 	@Override
-	public int height() {
-		// TODO Auto-generated method stub
+	public int height()
+	{
+		return dimensions.height();
+	}
+
+	@Override
+	public int width()
+	{
+		return dimensions.width();
+	}
+
+	@Override
+	public int left()
+	{
+		return dimensions.left();
+	}
+
+	@Override
+	public int right()
+	{
+		return dimensions.right();
+	}
+
+	@Override
+	public int bottom()
+	{
+		return dimensions.top();
+	}
+
+	@Override
+	public int top()
+	{
+		return dimensions.top();
+	}
+
+	@Override
+	public void setDimensions(int width, int height)
+	{
+		dimensions.setWidth(width);
+		dimensions.setHeight(height);
+	}
+
+	@Override
+	public void setPosition(int x, int y)
+	{
+		dimensions.setPosition(x, y);
+	}
+
+	public int canIncreaseWidthBy(int delta)
+	{
 		return 0;
 	}
 
-	@Override
-	public int width() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int left() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int right() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int bottom() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int top() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void setDimensions(int width, int height) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setPosition(int x, int y) {
-		// TODO Auto-generated method stub
-		
+	public int canIncreaseHeightBy(int delta)
+	{
+		return delta;
 	}
 }

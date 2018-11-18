@@ -52,8 +52,8 @@ public class SelectorAttr implements Predicate<XElement>
         }
         else if(op.equals("~="))
         {
-        	Iterable<String> splitAttrValue=Splitter.on(CharMatcher.WHITESPACE)
-	        	.trimResults(CharMatcher.WHITESPACE)
+        	Iterable<String> splitAttrValue=Splitter.on(CharMatcher.whitespace())
+	        	.trimResults(CharMatcher.whitespace())
 	        	.split(a.getValue());
         	
         	return Iterables.contains(splitAttrValue, value);

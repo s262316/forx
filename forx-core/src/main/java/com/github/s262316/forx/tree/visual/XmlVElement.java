@@ -9,8 +9,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 
-import com.github.s262316.forx.css.PropertyReference;
-import com.github.s262316.forx.tree.XmlElement;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -30,10 +28,15 @@ import com.github.s262316.forx.box.ReplaceableBoxPlugin;
 import com.github.s262316.forx.box.TableBox;
 import com.github.s262316.forx.box.TableMember;
 import com.github.s262316.forx.box.TableRow;
+import com.github.s262316.forx.box.adders.Adder;
+import com.github.s262316.forx.box.adders.BlockBoxParentAdder;
+import com.github.s262316.forx.box.adders.DefaultAdder;
+import com.github.s262316.forx.box.adders.InlineBoxParentAdder;
 import com.github.s262316.forx.box.cast.BoxTypes;
 import com.github.s262316.forx.box.properties.BackgroundProperties;
 import com.github.s262316.forx.box.properties.BlockProperties;
 import com.github.s262316.forx.box.properties.BorderDescriptor;
+import com.github.s262316.forx.box.properties.BorderStylesImpl;
 import com.github.s262316.forx.box.properties.CSSPropertyComputer;
 import com.github.s262316.forx.box.properties.ColourDescriptor;
 import com.github.s262316.forx.box.properties.DimensionsDescriptor;
@@ -46,24 +49,24 @@ import com.github.s262316.forx.box.properties.TextProperties;
 import com.github.s262316.forx.box.properties.Visual;
 import com.github.s262316.forx.box.properties.WordProperties;
 import com.github.s262316.forx.box.util.SpaceFlag;
-import com.github.s262316.forx.css.StyleXNodes;
-import com.github.s262316.forx.box.properties.BorderStylesImpl;
 import com.github.s262316.forx.css.CSSPropertiesReference;
+import com.github.s262316.forx.css.PropertyReference;
+import com.github.s262316.forx.css.StyleXNodes;
 import com.github.s262316.forx.graphics.GraphicsContext;
-import com.github.s262316.forx.tree.NodeType;
-import com.github.s262316.forx.tree.XNode;
-import com.github.s262316.forx.tree.XNodes;
-import com.github.s262316.forx.tree.events2.EventDispatcher;
-import com.github.s262316.forx.tree.events2.XmlMouseEvent;
-import com.github.s262316.forx.tree.XmlNode;
 import com.github.s262316.forx.style.Declaration;
 import com.github.s262316.forx.style.Identifier;
 import com.github.s262316.forx.style.MediaType;
 import com.github.s262316.forx.style.Value;
 import com.github.s262316.forx.style.selectors.PseudoClassType;
 import com.github.s262316.forx.style.selectors.PseudoElementType;
+import com.github.s262316.forx.tree.NodeType;
+import com.github.s262316.forx.tree.XNode;
+import com.github.s262316.forx.tree.XNodes;
+import com.github.s262316.forx.tree.XmlElement;
+import com.github.s262316.forx.tree.XmlNode;
+import com.github.s262316.forx.tree.events2.EventDispatcher;
+import com.github.s262316.forx.tree.events2.XmlMouseEvent;
 import com.github.s262316.forx.util.PseudoElements;
-
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
@@ -82,7 +85,10 @@ public class XmlVElement extends XmlElement implements Visual, VElement
     private Map<String, Value> computedValues=new HashMap<String, Value>();
 	private Map<String, Integer> counters=new HashMap<String, Integer>();
 	private CSSPropertiesReference cssPropertiesReference;
-
+	// set after a box has been populated
+	private Adder parentLocator;
+    private InlineBox postSplitInlineBox;
+    
     public XmlVElement(String name, XmlVDocument doc, int id, GraphicsContext gfxCtx, EventDispatcher eventDispatcher, CSSPropertiesReference cssPropertiesReference)
     {
 		super(name, doc, id, eventDispatcher);
@@ -178,6 +184,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 		return v;
     }
 
+    @Override
     public Value getPropertyValue(String property, MediaType mediaType)
     {
         return getPropertyValue(property, mediaType, PseudoElementType.PE_NOT_PSEUDO);
@@ -248,13 +255,11 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 								if(replaced_plugin==null)
 								{
 									nodeBox=BoxFactory.createInlineFlowBox(this);
+									parentLocator=new InlineBoxParentAdder((InlineBox)nodeBox);
 									if(position.ident.equals("relative"))
 										nodeBox.set_relative(true);
 
-									if(visualParentNode().visualBox()!=null)
-										visualParentNode().visualBox().flow_back(nodeBox);
-									else if(visualParentNode().tableVisual()!=null)
-										visualParentNode().tableVisual().table().flow_back(nodeBox);
+									visualParentNode().getParentLocator().add(nodeBox);
 								}
 								else
 								{
@@ -262,22 +267,17 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 									if(position.ident.equals("relative"))
 										inlineMember.set_relative(true);
 
-									if(visualParentNode().visualBox()!=null)
-										visualParentNode().visualBox().flow_back(inlineMember);
-									else if(visualParentNode().tableVisual()!=null)
-										visualParentNode().tableVisual().table().flow_back(inlineMember);
+									visualParentNode().getParentLocator().add(nodeBox);
 								}
 							}
 							else if(display.ident.equals("block"))
 							{
 								nodeBox=BoxFactory.createBlockFlowBox(this, replaced_plugin);
+								parentLocator=new BlockBoxParentAdder((BlockBox)nodeBox);
 								if(position.ident.equals("relative"))
-								nodeBox.set_relative(true);
+									nodeBox.set_relative(true);
 
-								if(visualParentNode().visualBox()!=null)
-									visualParentNode().visualBox().flow_back(nodeBox);
-								else if(visualParentNode().tableVisual()!=null)
-									visualParentNode().tableVisual().table().flow_back(nodeBox);
+								visualParentNode().getParentLocator().add(nodeBox);
 							}
 							else if(display.ident.equals("list-item"))
 							{}
@@ -288,38 +288,35 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 								if(replaced_plugin==null)
 								{
 									nodeBox=BoxFactory.createInlineBlockFlowBox(this);
+									parentLocator=new DefaultAdder(nodeBox);
 									if(position.ident.equals("relative"))
 										nodeBox.set_relative(true);
-									visualParentNode().visualBox().flow_back(nodeBox);
+									visualParentNode().getParentLocator().add(nodeBox);
 								}
 								else
 								{
 									inlineMember=BoxFactory.createReplacedInlineFlowBox(this, replaced_plugin);
+									parentLocator=new DefaultAdder(nodeBox);
 									if(position.ident.equals("relative"))
 										inlineMember.set_relative(true);
-
-									visualParentNode().visualBox().flow_back(inlineMember);
+									visualParentNode().getParentLocator().add(nodeBox);
 								}
 							}
 							else if(display.ident.equals("table"))
 							{
 								nodeBox=BoxFactory.createTableBox(this);
+								parentLocator=new DefaultAdder(nodeBox);
 								if(position.ident.equals("relative"))
 									nodeBox.set_relative(true);
-								visualParentNode().visualBox().flow_back(nodeBox);
+								visualParentNode().getParentLocator().add(nodeBox);
 							}
 							else if(display.ident.equals("inline-table"))
 							{}
 							else if(display.ident.equals("table-row-group"))
 							{
 								tableMember=BoxFactory.createTableRowGroup(this);
-
-								if(visualParentNode().tableVisual()!=null)
-									visualParentNode().tableVisual().table().table_back(visualParentNode().tableVisual(), tableMember);
-								else if(visualParentNode().visualBox()!=null)
-									visualParentNode().visualBox().table_back(null, tableMember);
-								else
-									throw new BoxError(BoxExceptionType.BET_UNKNOWN);
+								parentLocator=new DefaultAdder(null); // TODO not null
+								visualParentNode().getParentLocator().add(nodeBox); // TODO not nodeBox
 							}
 							else if(display.ident.equals("table-header-group"))
 							{}
@@ -328,35 +325,20 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 							else if(display.ident.equals("table-row"))
 							{
 								tableMember=BoxFactory.createTableRow(this);
-
-								if(visualParentNode().tableVisual()!=null)
-									visualParentNode().tableVisual().table().table_back(visualParentNode().tableVisual(), tableMember);
-								else if(visualParentNode().visualBox()!=null)
-									visualParentNode().visualBox().table_back(null, tableMember);
-								else
-									throw new BoxError(BoxExceptionType.BET_UNKNOWN);
+								parentLocator=new DefaultAdder(null); // TODO not null
+								visualParentNode().getParentLocator().add(nodeBox);
 							}
 							else if(display.ident.equals("table-column-group"))
 							{
 								tableMember=BoxFactory.createTableColGroup(this);
-
-								if(visualParentNode().tableVisual()!=null)
-									visualParentNode().tableVisual().table().table_back(visualParentNode().tableVisual(), tableMember);
-								else if(visualParentNode().visualBox()!=null)
-									visualParentNode().visualBox().table_back(null, tableMember);
-								else
-									throw new BoxError(BoxExceptionType.BET_UNKNOWN);
+								parentLocator=new DefaultAdder(null); // TODO not null
+								visualParentNode().getParentLocator().add(nodeBox); // TODO not nodeBox
 							}
 							else if(display.ident.equals("table-column"))
 							{
 								tableMember=BoxFactory.createTableColumn(this);
-
-								if(visualParentNode().tableVisual()!=null)
-									visualParentNode().tableVisual().table().table_back(visualParentNode().tableVisual(), tableMember);
-								else if(visualParentNode().visualBox()!=null)
-									visualParentNode().visualBox().table_back(null, tableMember);
-								else
-									throw new BoxError(BoxExceptionType.BET_UNKNOWN);
+								parentLocator=new DefaultAdder(null); // TODO not null
+								visualParentNode().getParentLocator().add(nodeBox); // TODO not nodeBox
 							}
 							else if(display.ident.equals("table-cell"))
 							{
@@ -364,13 +346,9 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 								tableMember=(TableMember)nodeBox;
 								if(position.ident.equals("relative"))
 									nodeBox.set_relative(true);
-
-								if(visualParentNode().tableVisual()!=null)
-									visualParentNode().tableVisual().table().table_back(visualParentNode().tableVisual(), tableMember);
-								else if(visualParentNode().visualBox()!=null)
-									visualParentNode().visualBox().table_back(null, tableMember);
-								else
-									throw new BoxError(BoxExceptionType.BET_UNKNOWN);
+								
+								parentLocator=new DefaultAdder(nodeBox);
+								visualParentNode().getParentLocator().add(nodeBox);
 							}
 							else if(display.ident.equals("table-caption"))
 							{}
@@ -382,7 +360,8 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 							nodeBox=BoxFactory.createFloatBox(this, replaced_plugin);
 							if(position.ident.equals("relative"))
 								nodeBox.set_relative(true);
-							visualParentNode().visualBox().float_back((FloatBox)nodeBox);
+							parentLocator=new DefaultAdder(nodeBox);
+							visualParentNode().getParentLocator().add(nodeBox);
 						}
 
 						// the after pseudo element comes later
@@ -408,6 +387,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
     public void plant_root()
     {
 		nodeBox=BoxFactory.createRootBox(this);
+		parentLocator=new BlockBoxParentAdder((BlockBox)nodeBox);
     }
 
     public void unplant_root()
@@ -485,71 +465,71 @@ public class XmlVElement extends XmlElement implements Visual, VElement
     }
 
     @Override
-    public InlineBox createAnonInlineBox()
+    public InlineBox createAnonInlineBox(AnonReason anonReason)
     {
 		AnonVisual anon;
 
-		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference);
+		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference, anonReason);
 
 		return BoxFactory.createAnonymousInlineFlowBox(anon);
     }
 
     @Override
-    public BlockBox createAnonBlockBox()
+    public BlockBox createAnonBlockBox(AnonReason anonReason)
     {
 		AnonVisual anon;
 
-		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference);
+		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference, anonReason);
 
 		return BoxFactory.createAnonymousBlockFlowBox(anon);
     }
 
     @Override
-    public InlineBlockRootBox createAnonInlineBlockRootBox()
+    public InlineBlockRootBox createAnonInlineBlockRootBox(AnonReason anonReason)
     {
 		AnonVisual anon;
 
-		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference);
+		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference, anonReason);
 
 		return BoxFactory.createAnonInlineBlockRootBox(anon);
     }
 
     @Override
-    public TableRow createAnonRowBox()
+    public TableRow createAnonRowBox(AnonReason anonReason)
     {
 		AnonVisual anon;
 
-		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference);
+		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference, anonReason);
 
 		return BoxFactory.createAnonRowBox(anon);
     }
 
     @Override
-    public Column createAnonColBox()
+    public Column createAnonColBox(AnonReason anonReason)
     {
 		AnonVisual anon;
 
-		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference);
+		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference, anonReason);
 
 		return BoxFactory.createAnonColBox(anon);
     }
 
     @Override
-    public TableBox createAnonTableBox()
+    public TableBox createAnonTableBox(AnonReason anonReason)
     {
 		AnonVisual anon;
 
-		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference);
+		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference, anonReason);
 
 		return BoxFactory.createAnonTableBox(anon);
     }
 
     @Override
-    public CellBox createAnonCellBox()
+    public CellBox createAnonCellBox(AnonReason anonReason)
     {
 		AnonVisual anon;
 
-		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference);
+		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference, anonReason);
 
 		return BoxFactory.createAnonCellBox(anon);
     }
@@ -558,7 +538,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
     {
 		logger.debug("parse_and_add_text {} {}", value, normalParentBox.getId());
 
-		List<String> wordsAsList=Splitter.on(CharMatcher.WHITESPACE).omitEmptyStrings().splitToList(value);
+		List<String> wordsAsList=Splitter.on(CharMatcher.whitespace()).omitEmptyStrings().splitToList(value);
 		String words[]=Iterables.toArray(wordsAsList, String.class);
 		
 		PseudoElement firstLinePseudo=null, firstLetterPseudo=null;
@@ -855,5 +835,28 @@ public class XmlVElement extends XmlElement implements Visual, VElement
     public Value computed_value(String property)
     {
 		return computedValues.get(property);
+	}
+
+	@Override
+	public AnonReason getAnonReason()
+	{
+		return null;
+	}
+
+	private Adder getParentLocator()
+	{
+		return parentLocator;
+	}
+	
+	@Override
+	public void setPostSplit(InlineBox postSplitInlineBox)
+	{
+		this.postSplitInlineBox=postSplitInlineBox;
+	}
+
+	@Override
+	public InlineBox getPostSplit()
+	{
+		return postSplitInlineBox;
 	}
 }

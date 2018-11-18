@@ -9,7 +9,7 @@ import org.apache.commons.lang3.text.StrSubstitutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Resources;
 
@@ -123,10 +123,10 @@ public class XHTMLResourceResolver implements XMLResolver
 				throw new XMLStreamException(
 						StrSubstitutor.replace("cannot find publicID='${publicID}', systemID='${systemID}', baseURI='${baseURI}', namespace='${namespace}'",
 								ImmutableMap.of(
-										"publicID", Objects.firstNonNull(publicID, "null"),
-										"systemID", Objects.firstNonNull(systemID, "null"),
-										"baseURI", Objects.firstNonNull(baseURI, "null"),
-										"namespace", Objects.firstNonNull(namespace, "null")
+										"publicID", MoreObjects.firstNonNull(publicID, "null"),
+										"systemID", MoreObjects.firstNonNull(systemID, "null"),
+										"baseURI", MoreObjects.firstNonNull(baseURI, "null"),
+										"namespace", MoreObjects.firstNonNull(namespace, "null")
 										)
 								));
 			}

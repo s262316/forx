@@ -857,9 +857,9 @@ public class InlineBox implements Box, Inline, HasBorders, HasWordProperties, Ha
     @Override
     public void flow_back(Box b)
     {
-        if(BoxTypes.isBlockBox(b) == true)
-            throw new BoxError(BoxExceptionType.BET_WRONGTYPE);
-        else if(BoxTypes.isAtomic(b) == true)//for inline blocks
+    	Preconditions.checkArgument(BoxTypes.isInline(b));
+    	
+        if(BoxTypes.isAtomic(b) == true)//for inline blocks
             flow_back(BoxTypes.toInline(b));
         else
         {
@@ -1067,8 +1067,6 @@ public class InlineBox implements Box, Inline, HasBorders, HasWordProperties, Ha
 				logger.debug(" - next :null");
  			else
 				logger.debug(" - next :"+text.next_atomic().id+" "+((Text)text.next_atomic()).text());
-
-
 
             inlines.add(text);
             all.add(text);
@@ -2076,9 +2074,9 @@ public class InlineBox implements Box, Inline, HasBorders, HasWordProperties, Ha
 
     public BlockBox block()
     {
-        Box b=container();
+        Box b=getContainer();
         while(BoxTypes.isBlockBox(b) == false)
-            b=BoxTypes.toBlockBox(b);
+            b=b.getContainer();
         return BoxTypes.toBlockBox(b);
     }
 
@@ -2110,6 +2108,8 @@ public class InlineBox implements Box, Inline, HasBorders, HasWordProperties, Ha
     @Override
     public void set_container(Box cont)
     {
+    	Preconditions.checkNotNull(cont);
+    	
         _container=cont;
 
         if(BoxTypes.isBlockBox(cont))

@@ -60,7 +60,8 @@ public class PseudoElement implements Visual, VElement
     private Box visualPart;
     private Map<String, Integer> counters=new HashMap<>();
     private CSSPropertiesReference cssPropertiesReference;
-
+    private InlineBox postSplitInlineBox;
+    
     private static final Map<String, Function<Integer, String>> LIST_STYLE_FORMATTERS=ImmutableMap.<String, Function<Integer, String>>builder()
             .put("decimal" , GeneratedContent::formatCounterAsDecimal)
             .put("decimal-leading-zero" , GeneratedContent::formatCounterAsDecimalLeadingZero)
@@ -167,71 +168,71 @@ public class PseudoElement implements Visual, VElement
     }
 
     @Override
-    public InlineBox createAnonInlineBox()
+    public InlineBox createAnonInlineBox(AnonReason anonReason)
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage(), cssPropertiesReference);
+        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage(), cssPropertiesReference, anonReason);
 
         return BoxFactory.createAnonymousInlineFlowBox(anon);
     }
 
     @Override
-    public BlockBox createAnonBlockBox()
+    public BlockBox createAnonBlockBox(AnonReason anonReason)
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage(), cssPropertiesReference);
+        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage(), cssPropertiesReference, anonReason);
 
         return BoxFactory.createAnonymousBlockFlowBox(anon);
     }
 
     @Override
-    public Column createAnonColBox()
+    public Column createAnonColBox(AnonReason anonReason)
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage(), cssPropertiesReference);
+        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage(), cssPropertiesReference, anonReason);
 
         return BoxFactory.createAnonColBox(anon);
     }
 
     @Override
-    public TableBox createAnonTableBox()
+    public TableBox createAnonTableBox(AnonReason anonReason)
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage(), cssPropertiesReference);
+        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage(), cssPropertiesReference, anonReason);
 
         return BoxFactory.createAnonTableBox(anon);
     }
 
     @Override
-    public InlineBlockRootBox createAnonInlineBlockRootBox()
+    public InlineBlockRootBox createAnonInlineBlockRootBox(AnonReason anonReason)
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage(), cssPropertiesReference);
+        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage(), cssPropertiesReference, anonReason);
 
         return BoxFactory.createAnonInlineBlockRootBox(anon);
     }
 
     @Override
-    public TableRow createAnonRowBox()
+    public TableRow createAnonRowBox(AnonReason anonReason)
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage(), cssPropertiesReference);
+        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage(), cssPropertiesReference, anonReason);
 
         return BoxFactory.createAnonRowBox(anon);
     }
 
     @Override
-    public CellBox createAnonCellBox()
+    public CellBox createAnonCellBox(AnonReason anonReason)
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage(), cssPropertiesReference);
+        anon=new AnonVisual(this, getGraphicsContext(), subject.getDefaultStyleLanguage(), cssPropertiesReference, anonReason);
 
         return BoxFactory.createAnonCellBox(anon);
     }
@@ -591,4 +592,22 @@ public class PseudoElement implements Visual, VElement
     {
         subject.computed_value(property, value);
     }
+    
+	@Override
+	public AnonReason getAnonReason()
+	{
+		return null;
+	}    
+	
+	@Override
+	public void setPostSplit(InlineBox postSplitInlineBox)
+	{
+		this.postSplitInlineBox=postSplitInlineBox;
+	}
+
+	@Override
+	public InlineBox getPostSplit()
+	{
+		return postSplitInlineBox;
+	}	
 }

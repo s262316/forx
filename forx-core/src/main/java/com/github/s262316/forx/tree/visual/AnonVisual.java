@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.github.s262316.forx.box.BlockBox;
+import com.github.s262316.forx.box.Box;
 import com.github.s262316.forx.box.CellBox;
 import com.github.s262316.forx.box.Column;
 import com.github.s262316.forx.box.InlineBlockRootBox;
@@ -15,6 +16,7 @@ import com.github.s262316.forx.box.TableRow;
 import com.github.s262316.forx.box.properties.BackgroundProperties;
 import com.github.s262316.forx.box.properties.BlockProperties;
 import com.github.s262316.forx.box.properties.BorderDescriptor;
+import com.github.s262316.forx.box.properties.BorderStylesImpl;
 import com.github.s262316.forx.box.properties.CSSPropertyComputer;
 import com.github.s262316.forx.box.properties.ColourDescriptor;
 import com.github.s262316.forx.box.properties.DimensionsDescriptor;
@@ -26,7 +28,6 @@ import com.github.s262316.forx.box.properties.PropertyAdaptor;
 import com.github.s262316.forx.box.properties.TextProperties;
 import com.github.s262316.forx.box.properties.Visual;
 import com.github.s262316.forx.box.properties.WordProperties;
-import com.github.s262316.forx.box.properties.BorderStylesImpl;
 import com.github.s262316.forx.css.CSSPropertiesReference;
 import com.github.s262316.forx.css.PropertyReference;
 import com.github.s262316.forx.graphics.GraphicsContext;
@@ -41,13 +42,16 @@ public class AnonVisual implements Visual, VElement
     private String style_lang;
     private VElement container;
     private CSSPropertiesReference ref;
+    private AnonReason anonReason;
+    private InlineBox postSplitInlineBox;
 
-    public AnonVisual(VElement container, GraphicsContext gfxCtx, String sl, CSSPropertiesReference ref)
+    public AnonVisual(VElement container, GraphicsContext gfxCtx, String sl, CSSPropertiesReference ref, AnonReason anonReason)
     {
         graphics_context=gfxCtx;
         style_lang=sl;
         this.container=container;
         this.ref=ref;
+        this.anonReason=anonReason;
     }
 
     @Override
@@ -129,71 +133,71 @@ public class AnonVisual implements Visual, VElement
     }
 
     @Override
-    public InlineBox createAnonInlineBox()
+    public InlineBox createAnonInlineBox(AnonReason anonReason)
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref);
+        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
 
         return BoxFactory.createAnonymousInlineFlowBox(anon);
     }
 
     @Override
-    public BlockBox createAnonBlockBox()
+    public BlockBox createAnonBlockBox(AnonReason anonReason)
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref);
+        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
 
         return BoxFactory.createAnonymousBlockFlowBox(anon);
     }
 
     @Override
-    public InlineBlockRootBox createAnonInlineBlockRootBox()
+    public InlineBlockRootBox createAnonInlineBlockRootBox(AnonReason anonReason)
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref);
+        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
 
         return BoxFactory.createAnonInlineBlockRootBox(anon);
     }
 
     @Override
-    public TableRow createAnonRowBox()
+    public TableRow createAnonRowBox(AnonReason anonReason)
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref);
+        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
 
         return BoxFactory.createAnonRowBox(anon);
     }
 
     @Override
-    public Column createAnonColBox()
+    public Column createAnonColBox(AnonReason anonReason)
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref);
+        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
 
         return BoxFactory.createAnonColBox(anon);
     }
 
     @Override
-    public TableBox createAnonTableBox()
+    public TableBox createAnonTableBox(AnonReason anonReason)
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref);
+        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
 
         return BoxFactory.createAnonTableBox(anon);
     }
 
     @Override
-    public CellBox createAnonCellBox()
+    public CellBox createAnonCellBox(AnonReason anonReason)
     {
         AnonVisual anon;
 
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref);
+        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
 
         return BoxFactory.createAnonCellBox(anon);
     }
@@ -271,6 +275,21 @@ public class AnonVisual implements Visual, VElement
         return "";
     }
 
+	@Override
+	public AnonReason getAnonReason()
+	{
+		return anonReason;
+	}
+
+	@Override
+	public void setPostSplit(InlineBox postSplitInlineBox)
+	{
+		this.postSplitInlineBox=postSplitInlineBox;
+	}
+
+	@Override
+	public InlineBox getPostSplit()
+	{
+		return postSplitInlineBox;
+	}
 }
-
-

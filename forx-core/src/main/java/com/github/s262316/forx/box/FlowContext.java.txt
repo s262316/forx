@@ -19,7 +19,7 @@ import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
 import com.google.common.collect.TreeRangeMap;
 
-class FlowContext
+public class FlowContext
 {
 	private final static Logger logger=LoggerFactory.getLogger(FlowContext.class);
     private int _left, _right, _top;

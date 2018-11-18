@@ -12,8 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.s262316.forx.box.cast.BoxTypes;
-
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 
 
@@ -208,7 +207,7 @@ public class Flowspace
     
     public List<AtomicInline> atomicsOnLine(Line line)
     {
-        return Objects.firstNonNull(
+        return MoreObjects.firstNonNull(
         		ImmutableList.copyOf(atomic_locations.get(line)),
         		Collections.<AtomicInline>emptyList());
     }    
