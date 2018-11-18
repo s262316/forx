@@ -1,13 +1,43 @@
 package com.github.s262316.forx.newbox;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import com.github.s262316.forx.newbox.relayouter.LayoutResult;
+import com.google.common.collect.Iterables;
 
 public class InlineContainerBox implements Box
 {
-	private List<Line> lines;
+	private List<Line> lines=new ArrayList<>();
+
+	public void flow(Box box, InlineHeadless parent)
+	{
+		int width=box.width();
+		int height=box.height();
+		Line currentLine;
+
+		if(lines.isEmpty())
+			lines.add(new Line(left(), top(), width, height));
+
+		currentLine=Iterables.getLast(lines);
+		int rightOfLastInline=currentLine.lastBox().map(v -> v.right()).orElse(currentLine.right());
+
+		int proposedLeft=rightOfLastInline+1;
+		int proposedTop=currentLine.top();
+
+		// fits on line?
+		if(proposedLeft+box.width() > right())
+		{
+			// doesn't fit on line, create new line
+			lines.add(new Line(left(), top(), width, height));
+			currentLine=Iterables.getLast(lines);
+			proposedLeft=currentLine.left();
+			proposedTop=currentLine.top();
+		}
+
+		box.setPosition(proposedLeft, proposedTop);
+	}
 
 	@Override
 	public SizeResult computeDimensions()
