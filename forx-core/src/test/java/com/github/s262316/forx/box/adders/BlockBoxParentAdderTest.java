@@ -16,7 +16,7 @@ import com.github.s262316.forx.box.Box;
 import com.github.s262316.forx.box.Inline;
 import com.github.s262316.forx.box.InlineBox;
 import com.github.s262316.forx.box.properties.Visual;
-import com.github.s262316.forx.tree.visual.AnonReason;
+import com.github.s262316.forx.newbox.AnonReason;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BlockBoxParentAdderTest

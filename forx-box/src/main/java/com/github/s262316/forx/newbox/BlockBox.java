@@ -11,10 +11,12 @@ public class BlockBox implements Box, PropertiesEndPoint
 {
 	private Dimensionable dimensions;
 	private InterBoxOps interBoxOps;
+	private Visual visual;
 	private List<Box> blockMembers;
 
-	public BlockBox(InterBoxOps interBoxOps)
+	public BlockBox(Visual visual, InterBoxOps interBoxOps)
 	{
+		this.visual=visual;
 		this.interBoxOps=interBoxOps;
 	}
 

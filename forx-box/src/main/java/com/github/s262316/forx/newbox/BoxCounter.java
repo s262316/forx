@@ -8,4 +8,9 @@ public class BoxCounter
 	{
 		return count++;
 	}
+	
+	public static void reset()
+	{
+		count=0;
+	}
 }

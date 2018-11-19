@@ -13,7 +13,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import com.github.s262316.forx.box.BlockBox;
 import com.github.s262316.forx.box.InlineBox;
 import com.github.s262316.forx.box.properties.Visual;
-import com.github.s262316.forx.tree.visual.AnonReason;
+import com.github.s262316.forx.newbox.AnonReason;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BoxesTest

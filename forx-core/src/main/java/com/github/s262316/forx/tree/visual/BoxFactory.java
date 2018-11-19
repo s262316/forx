@@ -1,11 +1,13 @@
 package com.github.s262316.forx.tree.visual;
 
-import com.github.s262316.forx.newbox.BlockBox;
-import com.github.s262316.forx.newbox.Box;
-import com.github.s262316.forx.newbox.ReplaceableBoxPlugin;
-import com.github.s262316.forx.newbox.Visual;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.github.s262316.forx.newbox.BlockBox;
+import com.github.s262316.forx.newbox.Box;
+import com.github.s262316.forx.newbox.InlineHeadless;
+import com.github.s262316.forx.newbox.ReplaceableBoxPlugin;
+import com.github.s262316.forx.newbox.Visual;
 
 public class BoxFactory
 {
@@ -14,60 +16,36 @@ public class BoxFactory
 	private BoxFactory()
 	{}
 
-	public static Box createBlockFlowBox(Visual element, ReplaceableBoxPlugin plugin)
+	public static BlockBox createBlockFlowBox(Visual visual, ReplaceableBoxPlugin plugin)
 	{
-	//	ContentDrawer *cd=new ContentDrawer;
-	//	BorderDrawer *bd=new BorderDrawer(cd);
-	  //  FillDrawer *fd=new FillDrawer(bd);
-
-		BlockBox box=new BlockBox(element, null, plugin);
-
-//		System.out.println("newblock " + box.id);
-
+		BlockBox box=new BlockBox(visual, null);
 
 		return box;
 	}
 
-	public static Box createInlineFlowBox(Visual element)
+	public static InlineHeadless createInlineFlowBox(Visual visual)
 	{
-		InlineBox box=new InlineBox(element, null, null, null);
-
-//		System.out.println("newinline " + box.id);
-
-
-		return box;
-	}
-
-	public static InlineBox createAnonymousInlineFlowBox(AnonVisual anon)
-	{
-		InlineBox box;
-
-		box=new InlineBox(anon, null, null, null);
-
-//		System.out.println("newanoninlinebox " + box.id);
-
+		InlineHeadless box=new InlineHeadless(visual, null);
 
 		return box;
 	}
 
 	public static BlockBox createAnonymousBlockFlowBox(AnonVisual anon)
 	{
-		BlockBox box;
-
-		box=new BlockBox(anon, null, null);
-
-//		System.out.println("newanonblockbox " + box.id);
-
+		BlockBox box=new BlockBox(anon, null);
 
 		return box;
 	}
 
+	public static InlineHeadless createAnonymousInlineFlowBox(AnonVisual anon)
+	{
+		InlineHeadless box=new InlineHeadless(anon, null);
+
+		return box;
+	}	
+	
 	public static Box createRootBox(Visual element)
 	{
-	//	ContentDrawer *cd=new ContentDrawer;
-	//	BorderDrawer *bd=new BorderDrawer(cd);
-	//	FillDrawer *fd=new FillDrawer(bd);
-
 		RootBox box=new RootBox(element, null);
 		box.set_container(null);
 		box.computeProperties();

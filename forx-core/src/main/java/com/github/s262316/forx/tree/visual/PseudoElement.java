@@ -39,6 +39,7 @@ import com.github.s262316.forx.box.properties.BorderStylesImpl;
 import com.github.s262316.forx.css.CSSPropertiesReference;
 import com.github.s262316.forx.css.GeneratedContent;
 import com.github.s262316.forx.graphics.GraphicsContext;
+import com.github.s262316.forx.newbox.AnonReason;
 import com.github.s262316.forx.tree.XAttribute;
 import com.github.s262316.forx.style.Declaration;
 import com.github.s262316.forx.style.FunctionValue;

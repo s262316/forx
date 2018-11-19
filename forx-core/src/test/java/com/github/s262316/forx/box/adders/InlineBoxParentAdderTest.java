@@ -24,7 +24,7 @@ import com.github.s262316.forx.box.mockbox.MockInlineBox;
 import com.github.s262316.forx.box.mockbox.RootNode;
 import com.github.s262316.forx.box.mockbox.SemiMockedBoxTree;
 import com.github.s262316.forx.box.properties.Visual;
-import com.github.s262316.forx.tree.visual.AnonReason;
+import com.github.s262316.forx.newbox.AnonReason;
 
 @ExtendWith(MockitoExtension.class)
 public class InlineBoxParentAdderTest

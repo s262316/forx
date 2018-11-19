@@ -7,8 +7,15 @@ import com.google.common.base.Preconditions;
 
 public class InlineHeadless implements PropertiesEndPoint, Inline
 {
+	private Visual visual;
 	private InterBoxOps interBoxOps;
 	private List<Inline> inlineMembers;
+
+	public InlineHeadless(Visual visual, InterBoxOps interBoxOps)
+	{
+		this.visual=visual;
+		this.interBoxOps = interBoxOps;
+	}
 
 	@Override
 	public void computeProperties()

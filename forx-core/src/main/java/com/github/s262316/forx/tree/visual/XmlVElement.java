@@ -9,13 +9,8 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 
-import com.github.s262316.forx.newbox.PropertiesEndPoint;
-import com.github.s262316.forx.newbox.ReplaceableBoxPlugin;
-import com.github.s262316.forx.newbox.Visual;
-import com.github.s262316.forx.newbox.adders.Adder;
-import com.github.s262316.forx.newbox.adders.DefaultAdder;
-import com.github.s262316.forx.newbox.adders.InlineBoxParentAdder;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +19,17 @@ import com.github.s262316.forx.css.CSSPropertiesReference;
 import com.github.s262316.forx.css.PropertyReference;
 import com.github.s262316.forx.css.StyleXNodes;
 import com.github.s262316.forx.graphics.GraphicsContext;
+import com.github.s262316.forx.newbox.AnonReason;
+import com.github.s262316.forx.newbox.BlockBox;
+import com.github.s262316.forx.newbox.Box;
+import com.github.s262316.forx.newbox.InlineHeadless;
+import com.github.s262316.forx.newbox.PropertiesEndPoint;
+import com.github.s262316.forx.newbox.ReplaceableBoxPlugin;
+import com.github.s262316.forx.newbox.SpaceFlag;
+import com.github.s262316.forx.newbox.Visual;
+import com.github.s262316.forx.newbox.adders.Adder;
+import com.github.s262316.forx.newbox.adders.BlockBoxParentAdder;
+import com.github.s262316.forx.newbox.adders.InlineBoxParentAdder;
 import com.github.s262316.forx.style.Declaration;
 import com.github.s262316.forx.style.Identifier;
 import com.github.s262316.forx.style.MediaType;
@@ -175,7 +181,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 
 		logger.debug("self_pollenate");
 
-		if(visualParentNode().visualBox()!=null || visualParentNode().tableVisual()!=null)
+		if(visualParentNode().visualBox()!=null)
 		{
 			// populate the quote level
 			XmlVElement prev=prev_velement();
@@ -202,12 +208,15 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 					position=(Identifier)getPropertyValue("position", MediaType.MT_SCREEN, PseudoElementType.PE_NOT_PSEUDO);
 					if(position.ident.equals("fixed"))
 					{
+						throw new NotImplementedException("fixed boxes");
 					}
 					else if(position.ident.equals("absolute"))
 					{
-						nodeBox=BoxFactory.createAbsoluteBox(this);
-						parentLocator=new AbsoluteBoxParentAdder();
-						visualParentNode().getParentLocator().add(nodeBox);
+						throw new NotImplementedException("absolute boxes");
+						
+//						nodeBox=BoxFactory.createAbsoluteBox(this);
+//						parentLocator=new AbsoluteBoxParentAdder();
+//						visualParentNode().getParentLocator().add(nodeBox);
 					}
 					else
 					{
@@ -223,19 +232,21 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 								if(replaced_plugin==null)
 								{
 									nodeBox=BoxFactory.createInlineFlowBox(this);
-									parentLocator=new InlineBoxParentAdder(nodeBox);
+									parentLocator=new InlineBoxParentAdder((InlineHeadless)nodeBox);
 //									if(position.ident.equals("relative"))
 //										nodeBox.set_relative(true);
 
-									visualParentNode().getParentLocator().add(nodeBox);
+									visualParentNode().getParentLocator().add((InlineHeadless)nodeBox);
 								}
 								else
 								{
-									inlineMember=BoxFactory.createReplacedInlineFlowBox(this, replaced_plugin);
-//									if(position.ident.equals("relative"))
-//										inlineMember.set_relative(true);
-
-									visualParentNode().getParentLocator().add(nodeBox);
+									throw new NotImplementedException("fixed boxes");
+									
+//									inlineMember=BoxFactory.createReplacedInlineFlowBox(this, replaced_plugin);
+////									if(position.ident.equals("relative"))
+////										inlineMember.set_relative(true);
+//
+//									visualParentNode().getParentLocator().add(nodeBox);
 								}
 							}
 							else if(display.ident.equals("block"))
@@ -245,91 +256,121 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 //								if(position.ident.equals("relative"))
 //									nodeBox.set_relative(true);
 
-								visualParentNode().getParentLocator().add(nodeBox);
+								visualParentNode().getParentLocator().add((BlockBox)nodeBox);
 							}
 							else if(display.ident.equals("list-item"))
-							{}
+							{
+								throw new NotImplementedException("fixed boxes");
+							}
 							else if(display.ident.equals("run-in"))
-							{}
+							{
+								throw new NotImplementedException("fixed boxes");
+							}
 							else if(display.ident.equals("inline-block"))
 							{
-								if(replaced_plugin==null)
-								{
-									nodeBox=BoxFactory.createInlineBlockFlowBox(this);
-									parentLocator=new DefaultAdder(nodeBox);
-//									if(position.ident.equals("relative"))
-//										nodeBox.set_relative(true);
-									visualParentNode().getParentLocator().add(nodeBox);
-								}
-								else
-								{
-									inlineMember=BoxFactory.createReplacedInlineFlowBox(this, replaced_plugin);
-									parentLocator=new DefaultAdder(nodeBox);
-//									if(position.ident.equals("relative"))
-//										inlineMember.set_relative(true);
-									visualParentNode().getParentLocator().add(nodeBox);
-								}
+								throw new NotImplementedException("fixed boxes");
+								
+//								if(replaced_plugin==null)
+//								{
+//									nodeBox=BoxFactory.createInlineBlockFlowBox(this);
+//									parentLocator=new DefaultAdder(nodeBox);
+////									if(position.ident.equals("relative"))
+////										nodeBox.set_relative(true);
+//									visualParentNode().getParentLocator().add(nodeBox);
+//								}
+//								else
+//								{
+//									inlineMember=BoxFactory.createReplacedInlineFlowBox(this, replaced_plugin);
+//									parentLocator=new DefaultAdder(nodeBox);
+////									if(position.ident.equals("relative"))
+////										inlineMember.set_relative(true);
+//									visualParentNode().getParentLocator().add(nodeBox);
+//								}
 							}
 							else if(display.ident.equals("table"))
 							{
-								nodeBox=BoxFactory.createTableBox(this);
-								parentLocator=new DefaultAdder(nodeBox);
-//								if(position.ident.equals("relative"))
-//									nodeBox.set_relative(true);
-								visualParentNode().getParentLocator().add(nodeBox);
+								throw new NotImplementedException("table boxes");
+
+//								nodeBox=BoxFactory.createTableBox(this);
+//								parentLocator=new DefaultAdder(nodeBox);
+////								if(position.ident.equals("relative"))
+////									nodeBox.set_relative(true);
+//								visualParentNode().getParentLocator().add(nodeBox);
 							}
 							else if(display.ident.equals("inline-table"))
-							{}
+							{
+								throw new NotImplementedException("inline-table boxes");
+							}
 							else if(display.ident.equals("table-row-group"))
 							{
-								tableMember=BoxFactory.createTableRowGroup(this);
-								parentLocator=new DefaultAdder(null); // TODO not null
-								visualParentNode().getParentLocator().add(nodeBox); // TODO not nodeBox
+								throw new NotImplementedException("table-row-group boxes");
+								
+//								tableMember=BoxFactory.createTableRowGroup(this);
+//								parentLocator=new DefaultAdder(null); // TODO not null
+//								visualParentNode().getParentLocator().add(nodeBox); // TODO not nodeBox
 							}
 							else if(display.ident.equals("table-header-group"))
-							{}
+							{
+								throw new NotImplementedException("table-header-group boxes");
+							}
 							else if(display.ident.equals("table-footer-group"))
-							{}
+							{
+								throw new NotImplementedException("table-footer-group boxes");
+							}
 							else if(display.ident.equals("table-row"))
 							{
-								tableMember=BoxFactory.createTableRow(this);
-								parentLocator=new DefaultAdder(null); // TODO not null
-								visualParentNode().getParentLocator().add(nodeBox);
+								throw new NotImplementedException("table-row boxes");
+								
+//								tableMember=BoxFactory.createTableRow(this);
+//								parentLocator=new DefaultAdder(null); // TODO not null
+//								visualParentNode().getParentLocator().add(nodeBox);
 							}
 							else if(display.ident.equals("table-column-group"))
 							{
-								tableMember=BoxFactory.createTableColGroup(this);
-								parentLocator=new DefaultAdder(null); // TODO not null
-								visualParentNode().getParentLocator().add(nodeBox); // TODO not nodeBox
+								throw new NotImplementedException("table-column-group boxes");
+								
+//								tableMember=BoxFactory.createTableColGroup(this);
+//								parentLocator=new DefaultAdder(null); // TODO not null
+//								visualParentNode().getParentLocator().add(nodeBox); // TODO not nodeBox
 							}
 							else if(display.ident.equals("table-column"))
 							{
-								tableMember=BoxFactory.createTableColumn(this);
-								parentLocator=new DefaultAdder(null); // TODO not null
-								visualParentNode().getParentLocator().add(nodeBox); // TODO not nodeBox
+								throw new NotImplementedException("table-column boxes");
+								
+//								tableMember=BoxFactory.createTableColumn(this);
+//								parentLocator=new DefaultAdder(null); // TODO not null
+//								visualParentNode().getParentLocator().add(nodeBox); // TODO not nodeBox
 							}
 							else if(display.ident.equals("table-cell"))
 							{
-								nodeBox=BoxFactory.createTableCell(this, 1, 1);
-								tableMember=(TableMember)nodeBox;
-								if(position.ident.equals("relative"))
-									nodeBox.set_relative(true);
+								throw new NotImplementedException("table-cell boxes");
 								
-								parentLocator=new DefaultAdder(nodeBox);
-								visualParentNode().getParentLocator().add(nodeBox);
+//								nodeBox=BoxFactory.createTableCell(this, 1, 1);
+//								tableMember=(TableMember)nodeBox;
+//								if(position.ident.equals("relative"))
+//									nodeBox.set_relative(true);
+//								
+//								parentLocator=new DefaultAdder(nodeBox);
+//								visualParentNode().getParentLocator().add(nodeBox);
 							}
 							else if(display.ident.equals("table-caption"))
-							{}
+							{
+								throw new NotImplementedException("table-caption boxes");
+							}
 							else
-							{}
+							{
+								throw new NotImplementedException("fixed boxes");
+							}
 						}
 						else
 						{
-							nodeBox=BoxFactory.createFloatBox(this, replaced_plugin);
-							if(position.ident.equals("relative"))
-								nodeBox.set_relative(true);
-							parentLocator=new DefaultAdder(nodeBox);
-							visualParentNode().getParentLocator().add(nodeBox);
+							throw new NotImplementedException("float boxes");
+							
+//							nodeBox=BoxFactory.createFloatBox(this, replaced_plugin);
+//							if(position.ident.equals("relative"))
+//								nodeBox.set_relative(true);
+//							parentLocator=new DefaultAdder(nodeBox);
+//							visualParentNode().getParentLocator().add(nodeBox);
 						}
 
 						// the after pseudo element comes later
@@ -363,49 +404,9 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 
     }
 
-    public Box visualBox()
+    public PropertiesEndPoint visualBox()
     {
-		logger.debug("("+getName()+")nodeBox is "+nodeBox);
-
         return nodeBox;
-    }
-
-	public TableMember tableVisual()
-	{
-		return tableMember;
-	}
-
-    public XmlVElement tableRoot()
-    {
-		Value v;
-		Identifier display;
-		boolean found=false;
-		XmlVElement xve=null;
-
-		v=getPropertyValue("display", MediaType.MT_SCREEN, PseudoElementType.PE_NOT_PSEUDO);
-		if(v.getClass().equals(Identifier.class))
-		{
-			display=(Identifier)v;
-			if(!display.ident.equals("table"))
-			{
-				xve=visualParentNode();
-				while(xve!=null && found==false)
-				{
-					v=xve.getPropertyValue("display", MediaType.MT_SCREEN, PseudoElementType.PE_NOT_PSEUDO);
-					if(display.getClass().equals(Identifier.class))
-					{
-						if(display.ident.equals("table"))
-							found=true;
-						else
-							xve=xve.visualParentNode();
-					}
-					else
-						xve=xve.visualParentNode();
-				}
-			}
-		}
-
-		return xve;
     }
 
     public XmlVElement visualParentNode()
@@ -420,12 +421,6 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 		}
     }
 
-//    @Override
-//    public Graphics2D get_canvas()
-//    {
-//		return getGraphicsContext().getBrowserCanvas();
-//    }
-
     @Override
     public GraphicsContext getGraphicsContext()
     {
@@ -433,7 +428,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
     }
 
     @Override
-    public InlineBox createAnonInlineBox(AnonReason anonReason)
+    public InlineHeadless createAnonInlineBox(AnonReason anonReason)
     {
 		AnonVisual anon;
 
@@ -450,56 +445,6 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference, anonReason);
 
 		return BoxFactory.createAnonymousBlockFlowBox(anon);
-    }
-
-    @Override
-    public InlineBlockRootBox createAnonInlineBlockRootBox(AnonReason anonReason)
-    {
-		AnonVisual anon;
-
-		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference, anonReason);
-
-		return BoxFactory.createAnonInlineBlockRootBox(anon);
-    }
-
-    @Override
-    public TableRow createAnonRowBox(AnonReason anonReason)
-    {
-		AnonVisual anon;
-
-		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference, anonReason);
-
-		return BoxFactory.createAnonRowBox(anon);
-    }
-
-    @Override
-    public Column createAnonColBox(AnonReason anonReason)
-    {
-		AnonVisual anon;
-
-		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference, anonReason);
-
-		return BoxFactory.createAnonColBox(anon);
-    }
-
-    @Override
-    public TableBox createAnonTableBox(AnonReason anonReason)
-    {
-		AnonVisual anon;
-
-		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference, anonReason);
-
-		return BoxFactory.createAnonTableBox(anon);
-    }
-
-    @Override
-    public CellBox createAnonCellBox(AnonReason anonReason)
-    {
-		AnonVisual anon;
-
-		anon=new AnonVisual(this, getGraphicsContext(), getDefaultStyleLanguage(), cssPropertiesReference, anonReason);
-
-		return BoxFactory.createAnonCellBox(anon);
     }
 
     public void parse_and_add_text(String value, Box normalParentBox)
@@ -528,7 +473,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 
 				Pair<String, String> firstWordSplit=PseudoElements.firstLetter(words[0]);
 
-				firstLetterPseudo.getVisualBox().flow_back(firstWordSplit.getLeft(), SpaceFlag.SF_NOT_SPACE);
+				firstLetterPseudo.getVisualBox().flow_back(firstWordSplit.getLeft(), SpaceFlag.NOT_SPACE);
 				
 				if(firstWordSplit.getRight().equals(""))
 					words=ArrayUtils.remove(words, 0);
@@ -538,12 +483,12 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 			
 			for(int i=0; i<words.length-1; i++)
 			{
-				normalParentBox.flow_back(words[i], SpaceFlag.SF_NOT_SPACE);
-				normalParentBox.flow_back(" ", SpaceFlag.SF_SPACE);
+				normalParentBox.flow_back(words[i], SpaceFlag.NOT_SPACE);
+				normalParentBox.flow_back(" ", SpaceFlag.SPACE);
 			}
 	
 			if(words.length>0)
-				normalParentBox.flow_back(words[words.length-1], SpaceFlag.SF_NOT_SPACE);
+				normalParentBox.flow_back(words[words.length-1], SpaceFlag.NOT_SPACE);
 		}
     }
 
@@ -584,77 +529,77 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 		replaced_plugin=repl;
     }
 
-    @Override
-    public void calculateBorders(PropertyAdaptor on, BorderDescriptor borderdesc)
-    {
-		BorderStylesImpl.resolveBorders(on, this, borderdesc, PseudoElementType.PE_NOT_PSEUDO);
-    }
-
-    @Override
-    public void computeMarginProperties(PropertyAdaptor on, MarginDescriptor margindesc)
-    {
-		CSSPropertyComputer.computeMarginProperties(on, this, margindesc, PseudoElementType.PE_NOT_PSEUDO);
-    }
-
-    @Override
-    public void workOutAbsolutePosition(PropertyAdaptor on, PositionDescriptor pd)
-    {
-		CSSPropertyComputer.workOutAbsolutePosition(on, this, pd, PseudoElementType.PE_NOT_PSEUDO);
-    }
-
-    @Override
-    public void workOutFlowDimensions(PropertyAdaptor on, DimensionsDescriptor dd)
-    {
-		CSSPropertyComputer.workOutFlowDimensions(on, this, dd, PseudoElementType.PE_NOT_PSEUDO);
-    }
-
-    @Override
-    public void workOutLineProperties(PropertyAdaptor on, LineDescriptor ld, GraphicsContext graphicsContext)
-    {
-		CSSPropertyComputer.workOutLineProperties(on, this, ld, PseudoElementType.PE_NOT_PSEUDO, graphicsContext);
-    }
-
-    @Override
-    public void workOutTextProperties(PropertyAdaptor on, TextProperties tp)
-    {
-		CSSPropertyComputer.workOutTextProperties(on, this, tp, PseudoElementType.PE_NOT_PSEUDO);
-    }
-
-    @Override
-    public void workOutWordProperties(PropertyAdaptor on, WordProperties wp)
-    {
-		CSSPropertyComputer.workOutWordProperties(on, this, wp, PseudoElementType.PE_NOT_PSEUDO);
-    }
-
-    @Override
-    public Font workOutFontProperties(PropertyAdaptor on)
-    {
-		return CSSPropertyComputer.workOutFontProperties(on, this, PseudoElementType.PE_NOT_PSEUDO);
-    }
-
-    @Override
-    public void workOutFloatProperties(PropertyAdaptor on, FloatProperties fp)
-    {
-		CSSPropertyComputer.workOutFloatProperties(on, this, fp, PseudoElementType.PE_NOT_PSEUDO);
-    }
-
-    @Override
-    public void workoutColours(PropertyAdaptor on, ColourDescriptor coldesc)
-    {
-		CSSPropertyComputer.workoutColours(on, this, coldesc, PseudoElementType.PE_NOT_PSEUDO);
-    }
-
-    @Override
-    public void workoutBlockProperties(PropertyAdaptor on, BlockProperties bp)
-    {
-		CSSPropertyComputer.workoutBlockProperties(on, this, bp, PseudoElementType.PE_NOT_PSEUDO);
-    }
-
-    @Override
-    public void workout_background_properties(PropertyAdaptor on, BackgroundProperties bp)
-    {
-		CSSPropertyComputer.workout_background_properties(on, this, bp, PseudoElementType.PE_NOT_PSEUDO);
-    }
+//    @Override
+//    public void calculateBorders(PropertyAdaptor on, BorderDescriptor borderdesc)
+//    {
+//		BorderStylesImpl.resolveBorders(on, this, borderdesc, PseudoElementType.PE_NOT_PSEUDO);
+//    }
+//
+//    @Override
+//    public void computeMarginProperties(PropertyAdaptor on, MarginDescriptor margindesc)
+//    {
+//		CSSPropertyComputer.computeMarginProperties(on, this, margindesc, PseudoElementType.PE_NOT_PSEUDO);
+//    }
+//
+//    @Override
+//    public void workOutAbsolutePosition(PropertyAdaptor on, PositionDescriptor pd)
+//    {
+//		CSSPropertyComputer.workOutAbsolutePosition(on, this, pd, PseudoElementType.PE_NOT_PSEUDO);
+//    }
+//
+//    @Override
+//    public void workOutFlowDimensions(PropertyAdaptor on, DimensionsDescriptor dd)
+//    {
+//		CSSPropertyComputer.workOutFlowDimensions(on, this, dd, PseudoElementType.PE_NOT_PSEUDO);
+//    }
+//
+//    @Override
+//    public void workOutLineProperties(PropertyAdaptor on, LineDescriptor ld, GraphicsContext graphicsContext)
+//    {
+//		CSSPropertyComputer.workOutLineProperties(on, this, ld, PseudoElementType.PE_NOT_PSEUDO, graphicsContext);
+//    }
+//
+//    @Override
+//    public void workOutTextProperties(PropertyAdaptor on, TextProperties tp)
+//    {
+//		CSSPropertyComputer.workOutTextProperties(on, this, tp, PseudoElementType.PE_NOT_PSEUDO);
+//    }
+//
+//    @Override
+//    public void workOutWordProperties(PropertyAdaptor on, WordProperties wp)
+//    {
+//		CSSPropertyComputer.workOutWordProperties(on, this, wp, PseudoElementType.PE_NOT_PSEUDO);
+//    }
+//
+//    @Override
+//    public Font workOutFontProperties(PropertyAdaptor on)
+//    {
+//		return CSSPropertyComputer.workOutFontProperties(on, this, PseudoElementType.PE_NOT_PSEUDO);
+//    }
+//
+//    @Override
+//    public void workOutFloatProperties(PropertyAdaptor on, FloatProperties fp)
+//    {
+//		CSSPropertyComputer.workOutFloatProperties(on, this, fp, PseudoElementType.PE_NOT_PSEUDO);
+//    }
+//
+//    @Override
+//    public void workoutColours(PropertyAdaptor on, ColourDescriptor coldesc)
+//    {
+//		CSSPropertyComputer.workoutColours(on, this, coldesc, PseudoElementType.PE_NOT_PSEUDO);
+//    }
+//
+//    @Override
+//    public void workoutBlockProperties(PropertyAdaptor on, BlockProperties bp)
+//    {
+//		CSSPropertyComputer.workoutBlockProperties(on, this, bp, PseudoElementType.PE_NOT_PSEUDO);
+//    }
+//
+//    @Override
+//    public void workout_background_properties(PropertyAdaptor on, BackgroundProperties bp)
+//    {
+//		CSSPropertyComputer.workout_background_properties(on, this, bp, PseudoElementType.PE_NOT_PSEUDO);
+//    }
 
     @Override
     public VElement find_counter(String name)
@@ -805,11 +750,11 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 		return computedValues.get(property);
 	}
 
-	@Override
-	public AnonReason getAnonReason()
-	{
-		return null;
-	}
+//	@Override
+//	public AnonReason getAnonReason()
+//	{
+//		return null;
+//	}
 
 	private Adder getParentLocator()
 	{
