@@ -160,5 +160,9 @@ public class BlockBox implements Box, PropertiesEndPoint
 	{
 		dimensions.setPosition(x, y);
 	}
-
+	
+	public Visual getVisual()
+	{
+		return visual;
+	}
 }

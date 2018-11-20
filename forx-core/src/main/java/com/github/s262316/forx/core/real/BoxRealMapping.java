@@ -2,8 +2,8 @@ package com.github.s262316.forx.core.real;
 
 import java.util.List;
 
-import com.github.s262316.forx.box.Box;
-import com.github.s262316.forx.box.Inline;
+import com.github.s262316.forx.newbox.Box;
+import com.github.s262316.forx.newbox.Inline;
 import com.github.s262316.forx.tree.XmlNode;
 import com.github.s262316.forx.tree.visual.XmlVElement;
 

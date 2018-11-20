@@ -7,6 +7,7 @@ import com.github.s262316.forx.newbox.BlockBox;
 import com.github.s262316.forx.newbox.Box;
 import com.github.s262316.forx.newbox.InlineHeadless;
 import com.github.s262316.forx.newbox.ReplaceableBoxPlugin;
+import com.github.s262316.forx.newbox.RootBox;
 import com.github.s262316.forx.newbox.Visual;
 
 public class BoxFactory
@@ -44,16 +45,12 @@ public class BoxFactory
 		return box;
 	}	
 	
-	public static Box createRootBox(Visual element)
+	public static RootBox createRootBox(Visual element)
 	{
 		RootBox box=new RootBox(element, null);
-		box.set_container(null);
 		box.computeProperties();
-
 		box.selfCalculatePosition();
-
-		logger.debug("createRootBox");
-
+		
 		return box;
 	}
 }

@@ -1,11 +1,12 @@
 package com.github.s262316.forx.tree.visual;
 
-import com.github.s262316.forx.tree.XmlText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.s262316.forx.box.Box;
 import com.github.s262316.forx.graphics.GraphicsContext;
+import com.github.s262316.forx.newbox.Box;
+import com.github.s262316.forx.newbox.PropertiesEndPoint;
+import com.github.s262316.forx.tree.XmlText;
 
 public class XmlVText extends XmlText
 {
@@ -22,7 +23,7 @@ public class XmlVText extends XmlText
 
 	public void self_pollenate()
 	{
-		Box container_box;
+		PropertiesEndPoint container_box;
 
 		logger.debug("self_pollenate");
 

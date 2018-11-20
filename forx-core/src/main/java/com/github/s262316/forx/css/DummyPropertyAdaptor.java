@@ -2,7 +2,7 @@ package com.github.s262316.forx.css;
 
 import java.awt.Font;
 
-import com.github.s262316.forx.box.properties.PropertyAdaptor;
+import com.github.s262316.forx.css.properties.PropertyAdaptor;
 
 public class DummyPropertyAdaptor implements PropertyAdaptor
 {

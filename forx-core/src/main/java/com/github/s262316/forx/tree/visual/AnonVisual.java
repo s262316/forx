@@ -1,36 +1,16 @@
 package com.github.s262316.forx.tree.visual;
 
-import java.awt.Font;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
-import javax.swing.text.TableView.TableRow;
-
-import com.github.s262316.forx.box.CellBox;
-import com.github.s262316.forx.box.Column;
-import com.github.s262316.forx.box.InlineBlockRootBox;
-import com.github.s262316.forx.box.InlineBox;
-import com.github.s262316.forx.box.TableBox;
-import com.github.s262316.forx.box.properties.BackgroundProperties;
-import com.github.s262316.forx.box.properties.BlockProperties;
-import com.github.s262316.forx.box.properties.BorderDescriptor;
-import com.github.s262316.forx.box.properties.BorderStylesImpl;
-import com.github.s262316.forx.box.properties.CSSPropertyComputer;
-import com.github.s262316.forx.box.properties.ColourDescriptor;
-import com.github.s262316.forx.box.properties.DimensionsDescriptor;
-import com.github.s262316.forx.box.properties.FloatProperties;
-import com.github.s262316.forx.box.properties.LineDescriptor;
-import com.github.s262316.forx.box.properties.MarginDescriptor;
-import com.github.s262316.forx.box.properties.PositionDescriptor;
-import com.github.s262316.forx.box.properties.PropertyAdaptor;
-import com.github.s262316.forx.box.properties.TextProperties;
-import com.github.s262316.forx.box.properties.WordProperties;
 import com.github.s262316.forx.css.CSSPropertiesReference;
 import com.github.s262316.forx.css.PropertyReference;
 import com.github.s262316.forx.graphics.GraphicsContext;
 import com.github.s262316.forx.newbox.AnonReason;
 import com.github.s262316.forx.newbox.BlockBox;
+import com.github.s262316.forx.newbox.InlineHeadless;
+import com.github.s262316.forx.newbox.PropertiesEndPoint;
 import com.github.s262316.forx.newbox.Visual;
 import com.github.s262316.forx.style.Declaration;
 import com.github.s262316.forx.style.MediaType;
@@ -44,7 +24,7 @@ public class AnonVisual implements Visual, VElement
     private VElement container;
     private CSSPropertiesReference ref;
     private AnonReason anonReason;
-    private InlineBox postSplitInlineBox;
+    private PropertiesEndPoint postSplitInlineBox;
 
     public AnonVisual(VElement container, GraphicsContext gfxCtx, String sl, CSSPropertiesReference ref, AnonReason anonReason)
     {
@@ -61,80 +41,80 @@ public class AnonVisual implements Visual, VElement
         return graphics_context;
     }
 
-    @Override
-    public void calculateBorders(PropertyAdaptor on, BorderDescriptor borderdesc)
-    {
-        BorderStylesImpl.resolveBorders(on, this, borderdesc, PseudoElementType.PE_NOT_PSEUDO);
-    }
+//    @Override
+//    public void calculateBorders(PropertyAdaptor on, BorderDescriptor borderdesc)
+//    {
+//        BorderStylesImpl.resolveBorders(on, this, borderdesc, PseudoElementType.PE_NOT_PSEUDO);
+//    }
+//
+//    @Override
+//    public void computeMarginProperties(PropertyAdaptor on, MarginDescriptor margindesc)
+//    {
+//        CSSPropertyComputer.computeMarginProperties(on, this, margindesc, PseudoElementType.PE_NOT_PSEUDO);
+//    }
+//
+//    @Override
+//    public void workOutAbsolutePosition(PropertyAdaptor on, PositionDescriptor pd)
+//    {
+//        CSSPropertyComputer.workOutAbsolutePosition(on, this, pd, PseudoElementType.PE_NOT_PSEUDO);
+//    }
+//
+//    @Override
+//    public void workOutFlowDimensions(PropertyAdaptor on, DimensionsDescriptor dd)
+//    {
+//        CSSPropertyComputer.workOutFlowDimensions(on, this, dd, PseudoElementType.PE_NOT_PSEUDO);
+//    }
+//
+//    @Override
+//    public void workOutLineProperties(PropertyAdaptor on, LineDescriptor ld, GraphicsContext graphicsContext)
+//    {
+//        CSSPropertyComputer.workOutLineProperties(on, this, ld, PseudoElementType.PE_NOT_PSEUDO, graphicsContext);
+//    }
+//
+//    @Override
+//    public void workOutTextProperties(PropertyAdaptor on, TextProperties tp)
+//    {
+//        CSSPropertyComputer.workOutTextProperties(on, this, tp, PseudoElementType.PE_NOT_PSEUDO);
+//    }
+//
+//    @Override
+//    public void workOutWordProperties(PropertyAdaptor on, WordProperties wp)
+//    {
+//        CSSPropertyComputer.workOutWordProperties(on, this, wp, PseudoElementType.PE_NOT_PSEUDO);
+//    }
+//
+//    @Override
+//    public Font workOutFontProperties(PropertyAdaptor on)
+//    {
+//        return CSSPropertyComputer.workOutFontProperties(on, this, PseudoElementType.PE_NOT_PSEUDO);
+//    }
+//
+//    @Override
+//    public void workOutFloatProperties(PropertyAdaptor on, FloatProperties fp)
+//    {
+//        CSSPropertyComputer.workOutFloatProperties(on, this, fp, PseudoElementType.PE_NOT_PSEUDO);
+//    }
+//
+//    @Override
+//    public void workoutBlockProperties(PropertyAdaptor on, BlockProperties bp)
+//    {
+//        CSSPropertyComputer.workoutBlockProperties(on, this, bp, PseudoElementType.PE_NOT_PSEUDO);
+//    }
+//
+//    @Override
+//    public void workoutColours(PropertyAdaptor on, ColourDescriptor coldesc)
+//    {
+//        CSSPropertyComputer.workoutColours(on, this, coldesc, PseudoElementType.PE_NOT_PSEUDO);
+//    }
+//
+//    @Override
+//    public void workout_background_properties(PropertyAdaptor on, BackgroundProperties bp)
+//    {
+//        CSSPropertyComputer.workout_background_properties(on, this, bp, PseudoElementType.PE_NOT_PSEUDO);
+//    }
 
     @Override
-    public void computeMarginProperties(PropertyAdaptor on, MarginDescriptor margindesc)
-    {
-        CSSPropertyComputer.computeMarginProperties(on, this, margindesc, PseudoElementType.PE_NOT_PSEUDO);
-    }
-
-    @Override
-    public void workOutAbsolutePosition(PropertyAdaptor on, PositionDescriptor pd)
-    {
-        CSSPropertyComputer.workOutAbsolutePosition(on, this, pd, PseudoElementType.PE_NOT_PSEUDO);
-    }
-
-    @Override
-    public void workOutFlowDimensions(PropertyAdaptor on, DimensionsDescriptor dd)
-    {
-        CSSPropertyComputer.workOutFlowDimensions(on, this, dd, PseudoElementType.PE_NOT_PSEUDO);
-    }
-
-    @Override
-    public void workOutLineProperties(PropertyAdaptor on, LineDescriptor ld, GraphicsContext graphicsContext)
-    {
-        CSSPropertyComputer.workOutLineProperties(on, this, ld, PseudoElementType.PE_NOT_PSEUDO, graphicsContext);
-    }
-
-    @Override
-    public void workOutTextProperties(PropertyAdaptor on, TextProperties tp)
-    {
-        CSSPropertyComputer.workOutTextProperties(on, this, tp, PseudoElementType.PE_NOT_PSEUDO);
-    }
-
-    @Override
-    public void workOutWordProperties(PropertyAdaptor on, WordProperties wp)
-    {
-        CSSPropertyComputer.workOutWordProperties(on, this, wp, PseudoElementType.PE_NOT_PSEUDO);
-    }
-
-    @Override
-    public Font workOutFontProperties(PropertyAdaptor on)
-    {
-        return CSSPropertyComputer.workOutFontProperties(on, this, PseudoElementType.PE_NOT_PSEUDO);
-    }
-
-    @Override
-    public void workOutFloatProperties(PropertyAdaptor on, FloatProperties fp)
-    {
-        CSSPropertyComputer.workOutFloatProperties(on, this, fp, PseudoElementType.PE_NOT_PSEUDO);
-    }
-
-    @Override
-    public void workoutBlockProperties(PropertyAdaptor on, BlockProperties bp)
-    {
-        CSSPropertyComputer.workoutBlockProperties(on, this, bp, PseudoElementType.PE_NOT_PSEUDO);
-    }
-
-    @Override
-    public void workoutColours(PropertyAdaptor on, ColourDescriptor coldesc)
-    {
-        CSSPropertyComputer.workoutColours(on, this, coldesc, PseudoElementType.PE_NOT_PSEUDO);
-    }
-
-    @Override
-    public void workout_background_properties(PropertyAdaptor on, BackgroundProperties bp)
-    {
-        CSSPropertyComputer.workout_background_properties(on, this, bp, PseudoElementType.PE_NOT_PSEUDO);
-    }
-
-    @Override
-    public InlineBox createAnonInlineBox(AnonReason anonReason)
+    public InlineHeadless createAnonInlineBox(AnonReason anonReason)
     {
         AnonVisual anon;
 
@@ -153,55 +133,55 @@ public class AnonVisual implements Visual, VElement
         return BoxFactory.createAnonymousBlockFlowBox(anon);
     }
 
-    @Override
-    public InlineBlockRootBox createAnonInlineBlockRootBox(AnonReason anonReason)
-    {
-        AnonVisual anon;
-
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
-
-        return BoxFactory.createAnonInlineBlockRootBox(anon);
-    }
-
-    @Override
-    public TableRow createAnonRowBox(AnonReason anonReason)
-    {
-        AnonVisual anon;
-
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
-
-        return BoxFactory.createAnonRowBox(anon);
-    }
-
-    @Override
-    public Column createAnonColBox(AnonReason anonReason)
-    {
-        AnonVisual anon;
-
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
-
-        return BoxFactory.createAnonColBox(anon);
-    }
-
-    @Override
-    public TableBox createAnonTableBox(AnonReason anonReason)
-    {
-        AnonVisual anon;
-
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
-
-        return BoxFactory.createAnonTableBox(anon);
-    }
-
-    @Override
-    public CellBox createAnonCellBox(AnonReason anonReason)
-    {
-        AnonVisual anon;
-
-        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
-
-        return BoxFactory.createAnonCellBox(anon);
-    }
+//    @Override
+//    public InlineBlockRootBox createAnonInlineBlockRootBox(AnonReason anonReason)
+//    {
+//        AnonVisual anon;
+//
+//        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
+//
+//        return BoxFactory.createAnonInlineBlockRootBox(anon);
+//    }
+//
+//    @Override
+//    public TableRow createAnonRowBox(AnonReason anonReason)
+//    {
+//        AnonVisual anon;
+//
+//        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
+//
+//        return BoxFactory.createAnonRowBox(anon);
+//    }
+//
+//    @Override
+//    public Column createAnonColBox(AnonReason anonReason)
+//    {
+//        AnonVisual anon;
+//
+//        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
+//
+//        return BoxFactory.createAnonColBox(anon);
+//    }
+//
+//    @Override
+//    public TableBox createAnonTableBox(AnonReason anonReason)
+//    {
+//        AnonVisual anon;
+//
+//        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
+//
+//        return BoxFactory.createAnonTableBox(anon);
+//    }
+//
+//    @Override
+//    public CellBox createAnonCellBox(AnonReason anonReason)
+//    {
+//        AnonVisual anon;
+//
+//        anon=new AnonVisual(this, getGraphicsContext(), style_lang, ref, anonReason);
+//
+//        return BoxFactory.createAnonCellBox(anon);
+//    }
 
     @Override
     public Value getPropertyValue(String property, MediaType mediaType, PseudoElementType pseudoType)
@@ -283,13 +263,13 @@ public class AnonVisual implements Visual, VElement
 	}
 
 	@Override
-	public void setPostSplit(InlineBox postSplitInlineBox)
+	public void setPostSplit(PropertiesEndPoint postSplitInlineBox)
 	{
 		this.postSplitInlineBox=postSplitInlineBox;
 	}
 
 	@Override
-	public InlineBox getPostSplit()
+	public PropertiesEndPoint getPostSplit()
 	{
 		return postSplitInlineBox;
 	}

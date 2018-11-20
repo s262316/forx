@@ -374,7 +374,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 						}
 
 						// the after pseudo element comes later
-						create_generated_content(PseudoElementType.PE_BEFORE);
+//						create_generated_content(PseudoElementType.PE_BEFORE);
 					}
 				}
 			}
@@ -390,7 +390,7 @@ public class XmlVElement extends XmlElement implements Visual, VElement
     @Override
 	public void complete(boolean full)
 	{
-		create_generated_content(PseudoElementType.PE_AFTER);
+//		create_generated_content(PseudoElementType.PE_AFTER);
 	}
 
     public void plant_root()
@@ -447,9 +447,9 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 		return BoxFactory.createAnonymousBlockFlowBox(anon);
     }
 
-    public void parse_and_add_text(String value, Box normalParentBox)
+    public void parse_and_add_text(String value, PropertiesEndPoint container_box)
     {
-		logger.debug("parse_and_add_text {} {}", value, normalParentBox.getId());
+		logger.debug("parse_and_add_text {, {}}", value, container_box);
 
 		List<String> wordsAsList=Splitter.on(CharMatcher.whitespace()).omitEmptyStrings().splitToList(value);
 		String words[]=Iterables.toArray(wordsAsList, String.class);
@@ -467,28 +467,28 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 			XmlVElement d=PseudoElements.nearestParentWithFirstLetter(this);
 			List<XmlNode> path=XNodes.parentToChildPath(d, this);
 			
-			if(d!=null && StyleXNodes.isFirstForContent(path))
-			{
-				firstLetterPseudo=createFirstLetterPsuedo(d);
-
-				Pair<String, String> firstWordSplit=PseudoElements.firstLetter(words[0]);
-
-				firstLetterPseudo.getVisualBox().flow_back(firstWordSplit.getLeft(), SpaceFlag.NOT_SPACE);
-				
-				if(firstWordSplit.getRight().equals(""))
-					words=ArrayUtils.remove(words, 0);
-				else
-					words[0]=firstWordSplit.getRight();
-			}
+//			if(d!=null && StyleXNodes.isFirstForContent(path))
+//			{
+//				firstLetterPseudo=createFirstLetterPsuedo(d);
+//
+//				Pair<String, String> firstWordSplit=PseudoElements.firstLetter(words[0]);
+//
+//				firstLetterPseudo.getVisualBox().flow_back(firstWordSplit.getLeft(), SpaceFlag.NOT_SPACE);
+//				
+//				if(firstWordSplit.getRight().equals(""))
+//					words=ArrayUtils.remove(words, 0);
+//				else
+//					words[0]=firstWordSplit.getRight();
+//			}
 			
 			for(int i=0; i<words.length-1; i++)
 			{
-				normalParentBox.flow_back(words[i], SpaceFlag.NOT_SPACE);
-				normalParentBox.flow_back(" ", SpaceFlag.SPACE);
+				parentLocator.add(words[i], SpaceFlag.NOT_SPACE);
+				parentLocator.add(" ", SpaceFlag.SPACE);
 			}
 	
 			if(words.length>0)
-				normalParentBox.flow_back(words[words.length-1], SpaceFlag.NOT_SPACE);
+				parentLocator.add(words[words.length-1], SpaceFlag.NOT_SPACE);
 		}
     }
 
@@ -647,84 +647,84 @@ public class XmlVElement extends XmlElement implements Visual, VElement
         return Optional.ofNullable(counters.get(name));
     }
 
-	private void create_generated_content(PseudoElementType pseudoType)
-	{
-		Value v;
-		Identifier ident;
+//	private void create_generated_content(PseudoElementType pseudoType)
+//	{
+//		Value v;
+//		Identifier ident;
+//
+//		v=getPropertyValue("content", MediaType.MT_SCREEN, pseudoType);
+//		if(v.getClass().equals(Identifier.class))
+//		{
+//			ident=(Identifier)v;
+//			if(ident.ident.equals("normal") || ident.ident.equals("none"))
+//			{
+//				// no pseudo element here.. let's go!
+//			}
+//			else
+//				create_generated_content(pseudoType, v);
+//		}
+//		else
+//			create_generated_content(pseudoType, v);
+//	}
 
-		v=getPropertyValue("content", MediaType.MT_SCREEN, pseudoType);
-		if(v.getClass().equals(Identifier.class))
-		{
-			ident=(Identifier)v;
-			if(ident.ident.equals("normal") || ident.ident.equals("none"))
-			{
-				// no pseudo element here.. let's go!
-			}
-			else
-				create_generated_content(pseudoType, v);
-		}
-		else
-			create_generated_content(pseudoType, v);
-	}
-
-	private void create_generated_content(PseudoElementType pseudoType, Value spec)
-	{
-		Identifier display;
-		Box pseudoBox=null;
-		PseudoElement pe;
-		Value v;
-
-		v=getPropertyValue("display", MediaType.MT_SCREEN, pseudoType);
-		if(v.getClass().equals(Identifier.class))
-		{
-			display=(Identifier)v;
-
-			pe=new PseudoElement(this, PseudoElementType.PE_BEFORE, cssPropertiesReference);
-
-			if(display.ident.equals("inline"))
-				pseudoBox=BoxFactory.createInlineFlowBox(pe);
-			else if(display.ident.equals("block"))
-				pseudoBox=BoxFactory.createBlockFlowBox(pe, null);
-
-			pe.setVisualBox(pseudoBox);
-
-			Counters.handleCounters(pe);
-
-			BoxTypes.toBox(nodeBox).flow_back(pseudoBox);
-
-			pe.create_generated_content(spec);
-		}
-		else
-			throw new BoxError(BoxExceptionType.BET_UNKNOWN);
-	}
-
-	private PseudoElement createFirstLinePsuedo()
-	{
-		PseudoElement pe;
-		Box pseudoBox;
-
-		pe=new PseudoElement(this, PseudoElementType.PE_FIRST_LINE, cssPropertiesReference);
-		pseudoBox=BoxFactory.createInlineFlowBox(pe);
-		pe.setVisualBox(pseudoBox);
-		
-		BoxTypes.toBox(nodeBox).flow_back(pseudoBox);
-		
-		return pe;
-	}
-
-	private PseudoElement createFirstLetterPsuedo(XmlVElement psuedoLetterDeclared)
-	{
-		PseudoElement pe;
-		Box pseudoBox;
-
-		pe=new PseudoElement(psuedoLetterDeclared, PseudoElementType.PE_FIRST_LETTER, cssPropertiesReference);
-		pseudoBox=BoxFactory.createInlineFlowBox(pe);
-		pe.setVisualBox(pseudoBox);
-		
-		BoxTypes.toBox(nodeBox).flow_back(pseudoBox);
-		
-		return pe;
-	}
+//	private void create_generated_content(PseudoElementType pseudoType, Value spec)
+//	{
+//		Identifier display;
+//		Box pseudoBox=null;
+//		PseudoElement pe;
+//		Value v;
+//
+//		v=getPropertyValue("display", MediaType.MT_SCREEN, pseudoType);
+//		if(v.getClass().equals(Identifier.class))
+//		{
+//			display=(Identifier)v;
+//
+//			pe=new PseudoElement(this, PseudoElementType.PE_BEFORE, cssPropertiesReference);
+//
+//			if(display.ident.equals("inline"))
+//				pseudoBox=BoxFactory.createInlineFlowBox(pe);
+//			else if(display.ident.equals("block"))
+//				pseudoBox=BoxFactory.createBlockFlowBox(pe, null);
+//
+//			pe.setVisualBox(pseudoBox);
+//
+//			Counters.handleCounters(pe);
+//
+//			BoxTypes.toBox(nodeBox).flow_back(pseudoBox);
+//
+//			pe.create_generated_content(spec);
+//		}
+//		else
+//			throw new BoxError(BoxExceptionType.BET_UNKNOWN);
+//	}
+//
+//	private PseudoElement createFirstLinePsuedo()
+//	{
+//		PseudoElement pe;
+//		Box pseudoBox;
+//
+//		pe=new PseudoElement(this, PseudoElementType.PE_FIRST_LINE, cssPropertiesReference);
+//		pseudoBox=BoxFactory.createInlineFlowBox(pe);
+//		pe.setVisualBox(pseudoBox);
+//		
+//		BoxTypes.toBox(nodeBox).flow_back(pseudoBox);
+//		
+//		return pe;
+//	}
+//
+//	private PseudoElement createFirstLetterPsuedo(XmlVElement psuedoLetterDeclared)
+//	{
+//		PseudoElement pe;
+//		Box pseudoBox;
+//
+//		pe=new PseudoElement(psuedoLetterDeclared, PseudoElementType.PE_FIRST_LETTER, cssPropertiesReference);
+//		pseudoBox=BoxFactory.createInlineFlowBox(pe);
+//		pe.setVisualBox(pseudoBox);
+//		
+//		BoxTypes.toBox(nodeBox).flow_back(pseudoBox);
+//		
+//		return pe;
+//	}
 	
 	public String getDefaultStyleLanguage()
 	{
@@ -750,11 +750,11 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 		return computedValues.get(property);
 	}
 
-//	@Override
-//	public AnonReason getAnonReason()
-//	{
-//		return null;
-//	}
+	@Override
+	public AnonReason getAnonReason()
+	{
+		return null;
+	}
 
 	private Adder getParentLocator()
 	{
@@ -762,13 +762,13 @@ public class XmlVElement extends XmlElement implements Visual, VElement
 	}
 	
 	@Override
-	public void setPostSplit(InlineBox postSplitInlineBox)
+	public void setPostSplit(PropertiesEndPoint postSplitInlineBox)
 	{
 		this.postSplitInlineBox=postSplitInlineBox;
 	}
 
 	@Override
-	public InlineBox getPostSplit()
+	public PropertiesEndPoint getPostSplit()
 	{
 		return postSplitInlineBox;
 	}

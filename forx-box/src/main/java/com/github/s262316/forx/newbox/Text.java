@@ -156,4 +156,8 @@ public class Text implements Box, Inline
 		dimensions.setPosition(x, y);
 	}
 
+	public int getBaseline()
+	{
+		return bottom();
+	}
 }

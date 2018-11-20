@@ -1,7 +1,6 @@
 package com.github.s262316.forx.newbox;
 
 import com.github.s262316.forx.graphics.GraphicsContext;
-import com.github.s262316.forx.tree.visual.AnonReason;
 
 public interface Visual
 {
@@ -9,4 +8,8 @@ public interface Visual
 
 	InlineHeadless createAnonInlineBox(AnonReason anonReason);
 	BlockBox createAnonBlockBox(AnonReason anonReason);
+
+    AnonReason getAnonReason();
+	void setPostSplit(PropertiesEndPoint postSplitInlineBox);
+	PropertiesEndPoint getPostSplit();	
 }

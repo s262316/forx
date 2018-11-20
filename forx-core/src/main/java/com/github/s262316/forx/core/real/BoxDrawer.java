@@ -4,34 +4,18 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.List;
 
+import javax.swing.text.TableView.TableRow;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.github.s262316.forx.box.AbsoluteBox;
-import com.github.s262316.forx.box.BlockBox;
-import com.github.s262316.forx.box.Box;
-import com.github.s262316.forx.box.CellBox;
-import com.github.s262316.forx.box.ColGroup;
-import com.github.s262316.forx.box.Column;
-import com.github.s262316.forx.box.FloatBox;
-import com.github.s262316.forx.box.InlineBlockBox;
-import com.github.s262316.forx.box.InlineBox;
-import com.github.s262316.forx.box.Layable;
-import com.github.s262316.forx.box.ReplacedInline;
-import com.github.s262316.forx.box.RootBox;
-import com.github.s262316.forx.box.RowGroup;
-import com.github.s262316.forx.box.TableBox;
-import com.github.s262316.forx.box.TableRow;
-import com.github.s262316.forx.box.Text;
-import com.github.s262316.forx.box.cast.BoxTypes;
-import com.github.s262316.forx.box.properties.BackgroundProperties;
-import com.github.s262316.forx.box.properties.PropertyBoxAdaptor;
-import com.github.s262316.forx.box.util.AreaType;
-import com.github.s262316.forx.box.util.BackgroundRepeat;
-import com.github.s262316.forx.box.util.Boxes;
-import com.github.s262316.forx.box.util.Overflow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.github.s262316.forx.newbox.BlockBox;
+import com.github.s262316.forx.newbox.Box;
+import com.github.s262316.forx.newbox.RootBox;
+import com.github.s262316.forx.newbox.Text;
+import com.github.s262316.forx.newbox.util.Boxes;
 
 @Component
 public class BoxDrawer
@@ -57,17 +41,17 @@ public class BoxDrawer
 
     private void draw_text(Text t, Graphics2D canvas, int offx, int offy)
     {
-		logger.debug("draw_text(\"{}\",{},{},{})", t.text(), "{canvas}", offx, offy);
+		logger.debug("draw_text(\"{}\",{},{},{})", t.getText(), "{canvas}", offx, offy);
 
         indent++;
-        if(t.whitespace() == false)
+        if(t.isWhitespace() == false)
         {
             int horizAlignmentAdj=t.line().alignmentAdjustment(t);
         	
             logger.debug("{}[text{}] at {} at {},{} ({},{}) line: {},{} {},{}", print_indent(), t.getId(), t.text(), horizAlignmentAdj + t.left() - offx, t.baseline() - offy, t.width(), t.height(), t.line().left(), t.line().top(), t.line().width(), t.line().height());
             
-            canvas.drawString(t.text(), horizAlignmentAdj + t.left() - offx, t.baseline() - offy);
-            realMapping.update(t, t.left() - offx, t.baseline() - offy, t.width(), t.height());
+            canvas.drawString(t.getText(), horizAlignmentAdj + t.left() - offx, t.getBaseline() - offy);
+            realMapping.update(t, t.left() - offx, t.getBaseline() - offy, t.width(), t.height());
         }
         else
         {
